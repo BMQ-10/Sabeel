@@ -1148,6 +1148,12 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .rq-card.muted{border-color:var(--line);}
 .rq-card > b{display:block;font-size:13.5px;color:var(--ink);margin-bottom:4px;}
 .rq-card > p{margin:0 0 10px 0;font-size:12.5px;line-height:1.55;color:var(--ink-soft);}
+
+.dhikr-ring{transition:transform .1s,box-shadow .1s;}
+.dhikr-ring:active{transform:scale(0.95);box-shadow:0 0 0 4px rgba(217,179,106,0.3),var(--shadow-md);}
+.dhikr-preset{display:inline-flex;align-items:center;gap:4px;background:var(--bg-deep);border:1px solid var(--line);border-radius:20px;padding:6px 14px;font-size:12px;font-weight:600;color:var(--ink-soft);cursor:pointer;transition:all var(--dur-fast);}
+.dhikr-preset.active{background:var(--gold-glow);border-color:var(--gold);color:var(--gold-deep);}
+.dhikr-preset:hover{background:var(--gold-glow);}
 .rq-items{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;}
 .rq-item{
   background:var(--gold-glow);border:1px solid var(--gold-bright);border-radius:20px;
@@ -1157,6 +1163,28 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .rq-item:hover{background:rgba(217,179,106,0.3);transform:translateY(-1px);}
 .rq-clear{background:none;border:none;color:var(--text-muted);font-family:var(--sans);font-size:11px;font-weight:600;cursor:pointer;text-decoration:underline;}
 .rq-clear:hover{color:var(--rose);}
+
+/* ===== RTL / BIDI TEXT HANDLING ===== */
+.ar, .arabic, [dir="rtl"], [lang="ar"]{
+  unicode-bidi: isolate;
+}
+.source-quote .arabic{
+  direction:rtl; text-align:right; unicode-bidi:isolate;
+}
+.ref{
+  direction:ltr; text-align:left; unicode-bidi:isolate;
+}
+.translit{
+  direction:ltr; text-align:left; unicode-bidi:isolate;
+}
+/* Ensure numbers inside Arabic text render LTR */
+[lang="ar"] bdi, [dir="rtl"] bdi{
+  direction:ltr; unicode-bidi:isolate;
+}
+/* Punctuation at line boundaries in mixed text */
+.source-quote p{
+  direction:ltr; text-align:left; unicode-bidi:isolate;
+}
 
 /* ===== LIVE PRAYER RIBBON ===== */
 .pribbon{
@@ -1652,10 +1680,22 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8s5.6 6.1 5.6 10a5.6 5.6 0 0 1-11.2 0c0-3.9 5.6-10 5.6-10z"/></svg>
         Wudhu &amp; Salah
       </button>
+      <button class="rail-btn" data-view="dhikr">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>
+        Dhikr Counter
+      </button>
+      <button class="rail-btn" data-view="qada">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
+        Missed Prayers
+      </button>
 
       <div class="rail-divider"></div>
 
     <div class="rail-section-label">Study</div>
+      <button class="rail-btn" data-view="hijri">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 13.4A8.5 8.5 0 1 1 10.6 3.8a7 7 0 0 0 9.6 9.6z"/></svg>
+        Islamic Calendar
+      </button>
       <button class="rail-btn" data-view="tawheed">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"/><path d="M12 3.2v2.6M12 18.2v2.6M3.2 12h2.6M18.2 12h2.6M5.9 5.9l1.8 1.8M16.3 16.3l1.8 1.8M18.1 5.9l-1.8 1.8M7.7 16.3l-1.8 1.8"/></svg>
         Tawheed
@@ -2196,18 +2236,18 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
             </label>
             <button id="offlineBtn" class="qbtn ghost" type="button" title="Save this surah's recitation audio for offline listening">⤓ Offline</button>
             <span class="font-ctrl">
-              <button id="fontMinus" class="qbtn ghost icon-btn" type="button" title="Smaller Arabic text">A−</button>
-              <button id="fontPlus" class="qbtn ghost icon-btn" type="button" title="Larger Arabic text">A+</button>
+              <button id="fontMinus" class="qbtn ghost icon-btn" type="button" title="Smaller Arabic text" aria-label="Decrease Arabic text size">A−</button>
+              <button id="fontPlus" class="qbtn ghost icon-btn" type="button" title="Larger Arabic text" aria-label="Increase Arabic text size">A+</button>
             </span>
             <span class="surah-nav">
-              <button id="prevSurahBtn" class="qbtn ghost icon-btn" type="button" title="Previous surah">‹</button>
+              <button id="prevSurahBtn" class="qbtn ghost icon-btn" type="button" title="Previous surah" aria-label="Previous surah">‹</button>
               <span>Surah</span>
-              <button id="nextSurahBtn" class="qbtn ghost icon-btn" type="button" title="Next surah">›</button>
+              <button id="nextSurahBtn" class="qbtn ghost icon-btn" type="button" title="Next surah" aria-label="Next surah">›</button>
             </span>
             <div class="verse-jump">
               <span>Go to verse</span>
               <input type="number" id="verseJumpInput" min="1" aria-label="Jump to verse number">
-              <button id="verseJumpBtn" class="qbtn ghost icon-btn" type="button">→</button>
+              <button id="verseJumpBtn" class="qbtn ghost icon-btn" type="button" aria-label="Go to verse">→</button>
             </div>
           </div>
         </div>
@@ -2239,6 +2279,68 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
         <button id="mpStop" class="qbtn ghost icon-btn" type="button" aria-label="Stop">✕</button>
         <div class="mp-progress"><div class="mp-progress-fill" id="mpProgressFill"></div></div>
       </div>
+    </section>
+
+    <!-- DHIKR COUNTER -->
+    <section class="view" id="view-dhikr">
+      <div class="eyebrow"><span class="dot"></span>Worship tool</div>
+      <h1 class="page-title">Dhikr Counter</h1>
+      <p class="page-lede">Tap to count remembrances. Your streaks and history are saved privately on this device.</p>
+      <div id="dhikrPresets" style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;"></div>
+      <div id="dhikrMain" style="text-align:center;margin:20px 0;">
+        <div id="dhikrName" style="font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:6px;"></div>
+        <div id="dhikrArabic" dir="rtl" lang="ar" style="font-family:var(--serif);font-size:clamp(22px,4vw,32px);color:var(--ink);margin-bottom:4px;"></div>
+        <div id="dhikrMeaning" style="font-size:13px;color:var(--ink-soft);margin-bottom:20px;"></div>
+        <button id="dhikrTap" class="dhikr-ring" aria-label="Tap to count dhikr" style="width:180px;height:180px;border-radius:50%;border:4px solid var(--gold);background:var(--card);font-size:48px;font-family:var(--serif);color:var(--gold-deep);cursor:pointer;box-shadow:var(--shadow-md);transition:transform .1s,box-shadow .1s;position:relative;">
+          0
+        </button>
+        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+          <button class="tool-btn secondary" onclick="dhikrReset()" aria-label="Reset counter">Reset</button>
+          <button class="tool-btn secondary" onclick="dhikrSetTarget()" aria-label="Set target">Set Target</button>
+        </div>
+        <div id="dhikrTarget" style="font-size:12px;color:var(--text-muted);margin-top:8px;"></div>
+      </div>
+      <div id="dhikrHistory" style="margin-top:20px;"></div>
+    </section>
+
+    <!-- QADA TRACKER -->
+    <section class="view" id="view-qada">
+      <div class="eyebrow"><span class="dot"></span>Worship tool</div>
+      <h1 class="page-title">Missed Prayers &amp; Fasting</h1>
+      <p class="page-lede">A private counter for qada owed. Nothing leaves this device — only you know these numbers.</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
+        <div class="rq-card" style="text-align:center;">
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Missed Prayers (Qada)</div>
+          <div id="qadaPrayerCount" style="font-size:36px;font-family:var(--serif);color:var(--gold-deep);font-weight:700;">0</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;">
+            <button class="tool-btn secondary" onclick="qadaAdj('prayer',-1)" aria-label="Remove one missed prayer">−1</button>
+            <button class="tool-btn" onclick="qadaAdj('prayer',1)" aria-label="Add one missed prayer">+1</button>
+          </div>
+        </div>
+        <div class="rq-card" style="text-align:center;">
+          <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Missed Fasts (Qada)</div>
+          <div id="qadaFastCount" style="font-size:36px;font-family:var(--serif);color:var(--gold-deep);font-weight:700;">0</div>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;">
+            <button class="tool-btn secondary" onclick="qadaAdj('fast',-1)" aria-label="Remove one missed fast">−1</button>
+            <button class="tool-btn" onclick="qadaAdj('fast',1)" aria-label="Add one missed fast">+1</button>
+          </div>
+        </div>
+      </div>
+      <div class="rq-card" style="margin-top:8px;">
+        <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Per-Prayer Breakdown</div>
+        <div id="qadaBreakdown"></div>
+      </div>
+      <div id="qadaLog" style="margin-top:16px;"></div>
+    </section>
+
+    <!-- HIJRI CALENDAR -->
+    <section class="view" id="view-hijri">
+      <div class="eyebrow"><span class="dot"></span>Islamic date</div>
+      <h1 class="page-title">Islamic Calendar</h1>
+      <p class="page-lede">Hijri dates computed locally — no internet needed. Flags important Islamic occasions.</p>
+      <div id="hijriToday" class="rq-card" style="text-align:center;padding:24px;"></div>
+      <div id="hijriEvents" style="margin-top:16px;"></div>
+      <div id="hijriMonths" style="margin-top:20px;"></div>
     </section>
 
     <!-- TAWHEED -->
@@ -4348,6 +4450,7 @@ function clearReviewFlags(){
         const bookmarkBtn = document.createElement('button');
         bookmarkBtn.type = 'button';
         bookmarkBtn.title = 'Bookmark this verse';
+        bookmarkBtn.setAttribute('aria-label', 'Bookmark this verse');
         bookmarkBtn.textContent = bookmarks.has(`${surahNum}:${ar.numberInSurah}`) ? '★' : '☆';
         if (bookmarks.has(`${surahNum}:${ar.numberInSurah}`)) bookmarkBtn.classList.add('starred');
         bookmarkBtn.addEventListener('click', () => toggleBookmark(surahNum, ar.numberInSurah, card, bookmarkBtn));
@@ -4356,6 +4459,7 @@ function clearReviewFlags(){
         const copyBtn = document.createElement('button');
         copyBtn.type = 'button';
         copyBtn.title = 'Copy Arabic + translation';
+        copyBtn.setAttribute('aria-label', 'Copy Arabic and translation');
         copyBtn.textContent = '⧉';
         copyBtn.addEventListener('click', () => copyVerse(arText, en.text, surahNum, ar.numberInSurah));
         quickActions.appendChild(copyBtn);
@@ -5264,7 +5368,7 @@ document.addEventListener('click', e=>{
 });
 
 /* keyboard quick-jump: 1–9 and 0 map to the main sections (desktop QoL) */
-const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','tawheed','fiqh','ramadan','hajj'];
+const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','dhikr','qada','hijri','tawheed','fiqh','ramadan','hajj'];
 document.addEventListener('keydown', e=>{
   if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if(e.key === '/') return; /* search shortcut handled below */
@@ -7005,6 +7109,220 @@ document.getElementById('tpSayAr').innerHTML = SPK_ICON;
 document.getElementById('pribbon').addEventListener('click', ()=> switchView('prayertimes'));
 document.getElementById('qiblaCompass').innerHTML = drawCompassFace();
 setTimeout(moveRailInd, 100);
+
+/* ================= DHIKR COUNTER ================= */
+const DHIKR_PRESETS = [
+  {name:'SubhanAllah', ar:'سُبْحَانَ اللَّهِ', meaning:'Glory be to Allah', target:33},
+  {name:'Alhamdulillah', ar:'الْحَمْدُ لِلَّهِ', meaning:'All praise is for Allah', target:33},
+  {name:'Allahu Akbar', ar:'اللَّهُ أَكْبَرُ', meaning:'Allah is Greatest', target:33},
+  {name:'La ilaha illallah', ar:'لَا إِلَٰهَ إِلَّا اللَّهُ', meaning:'There is no god but Allah', target:100},
+  {name:'Astaghfirullah', ar:'أَسْتَغْفِرُ اللَّهَ', meaning:'I seek forgiveness from Allah', target:100},
+  {name:'Salawat', ar:'اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ', meaning:'O Allah, bless Muhammad', target:100}
+];
+let dhikrState = (function(){
+  try{
+    const raw = localStorage.getItem('dhikrState');
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {presetIdx:0, count:0, history:[]};
+})();
+function saveDhikr(){ try{ localStorage.setItem('dhikrState', JSON.stringify(dhikrState)); }catch(e){} }
+function renderDhikrPresets(){
+  document.getElementById('dhikrPresets').innerHTML = DHIKR_PRESETS.map((p,i)=>
+    `<button class="dhikr-preset ${i===dhikrState.presetIdx?'active':''}" onclick="selectDhikr(${i})">${p.name}</button>`
+  ).join('');
+}
+function selectDhikr(i){
+  if(dhikrState.count > 0) dhikrLogSession();
+  dhikrState.presetIdx = i;
+  dhikrState.count = 0;
+  saveDhikr();
+  renderDhikrPresets();
+  renderDhikrMain();
+}
+function renderDhikrMain(){
+  const p = DHIKR_PRESETS[dhikrState.presetIdx];
+  document.getElementById('dhikrName').textContent = p.name;
+  document.getElementById('dhikrArabic').textContent = p.ar;
+  document.getElementById('dhikrMeaning').textContent = p.meaning;
+  document.getElementById('dhikrTap').textContent = dhikrState.count;
+  document.getElementById('dhikrTarget').textContent = p.target ? `Target: ${p.target} · ${Math.min(dhikrState.count, p.target)} / ${p.target}` : '';
+  const ring = document.getElementById('dhikrTap');
+  if(p.target && dhikrState.count >= p.target){ ring.style.borderColor='var(--green)'; ring.style.color='var(--green-deep)'; }
+  else { ring.style.borderColor='var(--gold)'; ring.style.color='var(--gold-deep)'; }
+}
+document.getElementById('dhikrTap').addEventListener('click', ()=>{
+  dhikrState.count++;
+  saveDhikr();
+  renderDhikrMain();
+  const p = DHIKR_PRESETS[dhikrState.presetIdx];
+  if(p.target && dhikrState.count === p.target) showToast(`${p.name} target reached — ${p.target} mashaAllah`);
+});
+function dhikrReset(){
+  if(dhikrState.count > 0) dhikrLogSession();
+  dhikrState.count = 0;
+  saveDhikr();
+  renderDhikrMain();
+}
+function dhikrSetTarget(){
+  const p = DHIKR_PRESETS[dhikrState.presetIdx];
+  const val = prompt('Set target count for ' + p.name, p.target || 33);
+  if(val !== null && !isNaN(parseInt(val)) && parseInt(val) > 0){
+    DHIKR_PRESETS[dhikrState.presetIdx].target = parseInt(val);
+    saveDhikr();
+    renderDhikrMain();
+  }
+}
+function dhikrLogSession(){
+  if(dhikrState.count === 0) return;
+  const p = DHIKR_PRESETS[dhikrState.presetIdx];
+  dhikrState.history.unshift({name:p.name, count:dhikrState.count, date:new Date().toISOString().slice(0,10)});
+  if(dhikrState.history.length > 50) dhikrState.history.length = 50;
+  saveDhikr();
+}
+function renderDhikrHistory(){
+  if(!dhikrState.history.length){ document.getElementById('dhikrHistory').innerHTML=''; return; }
+  const groups = {};
+  dhikrState.history.forEach(h=>{
+    const key = h.date;
+    if(!groups[key]) groups[key] = [];
+    groups[key].push(h);
+  });
+  document.getElementById('dhikrHistory').innerHTML =
+    '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Recent Sessions</div>' +
+    Object.entries(groups).slice(0,7).map(([date,items])=>
+      `<div class="rq-card" style="padding:10px 14px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">${date}</div>` +
+      items.map(h=>`<span style="font-size:12px;margin-right:12px;"><b>${h.count}</b> ${h.name}</span>`).join('') +
+      '</div>'
+    ).join('');
+}
+
+/* ================= QADA (MISSED PRAYER/FASTING) TRACKER ================= */
+let qadaState = (function(){
+  try{
+    const raw = localStorage.getItem('qadaState');
+    if(raw) return JSON.parse(raw);
+  }catch(e){}
+  return {prayer:0, fast:0, perPrayer:{fajr:0,dhuhr:0,asr:0,maghrib:0,isha:0}, log:[]};
+})();
+function saveQada(){ try{ localStorage.setItem('qadaState', JSON.stringify(qadaState)); }catch(e){} }
+function qadaAdj(type, delta){
+  qadaState[type] = Math.max(0, qadaState[type] + delta);
+  if(delta > 0){
+    qadaState.log.unshift({type, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    if(qadaState.log.length > 100) qadaState.log.length = 100;
+  }
+  saveQada();
+  renderQada();
+}
+function qadaAdjPrayer(name, delta){
+  qadaState.perPrayer[name] = Math.max(0, qadaState.perPrayer[name] + delta);
+  qadaState.prayer = Object.values(qadaState.perPrayer).reduce((a,b)=>a+b, 0);
+  if(delta > 0){
+    qadaState.log.unshift({type:'prayer', name, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    if(qadaState.log.length > 100) qadaState.log.length = 100;
+  }
+  saveQada();
+  renderQada();
+}
+function renderQada(){
+  document.getElementById('qadaPrayerCount').textContent = qadaState.prayer;
+  document.getElementById('qadaFastCount').textContent = qadaState.fast;
+  const prayers = ['fajr','dhuhr','asr','maghrib','isha'];
+  document.getElementById('qadaBreakdown').innerHTML = prayers.map(p=>
+    `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line-soft);">
+      <span style="font-size:13px;color:var(--ink);text-transform:capitalize;">${p}</span>
+      <div style="display:flex;align-items:center;gap:6px;">
+        <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',-1)" aria-label="Remove one ${p}">−</button>
+        <span style="font-size:16px;font-weight:700;color:var(--gold-deep);min-width:20px;text-align:center;">${qadaState.perPrayer[p]}</span>
+        <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',1)" aria-label="Add one ${p}">+</button>
+      </div>
+    </div>`
+  ).join('');
+  if(!qadaState.log.length){ document.getElementById('qadaLog').innerHTML=''; return; }
+  document.getElementById('qadaLog').innerHTML =
+    '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Recent Activity</div>' +
+    qadaState.log.slice(0,10).map(h=>
+      `<div style="font-size:12px;color:var(--ink-soft);padding:4px 0;border-bottom:1px solid var(--line-soft);">+1 ${h.type === 'fast' ? 'missed fast' : ('missed ' + (h.name||'prayer'))} · ${h.date} ${h.time}</div>`
+    ).join('');
+}
+
+/* init dhikr + qada + hijri on load */
+renderDhikrPresets();
+renderDhikrMain();
+renderDhikrHistory();
+renderQada();
+renderHijriCalendar();
+
+/* ================= HIJRI CALENDAR (tabular algorithm, no API) ================= */
+function gregorianToJulian(y,m,d){
+  if(m<=2){y--;m+=12;}
+  const A=Math.floor(y/100);
+  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d-A+Math.floor(A/4)+1721119;
+}
+function julianToHijri(jd){
+  const l=jd-1948440+10632;
+  const n=Math.floor((l-1)/10631);
+  const r=l-10631*n+354;
+  const j=Math.floor((10985-r)/5316)*Math.floor((50*r)/17719)+Math.floor(r/5670)*Math.floor((43*r)/15238);
+  const rl=r-Math.floor((30-j)/15)*Math.floor((17719*j)/50)-Math.floor(j/16)*Math.floor((15238*j)/43)+29;
+  const hm=Math.floor((24*rl)/709);
+  const hd=rl-Math.floor((709*hm)/24);
+  const hy=30*n+j-30;
+  return{hYear:hy,hMonth:hm,hDay:hd};
+}
+const HIJRI_MONTHS = ['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Ula','Jumada al-Thani','Rajab','Sha\'ban','Ramadan','Shawwal','Dhul Qi\'dah','Dhul Hijjah'];
+const HIJRI_MONTHS_AR = ['مُحَرَّم','صَفَر','رَبِيع الأَوَّل','رَبِيع الثَّانِي','جُمَادَى الأُولَى','جُمَادَى الثَّانِيَة','رَجَب','شَعْبَان','رَمَضَان','شَوَّال','ذُو القِعْدَة','ذُو الحِجَّة'];
+function renderHijriCalendar(){
+  const now = new Date();
+  const jd = gregorianToJulian(now.getFullYear(), now.getMonth()+1, now.getDate());
+  const hijri = julianToHijri(jd);
+  const dayOfWeek = now.toLocaleDateString('en',{weekday:'long'});
+  document.getElementById('hijriToday').innerHTML = `
+    <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px;">${dayOfWeek}, ${now.toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'})}</div>
+    <div style="font-size:clamp(28px,5vw,38px);font-family:var(--serif);color:var(--gold-deep);margin:8px 0;">${hijri.hDay} ${HIJRI_MONTHS_AR[hijri.hMonth-1]} ${hijri.hYear}</div>
+    <div style="font-size:16px;color:var(--ink);">${hijri.hDay} ${HIJRI_MONTHS[hijri.hMonth-1]} ${hijri.hYear} AH</div>
+  `;
+  renderHijriEvents(hijri);
+  renderHijriMonths(hijri);
+}
+function renderHijriEvents(h){
+  const events = [];
+  if(h.hMonth===1 && h.hDay===1) events.push({name:'Islamic New Year',desc:'1 Muharram — the start of the Hijri calendar year.'});
+  if(h.hMonth===1 && h.hDay===10) events.push({name:'Day of Ashura',desc:'10 Muharram — the Prophet ﷺ fasted this day; it expiates the sins of the previous year (Sahih Muslim 1162).'});
+  if(h.hMonth===3 && h.hDay===12) events.push({name:'Mawlid an-Nabi',desc:'12 Rabi al-Awwal — the birthday of the Prophet Muhammad ﷺ.'});
+  if(h.hMonth===7 && h.hDay===27) events.push({name:'Isra and Mi\'raj',desc:'27 Rajab — the Night Journey and Ascension.'});
+  if(h.hMonth===8 && h.hDay>=25) events.push({name:'Laylat al-Bara\'ah',desc:'25-27 Sha\'ban — the Night of Record, the night before the 15th of Sha\'ban.'});
+  if(h.hMonth===9) events.push({name:'Ramadan',desc:`${HIJRI_MONTHS_AR[8]} — the month of fasting. Day ${h.hDay} of 29-30.`});
+  if(h.hMonth===9 && h.hDay>=21) events.push({name:'Laylat al-Qadr (likely)',desc:'Odd nights in the last 10 of Ramadan — the Night of Decree, better than 1,000 months (Qur\'an 97:3).'});
+  if(h.hMonth===10 && h.hDay===1) events.push({name:'Eid al-Fitr',desc:'1 Shawwal — the festival marking the end of Ramadan fasting.'});
+  if(h.hMonth===12 && h.hDay===9) events.push({name:'Day of Arafah',desc:'9 Dhul Hijjah — the best day of the year; fasting expiates two years of sins (Sahih Muslim 1162).'});
+  if(h.hMonth===12 && h.hDay===10) events.push({name:'Eid al-Adha',desc:'10 Dhul Hijjah — the festival of sacrifice during Hajj.'});
+  const el = document.getElementById('hijriEvents');
+  if(!events.length){ el.innerHTML=''; return; }
+  el.innerHTML = events.map(e=>
+    `<div class="rq-card" style="border-left:3px solid var(--gold);"><b>${e.name}</b><p>${e.desc}</p></div>`
+  ).join('');
+}
+function renderHijriMonths(current){
+  const now = new Date();
+  const jd = gregorianToJulian(now.getFullYear(), now.getMonth()+1, now.getDate());
+  document.getElementById('hijriMonths').innerHTML = `
+    <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Hijri Months Reference</div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;">
+    ${HIJRI_MONTHS.map((m,i)=>`<div class="rq-card" style="padding:10px 12px;${i+1===current.hMonth?'border-color:var(--gold);background:var(--gold-glow);':''}">
+      <div style="font-size:13px;font-weight:600;color:var(--ink);">${m}</div>
+      <div style="font-size:12px;color:var(--ink-soft);" dir="rtl" lang="ar">${HIJRI_MONTHS_AR[i]}</div>
+      ${i+1===current.hMonth?'<div style="font-size:10px;color:var(--gold-deep);margin-top:2px;font-weight:700;">● Current</div>':''}
+    </div>`).join('')}
+    </div>
+  `;
+}
+
+/* ================= SERVICE WORKER (true offline PWA) ================= */
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('./sw.js').catch(()=>{});
+}
 </script>
 </body>
 </html>
