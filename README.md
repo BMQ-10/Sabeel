@@ -27,7 +27,7 @@ Open `Sabeel.html` in any modern browser. No server or build step required.
 
 ```bash
 # Clone the repository
-git clone <your-repo-url>
+git clone https://github.com/BMQ-10/Sabeel
 
 # Open directly
 open Sabeel.html
