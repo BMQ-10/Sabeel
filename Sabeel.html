@@ -279,6 +279,58 @@ body::before{
 .rail-foot .ver{color:var(--gold-bright);font-weight:600;}
 @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.5;}}
 
+/* ===== LANGUAGE SELECTOR ===== */
+.lang-select-wrap{
+  margin-top:10px;
+  display:flex;align-items:center;gap:7px;
+}
+.lang-select{
+  background:rgba(237,231,211,0.08);
+  border:1px solid rgba(237,231,211,0.15);
+  color:var(--rail-text);
+  font-family:var(--sans);font-size:11px;
+  padding:5px 8px;border-radius:7px;
+  cursor:pointer;
+  transition:border-color var(--dur-fast),background var(--dur-fast);
+  max-width:140px;
+}
+.lang-select:hover{border-color:rgba(217,179,106,0.4);background:rgba(237,231,211,0.12);}
+.lang-select:focus{outline:2px solid var(--gold);outline-offset:1px;}
+.lang-select option{background:#132A20;color:var(--rail-text);}
+
+/* ===== RTL SUPPORT ===== */
+[dir="rtl"] .rail{
+  border-right:none;
+  border-left:1px solid rgba(217,179,106,0.14);
+}
+[dir="rtl"] .rail-btn{
+  text-align:right;
+  flex-direction:row-reverse;
+}
+[dir="rtl"] .rail-btn .new-pill{
+  margin-left:0;margin-right:auto;
+}
+[dir="rtl"] .search-box input{text-align:right;}
+[dir="rtl"] .rail-brand .mark{flex-direction:row-reverse;}
+[dir="rtl"] .rail-brand .sub{text-align:right;}
+[dir="rtl"] .rail-section-label{text-align:right;}
+[dir="rtl"] .rail-foot{flex-direction:row-reverse;text-align:right;}
+[dir="rtl"] .rail-foot .dot{margin-left:auto;margin-right:0;}
+[dir="rtl"] .view{text-align:right;}
+[dir="rtl"] .page-title{text-align:right;}
+[dir="rtl"] .page-lede{text-align:right;}
+[dir="rtl"] .hero{text-align:right;}
+[dir="rtl"] .hero h1{text-align:center;}
+[dir="rtl"] .hero-sub{text-align:center;}
+[dir="rtl"] .hero-meta{justify-content:center;}
+[dir="rtl"] .start-grid{text-align:right;}
+[dir="rtl"] .start-card{text-align:right;}
+[dir="rtl"] .notice-box{text-align:right;}
+[dir="rtl"] .hero-verse .ar{text-align:center;}
+[dir="rtl"] .hero-verse .tr{text-align:center;}
+[dir="rtl"] .eyebrow{flex-direction:row-reverse;}
+[dir="rtl"] .hero-greet{flex-direction:row-reverse;}
+
 /* ===== MOBILE TOP BAR + BOTTOM NAV (phones only) ===== */
 .topbar{display:none;}
 .bottomnav{display:none;}
@@ -1115,6 +1167,109 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 }
 .pc-mistake b{color:var(--rose);}
 
+/* ===== ARABIC READING COURSE ===== */
+.arabic-letter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin-bottom:20px;}
+.arabic-letter-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 10px;text-align:center;cursor:pointer;
+  transition:all var(--dur-fast) var(--ease);position:relative;
+  box-shadow:var(--shadow-sm);
+}
+.arabic-letter-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.arabic-letter-card.learned{border-color:var(--green-bright);background:rgba(46,125,91,0.06);}
+.arabic-letter-card.learned::after{
+  content:'✓';position:absolute;top:6px;right:8px;font-size:11px;
+  color:var(--green);font-weight:700;
+}
+.arabic-letter-large{
+  font-family:var(--serif);font-size:clamp(40px,6vw,56px);line-height:1.2;
+  color:var(--ink);margin-bottom:6px;min-height:60px;
+  display:flex;align-items:center;justify-content:center;
+}
+.arabic-letter-name{font-size:12px;font-weight:700;color:var(--ink-soft);margin-bottom:2px;}
+.arabic-letter-ar{font-family:var(--serif);font-size:16px;color:var(--gold-deep);margin-bottom:2px;}
+.arabic-letter-phonetic{font-size:11px;color:var(--text-muted);margin-bottom:6px;}
+
+.arabic-group-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin-bottom:14px;box-shadow:var(--shadow-sm);
+  transition:border-color var(--dur-fast);
+}
+.arabic-group-card.learned{border-color:var(--green-bright);background:rgba(46,125,91,0.04);}
+.arabic-group-title{font-size:14px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.arabic-group-desc{font-size:12px;color:var(--text-muted);margin-bottom:12px;}
+.arabic-forms{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;}
+.arabic-form-cell{text-align:center;padding:10px 4px;background:var(--bg-deep);border-radius:10px;}
+.arabic-form-cell .form-label{font-size:10px;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);margin-bottom:4px;}
+.arabic-form-cell .form-letter{font-family:var(--serif);font-size:clamp(24px,4vw,32px);color:var(--ink);min-height:36px;display:flex;align-items:center;justify-content:center;}
+.arabic-form-letters{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:10px;}
+.arabic-form-letter-tag{
+  display:inline-block;background:var(--bg-deep);border:1px solid var(--line);
+  border-radius:8px;padding:4px 10px;font-family:var(--serif);font-size:18px;color:var(--ink);
+}
+
+.arabic-word-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;margin-bottom:20px;}
+.arabic-word-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:16px 12px;text-align:center;cursor:pointer;
+  transition:all var(--dur-fast) var(--ease);box-shadow:var(--shadow-sm);
+}
+.arabic-word-card:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.arabic-word-card.learned{border-color:var(--green-bright);background:rgba(46,125,91,0.06);}
+.arabic-word-card.learned::after{
+  content:'✓';position:absolute;top:6px;right:8px;font-size:11px;
+  color:var(--green);font-weight:700;
+}
+.arabic-word-card{position:relative;}
+.arabic-word-ar{font-family:var(--serif);font-size:clamp(22px,4vw,30px);color:var(--ink);margin-bottom:6px;min-height:40px;}
+.arabic-word-trans{font-size:13px;font-weight:600;color:var(--gold-deep);margin-bottom:2px;}
+.arabic-word-meaning{font-size:11.5px;color:var(--text-muted);}
+
+.arabic-surah-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px;margin-bottom:14px;box-shadow:var(--shadow-sm);
+}
+.arabic-surah-card.read{border-color:var(--green-bright);background:rgba(46,125,91,0.04);}
+.arabic-surah-title{font-size:15px;font-weight:700;color:var(--ink);margin-bottom:4px;}
+.arabic-surah-ar{
+  font-family:var(--serif);font-size:clamp(18px,3vw,24px);line-height:1.8;
+  color:var(--ink);margin:10px 0;direction:rtl;text-align:right;
+  transition:opacity var(--dur-fast);
+}
+.arabic-surah-ar.hidden{opacity:0;height:0;overflow:hidden;margin:0;}
+.arabic-surah-trans{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin-bottom:4px;}
+.arabic-surah-meaning{font-size:12px;color:var(--text-muted);line-height:1.55;font-style:italic;}
+
+.arabic-progress-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+.arabic-progress-bar{flex:1;height:8px;background:var(--bg-deep);border-radius:10px;overflow:hidden;}
+.arabic-progress-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--green-bright));border-radius:10px;transition:width var(--dur) var(--ease);}
+.arabic-progress-label{font-size:12px;font-weight:700;color:var(--ink-soft);white-space:nowrap;}
+
+.arabic-mark-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  background:var(--bg-deep);border:1px solid var(--line);border-radius:20px;
+  padding:7px 16px;font-family:var(--sans);font-size:12px;font-weight:700;
+  color:var(--green-deep);cursor:pointer;
+  transition:background var(--dur-fast),border-color var(--dur-fast),transform var(--dur-fast) var(--ease);
+}
+.arabic-mark-btn:hover{background:var(--green-glow);border-color:var(--green-bright);transform:translateY(-1px);}
+.arabic-mark-btn.done{background:var(--green);color:#fff;border-color:var(--green);}
+
+.arabic-toggle-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
+.arabic-toggle-btn{
+  background:var(--bg-deep);border:1px solid var(--line);border-radius:20px;
+  padding:7px 16px;font-family:var(--sans);font-size:12px;font-weight:700;
+  color:var(--ink-soft);cursor:pointer;
+  transition:all var(--dur-fast) var(--ease);
+}
+.arabic-toggle-btn.active{background:var(--green);color:#fff;border-color:var(--green);}
+
+@media(max-width:500px){
+  .arabic-letter-grid{grid-template-columns:repeat(auto-fill,minmax(85px,1fr));gap:8px;}
+  .arabic-forms{grid-template-columns:repeat(2,1fr);}
+  .arabic-word-grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+}
+
 /* ===== KNOWLEDGE CHECK 2.0: FLIP-TO-SOURCE + FLAGS ===== */
 .qsrc-tools{display:none;gap:10px;margin-top:12px;flex-wrap:wrap;}
 .qsrc-tools.show{display:flex;}
@@ -1569,6 +1724,170 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
   .pt-cell .pt-time{font-size:16px;}
   .bn-btn span{font-size:9.5px;}
 }
+
+/* ===== HIFZ TRACKER ===== */
+.hifz-progress-bar{display:flex;gap:6px;align-items:center;margin:14px 0 18px;flex-wrap:wrap;}
+.hifz-progress-bar .stat-pill{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:5px 14px;font-size:12.5px;font-weight:600;color:var(--ink);display:inline-flex;align-items:center;gap:5px;}
+.hifz-progress-bar .stat-pill .dot-g{width:7px;height:7px;border-radius:50%;background:var(--green);}
+.hifz-progress-bar .stat-pill .dot-y{width:7px;height:7px;border-radius:50%;background:var(--gold);}
+.hifz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(34px,1fr));gap:4px;margin:10px 0 24px;}
+.hifz-tile{
+  aspect-ratio:1;border-radius:6px;display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;font-family:var(--sans);cursor:pointer;transition:all .18s ease;
+  border:1px solid var(--line);background:var(--bg-deep);color:var(--text-muted);position:relative;
+  user-select:none;-webkit-user-select:none;
+}
+.hifz-tile:hover{transform:scale(1.15);z-index:2;box-shadow:var(--shadow-sm);}
+.hifz-tile.partial{background:#fef3cd;border-color:#e0c36a;color:#856404;}
+.hifz-tile.memorized{background:#d1e7dd;border-color:#6db89a;color:#0f5132;}
+.hifz-tile.tested{background:#2E7D5B;border-color:#1C4A38;color:#fff;}
+.hifz-tile .tile-tip{
+  position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
+  background:var(--ink);color:#fff;font-size:10px;font-weight:500;white-space:nowrap;
+  padding:4px 8px;border-radius:5px;opacity:0;pointer-events:none;transition:opacity .15s;z-index:10;
+}
+.hifz-tile:hover .tile-tip{opacity:1;}
+.hifz-test-area{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:22px 24px;margin:10px 0 20px;min-height:120px;
+}
+.hifz-test-area h3{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--ink);margin:0 0 6px;}
+.hifz-test-area p{font-size:13px;color:var(--ink-soft);margin:0 0 14px;line-height:1.5;}
+.hifz-test-arabic{
+  font-family:var(--serif);font-size:clamp(20px,3vw,28px);color:var(--ink);
+  direction:rtl;text-align:center;line-height:2.2;margin:14px 0;padding:14px;
+  background:var(--bg-deep);border-radius:12px;min-height:60px;
+}
+.hifz-test-arabic .hifz-word{display:inline;padding:0 3px;border-radius:4px;transition:all .4s ease;}
+.hifz-test-arabic .hifz-word.blurred{color:transparent;text-shadow:0 0 8px rgba(18,32,27,0.5);}
+.hifz-test-arabic .hifz-word.hidden{color:transparent;user-select:none;}
+.hifz-level-dots{display:flex;gap:6px;justify-content:center;margin:14px 0;}
+.hifz-level-dots .ld{width:10px;height:10px;border-radius:50%;background:var(--line);transition:background .3s;}
+.hifz-level-dots .ld.done{background:var(--green);}
+.hifz-level-dots .ld.active{background:var(--gold);box-shadow:0 0 6px rgba(184,146,74,0.4);}
+.hifz-btn{
+  display:inline-flex;align-items:center;gap:6px;padding:10px 20px;border-radius:10px;
+  border:1px solid var(--line);background:var(--card);color:var(--ink);font-family:var(--sans);
+  font-size:13px;font-weight:600;cursor:pointer;transition:all .15s ease;
+}
+.hifz-btn:hover{background:var(--bg-deep);transform:translateY(-1px);}
+.hifz-btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+.hifz-btn.primary:hover{background:var(--green-bright);}
+.hifz-btn.danger{background:var(--rose);color:#fff;border-color:var(--rose);}
+.hifz-btn-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:14px;}
+.hifz-select{
+  padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);
+  color:var(--ink);font-family:var(--sans);font-size:13px;cursor:pointer;
+}
+.hifz-quote{
+  background:linear-gradient(120deg,rgba(46,125,91,0.08),rgba(196,158,84,0.08));
+  border:1px solid rgba(217,179,106,0.3);border-radius:12px;padding:14px 18px;margin:14px 0;
+  font-size:13px;color:var(--ink-soft);line-height:1.6;
+}
+.hifz-quote b{color:var(--green-deep);}
+
+/* ===== HOVER / FOCUS CLARITY ===== */
+
+/* 1. Focus-visible outlines */
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px;}
+button:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+input:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+select:focus-visible{outline:2px solid var(--gold);outline-offset:1px;}
+
+/* 2. Sidebar button hover */
+.rail-btn:hover{background:rgba(217,179,106,0.08);transform:translateX(3px);}
+.rail-btn:active{transform:translateX(1px);background:rgba(217,179,106,0.15);}
+
+/* 3. Card hover effects */
+.rq-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.ess-card:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,0.08);}
+.start-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--gold);}
+.dua-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);border-color:var(--gold-bright);}
+
+/* 4. Small text readability */
+.rail-btn .new-pill{font-size:9px;padding:1px 5px;}
+.pt-cell:hover{background:var(--gold-glow);transform:scale(1.02);}
+.titem:hover .titem-body{color:var(--ink);}
+.pc-item:hover{background:var(--bg-deep);}
+.quiz-opt:hover{border-color:var(--gold);background:var(--gold-glow);}
+.tool-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-sm);}
+.tool-btn:active{transform:translateY(0);}
+
+/* 5. Speaker button hover */
+.spk-btn:hover{background:rgba(217,179,106,0.2);transform:scale(1.1);box-shadow:0 0 8px rgba(217,179,106,0.3);}
+.spk-btn:active{transform:scale(0.95);}
+
+/* 6. Link hover */
+a:hover{text-decoration:underline;color:var(--gold-deep);}
+
+/* 7. Deck tab hover */
+.deck-tab:hover:not(.active){background:rgba(217,179,106,0.1);}
+
+/* 8. Grade badge hover */
+.grade:hover{transform:scale(1.05);}
+
+/* 9. Accordion toggle hover */
+.acc-head:hover{background:var(--gold-glow);}
+.acc-head:hover .plus{color:var(--gold-deep);}
+
+/* 10. Bottom nav hover */
+.bnav-btn:hover{color:var(--gold-deep);background:rgba(217,179,106,0.08);}
+
+/* 11. Toggle chip hover */
+.toggle-chip:hover{background:var(--gold-glow);border-color:var(--gold);}
+
+/* 12. Verse card hover */
+.ayah-card:hover{border-color:var(--gold-bright);box-shadow:0 2px 12px rgba(217,179,106,0.15);}
+
+/* 13. Reduce motion respect */
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
+}
+
+/* ===== OFFLINE PACKS ===== */
+.pack-card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:18px 20px;margin-bottom:12px;
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow var(--dur) var(--ease-soft),border-color var(--dur),transform var(--dur) var(--ease-soft);
+  animation:riseIn .4s var(--ease) both;
+}
+.pack-card:hover{box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.pack-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px;}
+.pack-name{font-weight:700;font-size:14.5px;color:var(--ink);}
+.pack-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.6;margin:0 0 10px 0;}
+.pack-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px;}
+.pack-meta span{font-size:11px;color:var(--text-muted);font-weight:600;}
+.pack-status{
+  display:inline-flex;align-items:center;gap:5px;
+  font-size:10.5px;font-weight:700;letter-spacing:0.4px;text-transform:uppercase;
+  padding:4px 10px;border-radius:20px;
+}
+.pack-status.downloaded{background:var(--green-glow);color:var(--green-deep);}
+.pack-status.not-downloaded{background:var(--bg-deep);color:var(--text-muted);border:1px solid var(--line);}
+.pack-status.downloading{background:var(--gold-glow);color:#8a6a35;}
+.pack-progress{height:6px;background:var(--line-soft);border-radius:10px;overflow:hidden;margin-bottom:10px;}
+.pack-progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-bright),var(--green-bright));border-radius:10px;transition:width .3s var(--ease);box-shadow:0 0 8px rgba(217,179,106,0.3);}
+.pack-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:9px;font-family:var(--sans);font-size:12.5px;font-weight:600;cursor:pointer;
+  border:1.5px solid var(--line);background:var(--bg-deep);color:var(--ink);
+  transition:background var(--dur-fast),border-color var(--dur-fast),transform var(--dur-fast) var(--ease-soft),box-shadow var(--dur-fast);
+}
+.pack-btn:hover{background:var(--green-glow);border-color:var(--green-bright);transform:translateY(-1px);box-shadow:var(--shadow-sm);}
+.pack-btn:active{transform:translateY(0);}
+.pack-btn.primary{background:var(--green);color:#fff;border-color:var(--green);}
+.pack-btn.primary:hover{background:var(--green-deep);}
+.pack-btn.danger{color:var(--rose);border-color:rgba(194,91,78,0.3);background:rgba(194,91,78,0.06);}
+.pack-btn.danger:hover{background:rgba(194,91,78,0.14);border-color:var(--rose);}
+.pack-btn:disabled{opacity:0.45;cursor:not-allowed;transform:none;box-shadow:none;}
+.storage-info{
+  background:var(--bg-deep);border:1px solid var(--line);border-radius:var(--radius-sm);
+  padding:14px 18px;margin-top:18px;
+  font-size:13px;color:var(--ink-soft);display:flex;align-items:center;gap:10px;
+}
+.storage-info b{color:var(--ink);}
+.pack-status svg{width:12px;height:12px;}
 </style>
 </head>
 <body>
@@ -1621,17 +1940,17 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 
       <div class="rail-divider"></div>
 
-    <div class="rail-section-label">Start Here</div>
-      <button class="rail-btn active" data-view="welcome">
+    <div class="rail-section-label" data-i18n="section_start">Start Here</div>
+      <button class="rail-btn active" data-view="welcome" data-i18n="nav_welcome">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11.2 12 4.5l8 6.7"/><path d="M6.2 9.8V19h11.6V9.8"/></svg>
         Welcome
       </button>
-      <button class="rail-btn" data-view="today">
+      <button class="rail-btn" data-view="today" data-i18n="nav_today">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6 7 7M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"/></svg>
         Today
         <span class="new-pill">New</span>
       </button>
-      <button class="rail-btn" data-view="roadmap">
+      <button class="rail-btn" data-view="roadmap" data-i18n="nav_roadmap">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 21V4"/><path d="M6 5h10.5l2.5 3-2.5 3H6"/></svg>
         New Muslim Roadmap
         <span class="new-pill">New</span>
@@ -1639,76 +1958,92 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 
       <div class="rail-divider"></div>
 
-      <button class="rail-btn" data-view="practice">
+      <button class="rail-btn" data-view="practice" data-i18n="nav_practice">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M10 8.5v7l6-3.5z"/></svg>
         Guided Practice
         <span class="new-pill">New</span>
       </button>
 
-      <div class="rail-section-label">Essentials</div>
-      <button class="rail-btn" data-view="essentials">
+      <div class="rail-section-label" data-i18n="section_essentials">Essentials</div>
+      <button class="rail-btn" data-view="essentials" data-i18n="nav_essentials">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/></svg>
         Core Topics
       </button>
-      <button class="rail-btn" data-view="duas">
+      <button class="rail-btn" data-view="duas" data-i18n="nav_duas">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg>
         Du'a Explorer
         <span class="new-pill">New</span>
       </button>
-      <button class="rail-btn" data-view="quran">
+      <button class="rail-btn" data-view="quran" data-i18n="nav_quran">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h13a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5z"/><path d="M5 4v16"/><path d="M9 8h6M9 11h6"/></svg>
         Qur'an
         <span class="new-pill">New</span>
       </button>
-      <button class="rail-btn" data-view="quiz">
+      <button class="rail-btn" data-view="quiz" data-i18n="nav_quiz">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.3a2.4 2.4 0 1 1 3.5 2.1c-.75.4-1.1.9-1.1 1.8v.3"/><circle cx="12" cy="16.6" r="0.7" fill="currentColor" stroke="none"/></svg>
         Knowledge Check
       </button>
 
       <div class="rail-divider"></div>
 
-    <div class="rail-section-label">Worship Tools</div>
-      <button class="rail-btn" data-view="prayertimes">
+    <div class="rail-section-label" data-i18n="section_worship">Worship Tools</div>
+      <button class="rail-btn" data-view="prayertimes" data-i18n="nav_prayertimes">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 1.8"/></svg>
         Prayer Times
       </button>
-      <button class="rail-btn" data-view="qibla">
+      <button class="rail-btn" data-view="qibla" data-i18n="nav_qibla">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="m14.9 9.1-1.7 4.1-4.1 1.7 1.7-4.1z"/></svg>
         Qibla Finder
       </button>
-      <button class="rail-btn" data-view="wudhu">
+      <button class="rail-btn" data-view="wudhu" data-i18n="nav_wudhu">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8s5.6 6.1 5.6 10a5.6 5.6 0 0 1-11.2 0c0-3.9 5.6-10 5.6-10z"/></svg>
         Wudhu &amp; Salah
       </button>
-      <button class="rail-btn" data-view="dhikr">
+      <button class="rail-btn" data-view="dhikr" data-i18n="nav_dhikr">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2.5"/></svg>
         Dhikr Counter
       </button>
-      <button class="rail-btn" data-view="qada">
+      <button class="rail-btn" data-view="qada" data-i18n="nav_qada">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 12l2 2 4-4"/></svg>
         Missed Prayers
+      </button>
+      <button class="rail-btn" data-view="companion" data-i18n="nav_companion">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9.5"/><path d="M12 6.5V12l2.8 2.8"/></svg>
+        Pray Along
+      </button>
+      <button class="rail-btn" data-view="downloads">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Offline Packs
       </button>
 
       <div class="rail-divider"></div>
 
-    <div class="rail-section-label">Study</div>
-      <button class="rail-btn" data-view="hijri">
+    <div class="rail-section-label" data-i18n="section_study">Study</div>
+      <button class="rail-btn" data-view="hijri" data-i18n="nav_hijri">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 13.4A8.5 8.5 0 1 1 10.6 3.8a7 7 0 0 0 9.6 9.6z"/></svg>
         Islamic Calendar
       </button>
-      <button class="rail-btn" data-view="tawheed">
+      <button class="rail-btn" data-view="arabic" data-i18n="nav_arabic">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        Arabic Reading
+      </button>
+      <button class="rail-btn" data-view="hifz" data-i18n="nav_hifz">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+        Hifz Tracker
+      </button>
+      <button class="rail-btn" data-view="tawheed" data-i18n="nav_tawheed">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.6"/><path d="M12 3.2v2.6M12 18.2v2.6M3.2 12h2.6M18.2 12h2.6M5.9 5.9l1.8 1.8M16.3 16.3l1.8 1.8M18.1 5.9l-1.8 1.8M7.7 16.3l-1.8 1.8"/></svg>
         Tawheed
       </button>
-      <button class="rail-btn" data-view="fiqh">
+      <button class="rail-btn" data-view="fiqh" data-i18n="nav_fiqh">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16M5.5 7.5h13"/><path d="M5.5 7.5 3.3 12.6a2.5 2.5 0 0 0 4.4 0L5.5 7.5zM18.5 7.5l-2.2 5.1a2.5 2.5 0 0 0 4.4 0l-2.2-5.1z"/><path d="M9 20h6"/></svg>
         Fiqh Basics
       </button>
-      <button class="rail-btn" data-view="ramadan">
+      <button class="rail-btn" data-view="ramadan" data-i18n="nav_ramadan">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.2 13.4A8.5 8.5 0 1 1 10.6 3.8a7 7 0 0 0 9.6 9.6z"/></svg>
         Ramadan &amp; Fasting
       </button>
-      <button class="rail-btn" data-view="hajj">
+      <button class="rail-btn" data-view="hajj" data-i18n="nav_hajj">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="5.5" width="12" height="13" rx="1"/><path d="M6 9.5h12M6 14.5h12"/></svg>
         Hajj &amp; Umrah
         <span class="new-pill">New</span>
@@ -1718,6 +2053,16 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <div class="rail-foot">
       <span class="dot"></span>
       <span>Private &amp; offline: nothing is saved or sent anywhere. <span class="ver">v2.0</span><br>Tip: press <span class="ver">1–9</span> to jump between sections, <span class="ver">/</span> to search</span>
+      <div class="lang-select-wrap">
+        <select class="lang-select" id="langSelect" aria-label="Interface language" onchange="switchLanguage(this.value)">
+          <option value="en" data-flag="🇬🇧">🇬🇧 EN</option>
+          <option value="es" data-flag="🇪🇸">🇪🇸 ES</option>
+          <option value="fr" data-flag="🇫🇷">🇫🇷 FR</option>
+          <option value="tr" data-flag="🇹🇷">🇹🇷 TR</option>
+          <option value="ur" data-flag="🇵🇰">🇵🇰 UR</option>
+          <option value="ms" data-flag="🇲🇾">🇲🇾 MS</option>
+        </select>
+      </div>
     </div>
   </nav>
 
@@ -1738,9 +2083,9 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
           </button>
         </div>
         <svg class="hero-star" viewBox="0 0 100 100" fill="none" stroke="#D9B36A" stroke-width="1"><circle cx="50" cy="50" r="26"/><path d="M50 4v14M50 82v14M4 50h14M82 50h14M17 17l10 10M73 73l10 10M83 17 73 27M27 73 17 83"/><circle cx="50" cy="50" r="38" stroke-dasharray="3 6"/></svg>
-        <div class="hero-greet"><span class="dot"></span><span id="heroGreet">Assalamu alaykum</span></div>
-        <h1>Welcome to <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "the path")</span></h1>
-        <p class="hero-sub">
+        <div class="hero-greet"><span class="dot"></span><span id="heroGreet" data-i18n="hero_greet">Assalamu alaykum</span></div>
+        <h1 data-i18n="hero_title">Welcome to <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "the path")</span></h1>
+        <p class="hero-sub" data-i18n="hero_sub">
           A quiet, private companion for <em>new Muslims and the curious</em>: the core beliefs, the
           five daily prayers, the Qibla, the calendar — everything cited from the Qur'an and
           authenticated hadith, with differences between scholars stated honestly.
@@ -1833,8 +2178,8 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 
     <!-- ROADMAP -->
     <section class="view" id="view-roadmap">
-      <div class="eyebrow"><span class="dot"></span>Six first steps</div>
-      <h1 class="page-title">New Muslim Roadmap</h1>
+      <div class="eyebrow"><span class="dot"></span><span data-i18n="roadmap_eyebrow">Six first steps</span></div>
+      <h1 class="page-title" data-i18n="page_roadmap">New Muslim Roadmap</h1>
       <p class="page-lede">
         If you've recently embraced Islam — or are considering it — this is the short list.
         Islam is learned <em>gradually, not overnight</em>: "Allah does not burden a soul beyond
@@ -1908,8 +2253,8 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 
     <!-- ESSENTIALS -->
     <section class="view" id="view-essentials">
-      <div class="eyebrow"><span class="dot"></span>14 foundational subjects</div>
-      <h1 class="page-title">Core Topics</h1>
+      <div class="eyebrow"><span class="dot"></span><span data-i18n="essentials_eyebrow">14 foundational subjects</span></div>
+      <h1 class="page-title" data-i18n="page_essentials">Core Topics</h1>
       <p class="page-lede">
         Each card gives a one-line idea — tap it to open the full detail,
         with citations from the Qur'an, authentic Sunnah, and the statements of scholars.
@@ -1924,8 +2269,8 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 
     <!-- QUIZ -->
     <section class="view" id="view-quiz">
-      <div class="eyebrow"><span class="dot"></span>26 questions</div>
-      <h1 class="page-title">Knowledge Check</h1>
+      <div class="eyebrow"><span class="dot"></span><span data-i18n="quiz_eyebrow">26 questions</span></div>
+      <h1 class="page-title" data-i18n="page_quiz">Knowledge Check</h1>
       <p class="page-lede">
         A quiet way to test your knowledge of Islamic terms and essentials. This is not a game —
         there are no streaks or points to chase. Every answer, right or wrong, shows the evidence
@@ -1948,7 +2293,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- DU'A EXPLORER -->
     <section class="view" id="view-duas">
       <div class="eyebrow"><span class="dot"></span>The daily loop of words</div>
-      <h1 class="page-title">Du'a Explorer</h1>
+      <h1 class="page-title" data-i18n="page_duas">Du'a Explorer</h1>
       <p class="page-lede">
         The Prophet's ﷺ duas for the moments of an ordinary day — waking, eating, leaving the house,
         the mosque, travel, sleep. Each with the Arabic, a transliteration, and its source. Search,
@@ -1967,7 +2312,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- WUDHU & SALAH -->
     <section class="view" id="view-wudhu">
       <div class="eyebrow"><span class="dot"></span>Step by step</div>
-      <h1 class="page-title">Wudhu &amp; Salah</h1>
+      <h1 class="page-title" data-i18n="page_wudhu">Wudhu &amp; Salah</h1>
       <p class="page-lede">
         How to perform ablution and prayer, step by step, based on how the Prophet ﷺ described and
         demonstrated it.
@@ -2284,7 +2629,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- DHIKR COUNTER -->
     <section class="view" id="view-dhikr">
       <div class="eyebrow"><span class="dot"></span>Worship tool</div>
-      <h1 class="page-title">Dhikr Counter</h1>
+      <h1 class="page-title" data-i18n="page_dhikr">Dhikr Counter</h1>
       <p class="page-lede">Tap to count remembrances. Your streaks and history are saved privately on this device.</p>
       <div id="dhikrPresets" style="display:flex;flex-wrap:wrap;gap:8px;margin:16px 0;"></div>
       <div id="dhikrMain" style="text-align:center;margin:20px 0;">
@@ -2306,7 +2651,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- QADA TRACKER -->
     <section class="view" id="view-qada">
       <div class="eyebrow"><span class="dot"></span>Worship tool</div>
-      <h1 class="page-title">Missed Prayers &amp; Fasting</h1>
+      <h1 class="page-title" data-i18n="page_qada">Missed Prayers &amp; Fasting</h1>
       <p class="page-lede">A private counter for qada owed. Nothing leaves this device — only you know these numbers.</p>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;">
         <div class="rq-card" style="text-align:center;">
@@ -2336,17 +2681,176 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- HIJRI CALENDAR -->
     <section class="view" id="view-hijri">
       <div class="eyebrow"><span class="dot"></span>Islamic date</div>
-      <h1 class="page-title">Islamic Calendar</h1>
+      <h1 class="page-title" data-i18n="page_hijri">Islamic Calendar</h1>
       <p class="page-lede">Hijri dates computed locally — no internet needed. Flags important Islamic occasions.</p>
       <div id="hijriToday" class="rq-card" style="text-align:center;padding:24px;"></div>
       <div id="hijriEvents" style="margin-top:16px;"></div>
       <div id="hijriMonths" style="margin-top:20px;"></div>
     </section>
 
+    <!-- PRAY ALONG COMPANION -->
+    <section class="view" id="view-companion">
+      <div class="eyebrow"><span class="dot"></span>Worship tool</div>
+      <h1 class="page-title" data-i18n="page_companion">Pray Along &mdash; Real-Time Salah Guide</h1>
+      <p class="page-lede">
+        A real-time companion that guides you through every position of salah. It shows the current
+        Arabic dua, transliteration, and meaning &mdash; then advances automatically or on tap.
+        Stand your phone where you can see it and pray in peace.
+      </p>
+
+      <div id="companionSettings">
+        <div style="display:flex;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:18px;">
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;color:var(--ink-soft);">Rak'ahs</label>
+            <select id="companionRakat" style="padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--card);font-size:15px;color:var(--ink);cursor:pointer;">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4" selected>4</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:13px;font-weight:600;display:block;margin-bottom:4px;color:var(--ink-soft);">Madhab</label>
+            <select id="companionMadhab" style="padding:8px 12px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--card);font-size:15px;color:var(--ink);cursor:pointer;">
+              <option value="standard" selected>Standard</option>
+              <option value="hanafi">Hanafi</option>
+            </select>
+          </div>
+        </div>
+        <button class="companion-start" id="companionStartBtn" onclick="companionStart()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:22px;height:22px;margin-right:8px;vertical-align:middle;"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16" fill="currentColor" stroke="none"/></svg>
+          Start Praying
+        </button>
+      </div>
+
+      <div id="companionDisplay" style="display:none;">
+        <div class="companion-timer" id="companionTimer">00:00</div>
+        <div class="companion-rak" id="companionRakDots"></div>
+        <div class="companion-pos" id="companionPosLabel">Takbir al-Ihram</div>
+        <div class="companion-ar" id="companionArabic" dir="rtl" lang="ar"></div>
+        <div id="companionTranslit" style="font-size:16px;color:var(--ink-soft);line-height:1.5;margin:8px 0;min-height:24px;"></div>
+        <div id="companionMeaning" style="font-size:14px;color:var(--text-muted);margin-bottom:8px;min-height:20px;"></div>
+        <div class="companion-progress" id="companionProgressBar"></div>
+        <div class="companion-hint" id="companionHint">Tap anywhere to advance</div>
+        <div id="companionInstruction" style="font-size:14px;color:var(--ink-soft);margin:10px 0 16px;line-height:1.5;text-align:center;max-width:540px;margin-left:auto;margin-right:auto;"></div>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
+          <button onclick="companionPause()" id="companionPauseBtn" style="padding:10px 22px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--card);font-size:14px;font-weight:600;cursor:pointer;color:var(--ink);">Pause</button>
+          <button onclick="companionReset()" style="padding:10px 22px;border:1.5px solid var(--rose);border-radius:var(--radius-sm);background:var(--card);font-size:14px;font-weight:600;cursor:pointer;color:var(--rose);">Reset</button>
+        </div>
+      </div>
+
+      <style>
+        .companion-start{
+          display:inline-flex;align-items:center;justify-content:center;
+          padding:16px 36px;border:none;border-radius:var(--radius);
+          background:linear-gradient(135deg,var(--green),var(--green-deep));
+          color:#fff;font-size:18px;font-weight:700;cursor:pointer;
+          box-shadow:0 4px 20px rgba(46,125,91,0.35);
+          transition:transform .15s ease,box-shadow .15s ease;
+        }
+        .companion-start:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(46,125,91,0.45);}
+        .companion-start:active{transform:translateY(0);}
+        .companion-pos{
+          font-size:36px;font-weight:800;text-align:center;
+          color:var(--green-deep);margin:20px 0 8px;
+          animation:companionPulse 2s ease-in-out infinite;
+        }
+        @keyframes companionPulse{0%,100%{text-shadow:0 0 0 rgba(46,125,91,0);}50%{text-shadow:0 0 18px rgba(46,125,91,0.25);}}
+        .companion-ar{
+          font-family:var(--serif);font-size:28px;line-height:1.6;
+          text-align:center;color:var(--ink);margin:12px 0;
+          min-height:40px;
+        }
+        .companion-progress{
+          height:4px;background:var(--line-soft);border-radius:10px;
+          margin:16px auto 8px;max-width:400px;overflow:hidden;
+        }
+        .companion-progress::after{
+          content:'';display:block;height:100%;border-radius:10px;
+          background:linear-gradient(90deg,var(--green),var(--green-bright));
+          transition:width .4s var(--ease-soft);width:var(--cp,0%);
+        }
+        .companion-rak{
+          display:flex;justify-content:center;gap:8px;margin:10px 0;
+        }
+        .companion-rak .dot{
+          width:12px;height:12px;border-radius:50%;background:var(--line);
+          transition:background .3s ease,box-shadow .3s ease;
+        }
+        .companion-rak .dot.active{background:var(--green);box-shadow:0 0 8px rgba(46,125,91,0.4);}
+        .companion-rak .dot.done{background:var(--gold);}
+        .companion-hint{
+          text-align:center;font-size:14px;color:var(--text-muted);
+          margin:10px 0 4px;
+        }
+        .companion-timer{
+          text-align:center;font-size:13px;color:var(--text-muted);
+          letter-spacing:1px;margin-bottom:4px;font-variant-numeric:tabular-nums;
+        }
+        #view-companion{cursor:pointer;}
+      </style>
+    </section>
+
+    <!-- ARABIC READING COURSE -->
+    <section class="view" id="view-arabic">
+      <div class="eyebrow"><span class="dot"></span>Study</div>
+      <h1 class="page-title" data-i18n="page_arabic">Learn to Read Arabic</h1>
+      <p class="page-lede">
+        A structured course to learn the Arabic alphabet, how letters connect, common Qur'anic words,
+        and short surahs — so you can begin reading the Qur'an in its original language.
+      </p>
+
+      <div class="deck-tabs" role="group" aria-label="Arabic course sections">
+        <button class="deck-tab active" data-arabic-tab="alphabet">Alphabet</button>
+        <button class="deck-tab" data-arabic-tab="connections">Connections</button>
+        <button class="deck-tab" data-arabic-tab="words">Words</button>
+        <button class="deck-tab" data-arabic-tab="surahs">Short Surahs</button>
+      </div>
+
+      <div id="arabicProgress" style="margin-bottom:16px;"></div>
+      <div id="arabicContent"></div>
+    </section>
+
+    <!-- HIFZ TRACKER -->
+    <section class="view" id="view-hifz">
+      <div class="eyebrow"><span class="dot"></span>Study</div>
+      <h1 class="page-title" data-i18n="page_hifz">Hifz — Memorization Tracker</h1>
+      <p class="page-lede">Track your Qur'an memorization progress. Tap surahs to mark memorization level, then test yourself.</p>
+
+      <div class="hifz-progress-bar" id="hifzSummary"></div>
+
+      <div id="hifzGridWrap">
+        <div class="hifz-grid" id="hifzGrid"></div>
+      </div>
+
+      <div id="hifzTest" class="hifz-test-area" style="display:none;"></div>
+
+      <div class="hifz-quote">
+        <b>Hadith:</b> "The best among you are those who learn the Qur'an and teach it."<br>
+        — Sahih al-Bukhari 5027
+      </div>
+
+      <div id="hifzStats"></div>
+    </section>
+
+    <!-- OFFLINE CONTENT PACKS -->
+    <section class="view" id="view-downloads">
+      <div class="eyebrow"><span class="dot"></span>Worship tool</div>
+      <h1 class="page-title" data-i18n="page_offline">Offline Content Packs</h1>
+      <p class="page-lede">
+        Download content bundles for use without internet. Perfect for travel, areas with poor connectivity, or privacy.
+      </p>
+
+      <div id="packList"></div>
+      <div class="storage-info" id="storageInfo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;color:var(--green);flex-shrink:0;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        <span>Checking storage...</span>
+      </div>
+    </section>
+
     <!-- TAWHEED -->
     <section class="view" id="view-tawheed">
       <div class="eyebrow"><span class="dot"></span>Core belief</div>
-      <h1 class="page-title">Tawheed — The Oneness of God</h1>
+      <h1 class="page-title" data-i18n="page_tawheed">Tawheed — The Oneness of God</h1>
       <p class="page-lede">
         The central organizing concept of Islamic belief. Classical scholars, particularly from the
         Athari/Salafi and Ash'ari-Maturidi traditions, generally break it into these categories to
@@ -2397,7 +2901,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- FIQH -->
     <section class="view" id="view-fiqh">
       <div class="eyebrow"><span class="dot"></span>How rulings are derived</div>
-      <h1 class="page-title">Fiqh Basics</h1>
+      <h1 class="page-title" data-i18n="page_fiqh">Fiqh Basics</h1>
       <p class="page-lede">
         Fiqh is the scholarly discipline of deriving practical rulings from the Qur'an and Sunnah.
         Where the two primary sources are the revealed texts themselves, fiqh is the human, reasoned
@@ -2472,7 +2976,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- RAMADAN -->
     <section class="view" id="view-ramadan">
       <div class="eyebrow"><span class="dot"></span>Ninth month</div>
-      <h1 class="page-title">Ramadan &amp; Fasting</h1>
+      <h1 class="page-title" data-i18n="page_ramadan">Ramadan &amp; Fasting</h1>
       <p class="page-lede">
         The ninth month of the Islamic lunar calendar, and the month in which fasting (Sawm) —
         the fourth pillar of Islam — is obligatory.
@@ -2547,7 +3051,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- HAJJ -->
     <section class="view" id="view-hajj">
       <div class="eyebrow"><span class="dot"></span>Fifth pillar</div>
-      <h1 class="page-title">Hajj &amp; Umrah</h1>
+      <h1 class="page-title" data-i18n="page_hajj">Hajj &amp; Umrah</h1>
       <p class="page-lede">
         The pilgrimage to Mecca — obligatory once in a lifetime on every Muslim who has the physical
         and financial ability, performed in the month of Dhul-Hijjah. Umrah is the "lesser pilgrimage,"
@@ -2610,7 +3114,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- SALAH PRACTICE -->
     <section class="view" id="view-practice">
       <div class="eyebrow"><span class="dot"></span>Guided trainer</div>
-      <h1 class="page-title">Guided Practice</h1>
+      <h1 class="page-title" data-i18n="page_practice">Guided Practice</h1>
       <p class="page-lede">
         Learn by <em>doing</em>: each step shows the exact words, plays them line by line —
         al-Fatihah with real reciter recordings — then hands it to you with a <em>"now you say it"</em> pause.
@@ -2631,7 +3135,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- TODAY -->
     <section class="view" id="view-today">
       <div class="eyebrow"><span class="dot"></span>A gentle daily path</div>
-      <h1 class="page-title">Today</h1>
+      <h1 class="page-title" data-i18n="page_today">Today</h1>
       <p class="page-lede">
         Five small, doable things — that's the whole day. Tap a circle when it's done.
         The list resets when you close the tab, by design: <em>every day is a fresh start</em>, and
@@ -2668,7 +3172,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- PRAYER TIMES -->
     <section class="view" id="view-prayertimes">
       <div class="eyebrow"><span class="dot"></span>Calculated on-device</div>
-      <h1 class="page-title">Prayer Times</h1>
+      <h1 class="page-title" data-i18n="page_prayertimes">Prayer Times</h1>
       <p class="page-lede">
         Calculated locally from your device's location and the date, using standard astronomical
         formulas. Nothing is sent anywhere — the calculation happens entirely in your browser.
@@ -2722,7 +3226,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
     <!-- QIBLA -->
     <section class="view" id="view-qibla">
       <div class="eyebrow"><span class="dot"></span>Great-circle bearing</div>
-      <h1 class="page-title">Qibla Finder</h1>
+      <h1 class="page-title" data-i18n="page_qibla">Qibla Finder</h1>
       <p class="page-lede">
         Calculates the great-circle direction to the Kaaba in Mecca from your location — the shortest
         path across the globe, not a straight line on a flat map.
@@ -2921,7 +3425,10 @@ const VIEW_TITLES = {
   tawheed:"Tawheed",
   fiqh:"Fiqh Basics",
   ramadan:"Ramadan & Fasting",
-  hajj:"Hajj & Umrah"
+  hajj:"Hajj & Umrah",
+  hifz:"Hifz Tracker",
+  arabic:"Arabic Reading Course",
+  downloads:"Offline Content Packs"
 };
 
 const ESSENTIALS = [
@@ -5368,7 +5875,7 @@ document.addEventListener('click', e=>{
 });
 
 /* keyboard quick-jump: 1–9 and 0 map to the main sections (desktop QoL) */
-const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','dhikr','qada','hijri','tawheed','fiqh','ramadan','hajj'];
+const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','dhikr','qada','companion','downloads','hijri','arabic','hifz','tawheed','fiqh','ramadan','hajj'];
 document.addEventListener('keydown', e=>{
   if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if(e.key === '/') return; /* search shortcut handled below */
@@ -7319,10 +7826,1413 @@ function renderHijriMonths(current){
   `;
 }
 
+/* ================= PRAY ALONG COMPANION ================= */
+const COMPANION_STEPS = [
+  {key:'takbir',pos:'Takbir al-Ihram',ar:'اللَّهُ أَكْبَرُ',translit:'Allahu Akbar',meaning:'Allah is Greatest',hint:'Recite al-Fatihah and a short surah',duration:8},
+  {key:'ruku-dua',pos:'Bowing (Ruku\u2019)',ar:'سُبْحَانَ رَبِّيَ الْعَظِيمِ',translit:'Subhana Rabbiyal-\u2018Adheem',meaning:'Glory be to my Lord, the Magnificent',hint:'Say it three times while bowing',duration:8},
+  {key:'itidal',pos:'Standing (I\u2019tidal)',ar:'سَمِعَ اللَّهُ لِمَنْ حَمِدَهُ ۝ رَبَّنَا وَلَكَ الْحَمْدُ',translit:'Sami\u2019a Allahu liman hamidah \u2014 Rabbana wa lakal-hamd',meaning:'Allah hears whoever praises Him \u2014 Our Lord, to You is all praise',hint:'Stand fully upright, hands at sides',duration:8},
+  {key:'sujud-dua',pos:'Prostration (Sujud)',ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى',translit:'Subhana Rabbiyal-A\u2018la',meaning:'Glory be to my Lord, the Most High',hint:'Say it three times while prostrating',duration:8},
+  {pos:'Sitting (Jalsa)',ar:'اللَّهُ أَكْبَرُ',translit:'Allahu Akbar',meaning:'Allah is Greatest',hint:'Sit briefly, then prostrate a second time',duration:5},
+  {key:'sujud-dua',pos:'Prostration (Sujud)',ar:'سُبْحَانَ رَبِّيَ الْأَعْلَى',translit:'Subhana Rabbiyal-A\u2018la',meaning:'Glory be to my Lord, the Most High',hint:'Second prostration \u2014 same as the first',duration:8},
+  {pos:'Rising to Stand',ar:'اللَّهُ أَكْبَرُ',translit:'Allahu Akbar',meaning:'Allah is Greatest',hint:'Rise to the next rak\u2019ah or continue',duration:4},
+  {key:'tashahhud',pos:'Tashahhud (Sitting)',ar:'التَّحِيَّاتُ لِلَّهِ وَالصَّلَوَاتُ وَالطَّيِّبَاتُ، السَّلَامُ عَلَيْكَ أَيُّهَا النَّبِيُّ وَرَحْمَةُ اللَّهِ وَبَرَكَاتُهُ، السَّلَامُ عَلَيْنَا وَعَلَىٰ عِبَادِ اللَّهِ الصَّالِحِينَ، أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ',translit:'At-tahiyyatu lillahi was-salawatu wat-tayyibat. As-salamu \u2018alayka ayyuhan-nabiyyu wa rahmatullahi wa barakatuh...',meaning:'Greetings, prayers and pure words are for Allah...',hint:'Sit calmly and recite fully',duration:12},
+  {key:'salawat',pos:'Salawat',ar:'اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ وَعَلَىٰ آلِ مُحَمَّدٍ كَمَا صَلَّيْتَ عَلَىٰ إِبْرَاهِيمَ وَعَلَىٰ آلِ إِبْرَاهِيمَ، إِنَّكَ حَمِيدٌ مَجِيدٌ',translit:'Allahumma salli \u2018ala Muhammad wa \u2018ala ali Muhammad...',meaning:'O Allah, send blessings upon Muhammad and the family of Muhammad...',hint:'Send blessings upon the Prophet \uFDFB',duration:10},
+  {key:'taslim',pos:'Taslim (Salam)',ar:'السَّلَامُ عَلَيْكُمْ وَرَحْمَةُ اللَّهِ',translit:'As-salamu \u2018alaykum wa rahmatullah',meaning:'Peace and the mercy of Allah be upon you',hint:'Turn head right, then left',duration:8},
+];
+
+let companionState = {
+  running:false, paused:false, rakat:4, madhab:'standard',
+  rak:1, stepIdx:0, timer:null, tickTimer:null, elapsed:0,
+};
+
+function companionStart(){
+  const rSel = document.getElementById('companionRakat');
+  const mSel = document.getElementById('companionMadhab');
+  const r = parseInt(rSel.value,10);
+  const m = mSel.value;
+  companionState = {running:true,paused:false,rakat:r,madhab:m,rak:1,stepIdx:0,timer:null,tickTimer:null,elapsed:0};
+  document.getElementById('companionSettings').style.display='none';
+  document.getElementById('companionDisplay').style.display='block';
+  document.getElementById('companionDisplay').onclick = function(){ companionAdvance(); };
+  document.getElementById('companionPauseBtn').textContent='Pause';
+  companionRender();
+  companionStartAuto();
+  companionStartTick();
+}
+
+function companionStartTick(){
+  const tick = function(){ if(!companionState.running||companionState.paused) return; companionState.elapsed++; companionUpdateTimer(); };
+  companionState.tickTimer = setInterval(tick,1000);
+}
+function companionUpdateTimer(){
+  const s = companionState.elapsed;
+  const m = Math.floor(s/60);
+  const sec = s%60;
+  document.getElementById('companionTimer').textContent = String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+}
+function companionStartAuto(){
+  if(!companionState.running) return;
+  const s = COMPANION_STEPS[companionState.stepIdx];
+  const dur = (s && s.duration) || 8;
+  companionState.timer = setTimeout(function(){ companionAdvance(); }, dur*1000);
+}
+
+function companionAdvance(){
+  if(!companionState.running || companionState.paused) return;
+  clearTimeout(companionState.timer);
+  const isFinalRak = companionState.rak === companionState.rakat;
+  const isFinalSteps = isFinalRak && companionState.stepIdx >= 7;
+
+  if(!isFinalRak && companionState.stepIdx >= 6){
+    companionState.rak++;
+    companionState.stepIdx = 0;
+  } else if(isFinalRak && companionState.stepIdx >= COMPANION_STEPS.length - 1){
+    companionComplete();
+    return;
+  } else {
+    companionState.stepIdx++;
+  }
+  companionRender();
+  companionStartAuto();
+}
+
+function companionRender(){
+  const s = COMPANION_STEPS[companionState.stepIdx];
+  const isFinalRak = companionState.rak === companionState.rakat;
+  const totalSteps = isFinalRak ? COMPANION_STEPS.length : 7;
+  const progress = ((companionState.stepIdx + 1) / totalSteps * 100) + '%';
+
+  document.getElementById('companionPosLabel').textContent = s.pos;
+  document.getElementById('companionArabic').textContent = s.ar || '';
+  document.getElementById('companionTranslit').textContent = s.translit || '';
+  document.getElementById('companionMeaning').textContent = s.meaning || '';
+  document.getElementById('companionInstruction').textContent = s.instr || '';
+  document.getElementById('companionHint').textContent = s.hint || 'Tap anywhere to advance';
+  document.getElementById('companionProgressBar').style.setProperty('--cp', progress);
+
+  // Rak'ah dots
+  let dots = '';
+  for(let i=1;i<=companionState.rakat;i++){
+    const cls = i < companionState.rak ? 'dot done' : i === companionState.rak ? 'dot active' : 'dot';
+    dots += '<div class="'+cls+'"></div>';
+  }
+  document.getElementById('companionRakDots').innerHTML = dots;
+
+  document.querySelector('#view-companion .page-title').textContent =
+    'Rak\u2019ah '+companionState.rak+' of '+companionState.rakat;
+
+  // Play audio
+  if(s.key) speakArabicLine(s.key, s.ar, null);
+}
+
+function companionPause(){
+  const btn = document.getElementById('companionPauseBtn');
+  if(companionState.paused){
+    companionState.paused = false;
+    btn.textContent = 'Pause';
+    companionStartAuto();
+    companionStartTick();
+  } else {
+    companionState.paused = true;
+    btn.textContent = 'Resume';
+    clearTimeout(companionState.timer);
+    clearInterval(companionState.tickTimer);
+  }
+}
+
+function companionReset(){
+  clearTimeout(companionState.timer);
+  clearInterval(companionState.tickTimer);
+  companionState.running = false;
+  document.getElementById('companionSettings').style.display='block';
+  document.getElementById('companionDisplay').style.display='none';
+  document.getElementById('companionDisplay').onclick = null;
+  document.querySelector('#view-companion .page-title').textContent = 'Pray Along \u2014 Real-Time Salah Guide';
+}
+
+function companionComplete(){
+  clearTimeout(companionState.timer);
+  clearInterval(companionState.tickTimer);
+  companionState.running = false;
+  const el = document.getElementById('companionDisplay');
+  el.innerHTML =
+    '<div style="text-align:center;padding:30px 0;">'+
+      '<div style="font-size:42px;margin-bottom:12px;">\u2728</div>'+
+      '<div style="font-size:24px;font-weight:700;color:var(--green-deep);margin-bottom:8px;">Salah Complete</div>'+
+      '<div style="font-family:var(--serif);font-size:22px;color:var(--ink);direction:rtl;margin:16px 0;" dir="rtl" lang="ar">اللَّهُمَّ صَلِّ عَلَىٰ مُحَمَّدٍ</div>'+
+      '<div style="font-size:15px;color:var(--ink-soft);margin-bottom:6px;">Allahumma salli \u2018ala Muhammad</div>'+
+      '<div style="font-size:14px;color:var(--text-muted);margin-bottom:20px;">O Allah, send blessings upon Muhammad \uFDFB</div>'+
+      '<div style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">Total time: '+
+        Math.floor(companionState.elapsed/60)+'m '+companionState.elapsed%60+'s</div>'+
+      '<button onclick="companionReset()" style="padding:12px 28px;border:1.5px solid var(--green);border-radius:var(--radius-sm);background:var(--card);font-size:15px;font-weight:600;cursor:pointer;color:var(--green);">Pray Again</button>'+
+    '</div>';
+}
+
+/* ================= ARABIC READING COURSE ================= */
+(function(){
+  const STORAGE_KEY = 'arabicCourse';
+  let progress = {};
+  try{ const raw = localStorage.getItem(STORAGE_KEY); if(raw) progress = JSON.parse(raw); }catch(e){}
+  if(!progress.alphabet) progress.alphabet = {};
+  if(!progress.connections) progress.connections = {};
+  if(!progress.words) progress.words = {};
+  if(!progress.surahs) progress.surahs = {};
+  function saveProgress(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(progress)); }catch(e){} }
+
+  const LETTERS = [
+    {letter:'أ',name:'Alif',arabic:'أَلِف',phonetic:'a',soundsLike:'a in "apple"'},
+    {letter:'ب',name:'Ba',arabic:'بَاء',phonetic:'b',soundsLike:'b in "bat"'},
+    {letter:'ت',name:'Ta',arabic:'تَاء',phonetic:'t',soundsLike:'t in "top"'},
+    {letter:'ث',name:'Tha',arabic:'ثَاء',phonetic:'th',soundsLike:'th in "think"'},
+    {letter:'ج',name:'Jim',arabic:'جِيم',phonetic:'j',soundsLike:'j in "jam"'},
+    {letter:'ح',name:'Ha',arabic:'حَاء',phonetic:'ḥ',soundsLike:'breathy h (no English equivalent)'},
+    {letter:'خ',name:'Kha',arabic:'خَاء',phonetic:'kh',soundsLike:'ch in Scottish "loch"'},
+    {letter:'د',name:'Dal',arabic:'دَال',phonetic:'d',soundsLike:'d in "dog"'},
+    {letter:'ذ',name:'Dhal',arabic:'ذَال',phonetic:'dh',soundsLike:'th in "this"'},
+    {letter:'ر',name:'Ra',arabic:'رَاء',phonetic:'r',soundsLike:'rolled r'},
+    {letter:'ز',name:'Zay',arabic:'زَاء',phonetic:'z',soundsLike:'z in "zoo"'},
+    {letter:'س',name:'Seen',arabic:'سِين',phonetic:'s',soundsLike:'s in "sun"'},
+    {letter:'ش',name:'Sheen',arabic:'شِين',phonetic:'sh',soundsLike:'sh in "ship"'},
+    {letter:'ص',name:'Sad',arabic:'صَاد',phonetic:'ṣ',soundsLike:'heavy s (emphatic)'},
+    {letter:'ض',name:'Dad',arabic:'ضَاد',phonetic:'ḍ',soundsLike:'heavy d (emphatic)'},
+    {letter:'ط',name:'Ta',arabic:'طَاء',phonetic:'ṭ',soundsLike:'heavy t (emphatic)'},
+    {letter:'ظ',name:'Dha',arabic:'ظَاء',phonetic:'ẓ',soundsLike:'heavy dh (emphatic)'},
+    {letter:'ع',name:'Ain',arabic:'عَيْن',phonetic:'ʿ',soundsLike:'deep throat sound (no English equivalent)'},
+    {letter:'غ',name:'Ghain',arabic:'غَيْن',phonetic:'gh',soundsLike:'French r (gargling sound)'},
+    {letter:'ف',name:'Fa',arabic:'فَاء',phonetic:'f',soundsLike:'f in "fun"'},
+    {letter:'ق',name:'Qaf',arabic:'قَاف',phonetic:'q',soundsLike:'deep k from throat'},
+    {letter:'ك',name:'Kaf',arabic:'كَاف',phonetic:'k',soundsLike:'k in "kite"'},
+    {letter:'ل',name:'Lam',arabic:'لَام',phonetic:'l',soundsLike:'l in "lamp"'},
+    {letter:'م',name:'Mim',arabic:'مِيم',phonetic:'m',soundsLike:'m in "moon"'},
+    {letter:'ن',name:'Nun',arabic:'نُون',phonetic:'n',soundsLike:'n in "noon"'},
+    {letter:'ه',name:'Ha',arabic:'هَاء',phonetic:'h',soundsLike:'h in "hat"'},
+    {letter:'و',name:'Waw',arabic:'وَاو',phonetic:'w/u',soundsLike:'w in "water" or oo in "food"'},
+    {letter:'ي',name:'Ya',arabic:'يَاء',phonetic:'y/i',soundsLike:'y in "yes" or ee in "see"'}
+  ];
+
+  const CONNECTION_GROUPS = [
+    {
+      id:'grp1', name:'Right-Only Connectors',
+      desc:'These letters connect only to the letter before them (on the right), never to the left.',
+      letters:['ا','د','ذ','ر','ز','و'],
+      names:['Alif','Dal','Dhal','Ra','Zay','Waw'],
+      isolated:['ا','د','ذ','ر','ز','و'],
+      initial:['ا','د','ذ','ر','ز','و'],
+      medial:['ـا','ـد','ـذ','ـر','ـز','ـو'],
+      final:['ـا','ـد','ـذ','ـر','ـز','ـو']
+    },
+    {
+      id:'grp2', name:'Small Tooth Letters',
+      desc:'These letters have a small tooth shape and connect on both sides.',
+      letters:['ب','ت','ث','ن','ي'],
+      names:['Ba','Ta','Tha','Nun','Ya'],
+      isolated:['ب','ت','ث','ن','ي'],
+      initial:['ـبـ','ـتـ','ـثـ','ـنـ','ـيـ'],
+      medial:['ـبـ','ـتـ','ـثـ','ـنـ','ـيـ'],
+      final:['ـب','ـت','ـث','ـن','ـي']
+    },
+    {
+      id:'grp3', name:'Large Bowl Letters',
+      desc:'These letters have a large bowl or curve shape.',
+      letters:['س','ش'],
+      names:['Seen','Sheen'],
+      isolated:['س','ش'],
+      initial:['ـسـ','ـشـ'],
+      medial:['ـسـ','ـشـ'],
+      final:['ـس','ـش']
+    },
+    {
+      id:'grp4', name:'Loop Letters',
+      desc:'These letters have a distinctive loop shape.',
+      letters:['ص','ض','ط','ظ'],
+      names:['Sad','Dad','Ta','Dha'],
+      isolated:['ص','ض','ط','ظ'],
+      initial:['ـصـ','ـضـ','ـطـ','ـظـ'],
+      medial:['ـصـ','ـضـ','ـطـ','ـظـ'],
+      final:['ـص','ـض','ـط','ـظ']
+    },
+    {
+      id:'grp5', name:'Descender Letters',
+      desc:'These letters drop below the baseline with a sweeping curve.',
+      letters:['ج','ح','خ'],
+      names:['Jim','Ha','Kha'],
+      isolated:['ج','ح','خ'],
+      initial:['ـجـ','ـحـ','ـخـ'],
+      medial:['ـجـ','ـحـ','ـخـ'],
+      final:['ـج','ـح','ـخ']
+    },
+    {
+      id:'grp6', name:'Special Forms',
+      desc:'These letters have unique shapes that change significantly between positions.',
+      letters:['ل','م','ه','ع','غ'],
+      names:['Lam','Mim','Ha','Ain','Ghain'],
+      isolated:['ل','م','ه','ع','غ'],
+      initial:['ـلـ','ـمـ','ـهـ','ـعـ','ـغـ'],
+      medial:['ـلـ','ـمـ','ـهـ','ـعـ','ـغـ'],
+      final:['ـل','ـم','ـه','ـع','ـغ']
+    }
+  ];
+
+  const WORDS = [
+    {ar:'بِسْمِ',trans:'Bismi',meaning:'In the name of'},
+    {ar:'اللَّهُ',trans:'Allah',meaning:'God'},
+    {ar:'أَكْبَرُ',trans:'Akbar',meaning:'Greatest'},
+    {ar:'رَبِّ',trans:'Rabbi',meaning:'My Lord'},
+    {ar:'الْعَالَمِينَ',trans:'Al-ʿAlameen',meaning:'The worlds'},
+    {ar:'الرَّحْمَٰنِ',trans:'Ar-Rahman',meaning:'The Most Gracious'},
+    {ar:'الرَّحِيمِ',trans:'Ar-Raheem',meaning:'The Most Merciful'},
+    {ar:'الْحَمْدُ',trans:'Al-hamdu',meaning:'The praise'},
+    {ar:'صِرَاطَ',trans:'Sirat',meaning:'Path'},
+    {ar:'الْمُسْتَقِيمَ',trans:'Al-mustaqeem',meaning:'The straight'},
+    {ar:'سُبْحَانَ',trans:'Subhan',meaning:'Glory be'},
+    {ar:'الْأَعْلَىٰ',trans:"Al-a'la",meaning:'The Most High'},
+    {ar:'لَا',trans:'La',meaning:'No / None'},
+    {ar:'إِلَٰهَ',trans:'Ilaha',meaning:'God / Deity'},
+    {ar:'مُحَمَّدٍ',trans:'Muhammad',meaning:'The Praised One'},
+    {ar:'رَسُولُ',trans:'Rasul',meaning:'Messenger'}
+  ];
+
+  const SHORT_SURAHS = [
+    {name:'Al-Fatiha',num:1,ar:'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ ﴿١﴾ الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ ﴿٢﴾ الرَّحْمَٰنِ الرَّحِيمِ ﴿٣﴾ مَالِكِ يَوْمِ الدِّينِ ﴿٤﴾ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ﴿٥﴾ اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ ﴿٦﴾ صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ ﴿٧﴾',trans:'Bismillāhi r-raḥmāni r-raḥīm. Al-ḥamdu lillāhi rabbi l-ʿālamīn, ar-raḥmāni r-raḥīm, māliki yawmi d-dīn. Iyyāka naʿbudu wa iyyāka nastaʿīn. Ihdinā ṣ-ṣirāṭa l-mustaqīm, ṣirāṭa l-laḏīna anʿamta ʿalayhim ġayri l-maġḍūbi ʿalayhim wa lā ḍ-ḍāllīn.',meaning:'In the name of Allah, the Most Gracious, the Most Merciful. All praise is due to Allah, Lord of the worlds. The Most Gracious, the Most Merciful. Master of the Day of Judgment. It is You we worship and You we ask for help. Guide us to the straight path. The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.'},
+    {name:'Al-Ikhlas',num:112,ar:'قُلْ هُوَ اللَّهُ أَحَدٌ ﴿١﴾ اللَّهُ الصَّمَدُ ﴿٢﴾ لَمْ يَلِدْ وَلَمْ يُولَدْ ﴿٣﴾ وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ ﴿٤﴾',trans:'Qul huwa Allāhu aḥad. Allāhu ṣ-ṣamad. Lam yalid wa lam yūlad. Wa lam yakun lahu kufuwan aḥad.',meaning:'Say: He is Allah, [who is] One. Allah, the Eternal Refuge. He neither begets nor is born. Nor is there to Him any equivalent.'},
+    {name:'Al-Falaq',num:113,ar:'قُلْ أَعُوذُ بِرَبِّ الْفَلَقِ ﴿١﴾ مِن شَرِّ مَا خَلَقَ ﴿٢﴾ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ﴿٣﴾ وَمِن شَرِّ النَّفَّاثَاتِ فِي الْعُقَدِ ﴿٤﴾ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ ﴿٥﴾',trans:'Qul aʿūḏu birabbi l-falaq. Min sharri mā ḫalaq. Wa min sharri ġāsiqin ʿiḏā waqab. Wa min sharri n-naffāthāti fī l-ʿuqad. Wa min sharri ḥāsidin ʿiḏā ḥasad.',meaning:'Say: I seek refuge in the Lord of daybreak. From the evil of that which He created. And from the evil of darkness when it settles. And from the evil of the blowers in knots. And from the evil of an envier when he envies.'},
+    {name:'An-Nas',num:114,ar:'قُلْ أَعُوذُ بِرَبِّ النَّاسِ ﴿١﴾ مَلِكِ النَّاسِ ﴿٢﴾ إِلَٰهِ النَّاسِ ﴿٣﴾ مِن شَرِّ الْوَسْوَاسِ الْخَنَّاسِ ﴿٤﴾ الَّذِي يُوَسْوِسُ فِي صُدُورِ النَّاسِ ﴿٥﴾ مِنَ الْجِنَّةِ وَالنَّاسِ ﴿٦﴾',trans:'Qul aʿūḏu rabbi n-nās. Maliki n-nās. Ilāhi n-nās. Min sharri l-waswāsi l-ḫannās. Allaḏī yuwaswisu fī ṣudūri n-nās. Mina l-ǧinnati wa n-nās.',meaning:'Say: I seek refuge in the Lord of mankind. The Sovereign of mankind. The God of mankind. From the evil of the retreating whisperer. Who whispers [evil] into the breasts of mankind. From among the jinn and mankind.'},
+    {name:'Al-Kawthar',num:108,ar:'إِنَّا أَعْطَيْنَاكَ الْكَوْثَرَ ﴿١﴾ فَصَلِّ لِرَبِّكَ وَانْحَرْ ﴿٢﴾ إِنَّ شَانِئَكَ هُوَ الْأَبْتَرُ ﴿٣﴾',trans:"Innā aʿṭaynāka l-kawṯar. Fa ṣalli lirabbika wa nḥar. Inna šāni'aka huwa l-abtar.",meaning:'Indeed, We have granted you, [O Muhammad], al-Kawthar. So pray to your Lord and sacrifice. Indeed, your enemy is the one cut off.'},
+    {name:'Al-Asr',num:103,ar:'وَالْعَصْرِ ﴿١﴾ إِنَّ الْإِنْسَانَ لَفِي خُسْرٍ ﴿٢﴾ إِلَّا الَّذِينَ آمَنُوا وَعَمِلُوا الصَّالِحَاتِ وَتَوَاصَوْا بِالْحَقِّ وَتَوَاصَوْا بِالصَّبْرِ ﴿٣﴾',trans:' wal-ʿaṣr. Inna l-insāna lafī ḫusr. Illa l-laḏīna āmanū wa ʿamilū ṣ-ṣāliḥāti wa tawāṣaw bi l-ḥaqqi wa tawāṣaw bi ṣ-ṣabr.',meaning:'By time. Indeed, mankind is in loss. Except for those who have believed and done righteous deeds and advised each other to truth and advised each other to patience.'},
+    {name:'Al-Humazah',num:104,ar:'وَيْلٌ لِّكُلِّ هُمَزَةٍ لُّمَزَةٍ ﴿١﴾ الَّذِي جَمَعَ مَالًا وَعَدَّدَهُ ﴿٢﴾ يَحْسَبُ أَنَّ مَالَهُ أَخْلَدَهُ ﴿٣﴾ كَلَّا لَيُنْبَذَنَّ فِي الْحُطَمَةِ ﴿٤﴾ وَمَا أَدْرَاكَ مَا الْحُطَمَةُ ﴿٥﴾ نَارُ اللَّهِ الْمُوقَدَةُ ﴿٦﴾ الَّتِي تَطَّلِعُ عَلَى الْأَفْئِدَةِ ﴿٧﴾ إِنَّهَا عَلَيْهِمْ مُّؤْصَدَةٌ ﴿٨﴾ فِي عَمَدٍ مُّمَدَّدَةٍ ﴿٩﴾',trans:'Waylun li kulli humazatin lumazah. Allaḏī ǧamaʿa mālan wa ʿaddadah. Yaḥsabu anna mālahū aḫladah. Kalālā layunbaḏanna fī l-ḥuṭamah. Wa mā adrāka mā l-ḥuṭamah. Nāru l-lahi l-mūqadah. Allaḏī taṭṭaʿilu ʿalā l-afʾidah. Inna-hā ʿalayhim muʾṣadah. Fī ʿamadin mumaddadah.',meaning:'Woe to every scorner and mocker. Who collects wealth and counts it. He thinks that his wealth will make him immortal. No! He will be thrown into al-Hutamah. And what can make you know what al-Hutamah is? It is the fire of Allah, [eternally] fueled. Which mounts over the hearts. Indeed, it will be closed down upon them. In extended columns.'},
+    {name:'Al-Fil',num:105,ar:'أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَابِ الْفِيلِ ﴿١﴾ أَلَمْ يَجْعَلْ كَيْدَهُمْ فِي تَضْلِيلٍ ﴿٢﴾ وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ ﴿٣﴾ تَرْمِيهِمْ بِحِجَارَةٍ مِّن سِجِّيلٍ ﴿٤﴾ فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍ ﴿٥﴾',trans:"Alam tarā kayfa faʿala rabbuka bi'aṣḥābi l-fīl. Alam yajʿal kaydahum fī taḍlīl. Wa arsala ʿalayhim ṭayran abābīl. Tarмīhim bi ḥiǧāratin min sijjīl. Fa ǧaʿalahum ka ʿaṣfin maʾkūl.",meaning:'Have you not considered, [O Muhammad], how your Lord dealt with the companions of the elephant? Did He not make their plan into misdirection? And He sent against them birds in flocks. Striking them with stones of hard clay. And He made them like eaten straw.'},
+    {name:'Quraysh',num:106,ar:'لِإِيلَافِ قُرَيْشٍ ﴿١﴾ إِيلَافِهِمْ رِحْلَةَ الشِّتَاءِ وَالصَّيْفِ ﴿٢﴾ فَلْيَعْبُدُوا رَبَّ هَٰذَا الْبَيْتِ ﴿٣﴾ الَّذِي أَطْعَمَهُم مِّن جُوعٍ وَآمَنَهُم مِّنْ خَوْفٍ ﴿٤﴾',trans:"Liʾilāfi qurayš. Ilāfihim riḥlata š-šitāʾi wa ṣ-ṣayf. Falyaʿbudū rabba hāḏā l-bayt. Allaḏī aṭʿamahum min ǧū'in wa āmanahum min ḫawf.",meaning:'For the accustomed security of the Quraysh. Their accustomed security [in] the caravan of winter and summer. Let them worship the Lord of this house. Who has fed them, [against] hunger, and given them safety, [against] fear.'},
+    {name:"Al-Ma'un",num:107,ar:'أَرَأَيْتَ الَّذِي يُكَذِّبُ بِالدِّينِ ﴿١﴾ فَذَٰلِكَ الدَّافِعُ الْيَتَامَىٰ ﴿٢﴾ وَلَا يَحُضُّ عَلَىٰ طَعَامِ الْمِسْكِينِ ﴿٣﴾ فَوَيْلٌ لِّلْمُصَلِّينَ ﴿٤﴾ الَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ ﴿٥﴾ الَّذِينَ هُمْ يُرَاءُونَ ﴿٦﴾ وَيَمْنَعُونَ الْمَاعُونَ ﴿٧﴾',trans:"Araʾayta llaḏī yukaḏḏibu bi d-dīn. Faḏālika d-dāfiʿu l-yatāmā. Wa lā yaḥuḍḍu ʿalā ṭaʿāmi l-miskīn. Fa waylun li l-muṣallīn. Allaḏīna hum ʿan ṣalātihim sāhūn. Allaḏīna hum yurāʾūn. Wa yamnaʿūna l-māʿūn.",meaning:'Have you seen the one who denies the Day of Judgment? That is the one who drives away the orphan. And does not encourage the feeding of the poor. So woe to those who pray. Who are heedless of their prayer. Who make show [of their deeds]. And withhold [simple] assistance.'},
+    {name:'Al-Kafirun',num:109,ar:'قُلْ يَا أَيُّهَا الْكَافِرُونَ ﴿١﴾ لَا أَعْبُدُ مَا تَعْبُدُونَ ﴿٢﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٣﴾ وَلَا أَنَا عَابِدٌ مَّا عَبَدتُّمْ ﴿٤﴾ وَلَا أَنتُمْ عَابِدُونَ مَا أَعْبُدُ ﴿٥﴾ لَكُمْ دِينُكُمْ وَلِيَ دِينِ ﴿٦﴾',trans:'Qul yā ayyuhā l-kāfirūn. Lā aʿbudu mā taʿbudūn. Wa lā antum ʿābidūna mā aʿbud. Wa lā ana ʿābidun mā ʿabattum. Wa lā antum ʿābidūna mā aʿbud. Lakum dīnukum wa liya dīn.',meaning:'Say: O disbelievers. I do not worship what you worship. Nor are you worshippers of what I worship. Nor will I be a worshipper of what you worship. Nor will you be worshippers of what I worship. For you is your religion, and for me is my religion.'},
+    {name:'An-Nasr',num:110,ar:'إِذَا جَاءَ نَصْرُ اللَّهِ وَالْفَتْحُ ﴿١﴾ وَرَأَيْتَ النَّاسَ يَدْخُلُونَ فِي دِينِ اللَّهِ أَفْوَاجًا ﴿٢﴾ فَسَبِّحْ بِحَمْدِ رَبِّكَ وَاسْتَغْفِرْهُ ۚ إِنَّهُ كَانَ تَوَّابًا ﴿٣﴾',trans:"ʿIḏā ǧāʾa naṣru l-lāhi wa l-faṭḥ. Wa raʾayta n-nāsa yadḫulūna fī dīni l-lāhi afwājā. Fa sabbiḥ bi ḥamdi rabbika wastaġfirhu. Inna-hū kāna tawwābā.",meaning:'When the victory of Allah has come and the conquest. And you see the people entering into the religion of Allah in multitudes. Then exalt [Him] with praise of your Lord and ask forgiveness of Him. Indeed, He is ever Accepting of repentance.'},
+    {name:'Al-Masad',num:111,ar:'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ ﴿١﴾ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ ﴿٢﴾ سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ ﴿٣﴾ وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ ﴿٤﴾ فِي جِيدِهَا حَبْلٌ مِّن مَّسَدٍ ﴿٥﴾',trans:'Tabbaṭ yadā abī lahabin wa tabb. Mā aġnā ʿanhu māluhu wa mā kasab. Sayaslā nāran ḏāta lahab. Wa mraʾatuhū ḥammālata l-ḥaṭab. Fī ǧīdihā ḥablun min masad.',meaning:'May the hands of Abu Lahab be ruined, and ruined is he. His wealth will not avail him or that which he gained. He will [enter to] burn in a Fire of [blazing] flame. And his wife [as well] — the carrier of firewood. Around her neck is a rope of [twisted] palm fiber.'},
+    {name:'Al-Lahab',num:111,ar:'تَبَّتْ يَدَا أَبِي لَهَبٍ وَتَبَّ ﴿١﴾ مَا أَغْنَىٰ عَنْهُ مَالُهُ وَمَا كَسَبَ ﴿٢﴾ سَيَصْلَىٰ نَارًا ذَاتَ لَهَبٍ ﴿٣﴾ وَامْرَأَتُهُ حَمَّالَةَ الْحَطَبِ ﴿٤﴾ فِي جِيدِهَا حَبْلٌ مِّن مَّسَدٍ ﴿٥﴾',trans:'Tabbaṭ yadā abī lahabin wa tabb. Mā aġnā ʿanhu māluhu wa mā kasab. Sayaslā nāran ḏāta lahab. Wa mraʾatuhū ḥammālata l-ḥaṭab. Fī ǧīdihā ḥablun min masad.',meaning:'(Same as Al-Masad) May the hands of Abu Lahab be ruined, and ruined is he. His wealth will not avail him or that which he gained. He will [enter to] burn in a Fire of [blazing] flame. And his wife [as well] — the carrier of firewood. Around her neck is a rope of [twisted] palm fiber.'}
+  ];
+
+  let activeTab = 'alphabet';
+  let readingMode = false;
+
+  function getProgress(tab){
+    return progress[tab] || {};
+  }
+  function isLearned(tab, key){
+    return !!progress[tab] && !!progress[tab][key];
+  }
+  function toggleLearned(tab, key){
+    if(!progress[tab]) progress[tab] = {};
+    progress[tab][key] = !progress[tab][key];
+    if(!progress[tab][key]) delete progress[tab][key];
+    saveProgress();
+  }
+
+  function renderProgressBar(label, learned, total){
+    const pct = total > 0 ? Math.round((learned/total)*100) : 0;
+    return `<div class="arabic-progress-row">
+      <div class="arabic-progress-bar"><div class="arabic-progress-fill" style="width:${pct}%"></div></div>
+      <div class="arabic-progress-label">${label}: ${learned} / ${total}</div>
+    </div>`;
+  }
+
+  function renderAlphabet(){
+    const learned = Object.keys(progress.alphabet||{}).filter(k=>progress.alphabet[k]).length;
+    let html = renderProgressBar('Alphabet Progress', learned, 28);
+    html += '<div class="arabic-letter-grid">';
+    LETTERS.forEach((l,i) => {
+      const done = isLearned('alphabet', l.letter);
+      html += `<div class="arabic-letter-card ${done?'learned':''}" onclick="arabicCourse.toggleLetter('${l.letter.replace(/'/g,"\\'")}')">
+        <div class="arabic-letter-large" dir="rtl" lang="ar">${l.letter}</div>
+        <div class="arabic-letter-ar" dir="rtl" lang="ar">${l.arabic}</div>
+        <div class="arabic-letter-name">${l.name}</div>
+        <div class="arabic-letter-phonetic">${l.phonetic} — ${l.soundsLike}</div>
+        <button class="arabic-mark-btn ${done?'done':''}" onclick="event.stopPropagation();arabicCourse.toggleLetter('${l.letter.replace(/'/g,"\\'")}')">${done?'Learned ✓':'Mark learned'}</button>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('arabicContent').innerHTML = html;
+  }
+
+  function renderConnections(){
+    const learned = Object.keys(progress.connections||{}).filter(k=>progress.connections[k]).length;
+    let html = renderProgressBar('Connections Progress', learned, CONNECTION_GROUPS.length);
+    CONNECTION_GROUPS.forEach(g => {
+      const done = isLearned('connections', g.id);
+      html += `<div class="arabic-group-card ${done?'learned':''}">
+        <div class="arabic-group-title">${g.name}</div>
+        <div class="arabic-group-desc">${g.desc}</div>
+        <div class="arabic-form-letters" dir="rtl" lang="ar">${g.letters.map((l,i)=>`<span class="arabic-form-letter-tag">${l}</span>`).join('')}</div>
+        <div class="arabic-forms">
+          <div class="arabic-form-cell"><div class="form-label">Isolated</div><div class="form-letter" dir="rtl" lang="ar">${g.isolated.join(' ')}</div></div>
+          <div class="arabic-form-cell"><div class="form-label">Initial</div><div class="form-letter" dir="rtl" lang="ar">${g.initial.join(' ')}</div></div>
+          <div class="arabic-form-cell"><div class="form-label">Medial</div><div class="form-letter" dir="rtl" lang="ar">${g.medial.join(' ')}</div></div>
+          <div class="arabic-form-cell"><div class="form-label">Final</div><div class="form-letter" dir="rtl" lang="ar">${g.final.join(' ')}</div></div>
+        </div>
+        <button class="arabic-mark-btn ${done?'done':''}" onclick="arabicCourse.toggleConnection('${g.id}')">${done?'Learned ✓':'Mark learned'}</button>
+      </div>`;
+    });
+    document.getElementById('arabicContent').innerHTML = html;
+  }
+
+  function renderWords(){
+    const learned = Object.keys(progress.words||{}).filter(k=>progress.words[k]).length;
+    let html = renderProgressBar('Words Progress', learned, WORDS.length);
+    html += '<div class="arabic-word-grid">';
+    WORDS.forEach((w,i) => {
+      const done = isLearned('words', w.ar);
+      html += `<div class="arabic-word-card ${done?'learned':''}" onclick="arabicCourse.speakWord(${i})">
+        <div class="arabic-word-ar" dir="rtl" lang="ar">${w.ar}</div>
+        <div class="arabic-word-trans">${w.trans}</div>
+        <div class="arabic-word-meaning">${w.meaning}</div>
+        <button class="arabic-mark-btn ${done?'done':''}" style="margin-top:8px;" onclick="event.stopPropagation();arabicCourse.toggleWord('${w.ar.replace(/'/g,"\\'")}')">${done?'Learned ✓':'Mark learned'}</button>
+      </div>`;
+    });
+    html += '</div>';
+    document.getElementById('arabicContent').innerHTML = html;
+  }
+
+  function renderSurahs(){
+    const read = Object.keys(progress.surahs||{}).filter(k=>progress.surahs[k]).length;
+    let html = renderProgressBar('Surahs Read', read, SHORT_SURAHS.length);
+    html += `<div class="arabic-toggle-row">
+      <button class="arabic-toggle-btn ${!readingMode?'active':''}" onclick="arabicCourse.setReadingMode(false)">Show Arabic</button>
+      <button class="arabic-toggle-btn ${readingMode?'active':''}" onclick="arabicCourse.setReadingMode(true)">Reading Mode (hide Arabic)</button>
+    </div>`;
+    SHORT_SURAHS.forEach((s,i) => {
+      const done = isLearned('surahs', s.name);
+      html += `<div class="arabic-surah-card ${done?'read':''}">
+        <div class="arabic-surah-title">${s.name} (${s.num})</div>
+        <div class="arabic-surah-ar ${readingMode?'hidden':''}" dir="rtl" lang="ar">${s.ar}</div>
+        <div class="arabic-surah-trans">${s.trans}</div>
+        <div class="arabic-surah-meaning">${s.meaning}</div>
+        <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
+          <button class="arabic-mark-btn ${done?'done':''}" onclick="arabicCourse.toggleSurah('${s.name}')">${done?'Read ✓':'Mark as read'}</button>
+          <button class="arabic-mark-btn" onclick="arabicCourse.speakSurah(${i})">Hear Arabic ${SPK_ICON}</button>
+        </div>
+      </div>`;
+    });
+    document.getElementById('arabicContent').innerHTML = html;
+  }
+
+  function renderProgressSummary(){
+    const alph = Object.keys(progress.alphabet||{}).filter(k=>progress.alphabet[k]).length;
+    const conn = Object.keys(progress.connections||{}).filter(k=>progress.connections[k]).length;
+    const words = Object.keys(progress.words||{}).filter(k=>progress.words[k]).length;
+    const surahs = Object.keys(progress.surahs||{}).filter(k=>progress.surahs[k]).length;
+    document.getElementById('arabicProgress').innerHTML = `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+        <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${alph}/28</b><p style="margin:0;">Letters</p></div>
+        <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${conn}/6</b><p style="margin:0;">Groups</p></div>
+        <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${words}/${WORDS.length}</b><p style="margin:0;">Words</p></div>
+        <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${surahs}/${SHORT_SURAHS.length}</b><p style="margin:0;">Surahs</p></div>
+      </div>`;
+  }
+
+  function render(){
+    renderProgressSummary();
+    if(activeTab === 'alphabet') renderAlphabet();
+    else if(activeTab === 'connections') renderConnections();
+    else if(activeTab === 'words') renderWords();
+    else if(activeTab === 'surahs') renderSurahs();
+  }
+
+  document.querySelectorAll('[data-arabic-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      activeTab = btn.dataset.arabicTab;
+      document.querySelectorAll('[data-arabic-tab]').forEach(b=>b.classList.toggle('active', b===btn));
+      render();
+    });
+  });
+
+  window.arabicCourse = {
+    toggleLetter(letter){ toggleLearned('alphabet', letter); render(); },
+    toggleConnection(id){ toggleLearned('connections', id); render(); },
+    toggleWord(word){ toggleLearned('words', word); render(); },
+    toggleSurah(name){ toggleLearned('surahs', name); render(); },
+    speakWord(i){
+      const w = WORDS[i];
+      if(w) speakText(w.ar, 'ar');
+    },
+    speakSurah(i){
+      const s = SHORT_SURAHS[i];
+      if(s) speakText(s.ar, 'ar');
+    },
+    setReadingMode(on){
+      readingMode = on;
+      render();
+    }
+  };
+
+  const origSwitch = window.switchView;
+  window.switchView = function(id){
+    origSwitch(id);
+    if(id === 'arabic') render();
+  };
+})();
+
+/* ================= HIFZ TRACKER ================= */
+(function(){
+  const STORAGE_KEY = 'hifzProgress';
+
+  const SHORT_SURAHS_AR = {
+    1:["بِسۡمِ ٱللَّهِ ٱلرَّحۡمَـٰنِ ٱلرَّحِیمِ","ٱلۡحَمۡدُ لِلَّهِ رَبِّ ٱلۡعَـٰلَمِینَ","ٱلرَّحۡمَـٰنِ ٱلرَّحِیمِ","مَـٰلِكِ یَوۡمِ ٱلدِّینِ","إِیَّاکَ نَعۡبُدُ وَإِیَّاکَ نَسۡتَعِینُ","ٱہۡدِنَا ٱلصِّرَٰطَ ٱلۡمُسۡتَقِیمَ","صِرَٰطَ ٱلَّذِینَ أَنۡعَمۡتَ عَلَیۡہِمۡ غَیۡرِ ٱلۡمَغۡضُوبِ عَلَیۡہِمۡ وَلَا ٱلضَّآلِّینَ"],
+    78:["عَمَّ يَتَسَآءَلُونَ","عَنِ ٱلنَّبَإِ ٱلْعَظِيمِ","ٱلَّذِينَ هُمْ فِى شَكٍّۭ مُّرِيبٍۢ","لَّا يَسْمَعُونَهَا إِلَّا يَوْمَ يَقِيمُونَ"],
+    79:["وَٱلْنَّـٰزِعَـٰتِ غَرْقًۭا","وَٱلْمُلْكِـِٔ سَوْقًۭا","وَٱلْطَّـٰلِعَـٰتِ ذِكْرًۭا","إِنَّ عَذَابَ رَبِّكَ لَوَاقِعٌۭ","مَّا لَهُم مِّنْهَا مِنْ غَافِلَةٍۢ"],
+    80:["عَبَسَ وَتَوَلَّىٰٓ","أَن جَآءَهُ ٱلْأَعْمَىٰ","وَمَا يُدْرِيكَ لَعَلَّهُۥ يَزَّكَّىٰٓ","أَوْ يَذَّكَّرُ فَتَنفَعَهُ ٱلذِّكْرَىٰ"],
+    81:["إِذَا ٱلشَّمْسُ كُوِّرَتْ","وَإِذَا ٱلنُّجُومُ وَكَدَتْ","وَإِذَا ٱلْجِبَالُ سُيِّرَتْ","وَإِذَا ٱلْعِشَارُ عُطِّلَتْ","وَإِذَا ٱلْوُحُوشُ حُشِرَتْ"],
+    82:["إِذَا ٱلسَّمَآءُ ٱنفَطَرَتْ","وَإِذَا ٱلْكَوَاكِبُ ٱنتَثَرَتْ","وَإِذَا ٱلْبِحَارُ فُجِّرَتْ","وَإِذَا ٱلْقُبُورُ بُعْثِرَتْ","عَلِمَتْ نَفْسٌۭ مَّا قَدَّمَتْ وَأَخَّرَتْ"],
+    83:["وَيْلٌۭ لِّلْمُطَفِّفِينَ","ٱلَّذِينَ إِذَا ٱلْكَيْلُ عَلَيْهِمْ يُوفُونَ","وَإِن يَكُونُوا۟ لَهُمْ عَلَىٰ نَفْسِهِمْ يُوفُونَ","أَلَا يَظُنُّ أُو۟لَـٰٓئِكَ أَنَّهُم مَّبْعُوثُونَ"],
+    84:["إِذَا ٱلسَّمَآءُ ٱنشَقَّتْ","وَأَذِنَتْ لِرَبِّهَا وَحُقَّتْ","وَإِذَا ٱلْأَرْضُ مُدَّتْ","وَأَلْقَتْ مَا فِيهَا وَتَخَلَّتْ","وَأَذِنَتْ لِرَبِّهَا وَحُقَّتْ"],
+    85:["وَٱلسَّمَآءِ ذَاتِ ٱلْبُرُوجِ","وَٱلْيَوْمِ ٱلْمَوْعُودِ","وَشَاهِدٍۢ وَمَشْهُودٍۢ","قُتِلَ أَصْحَـٰبُ ٱلْأُخْدُودِ","ٱلنَّارِ ذَاتِ ٱلْوَقُودِ"],
+    86:["وَٱلطَّـٰرِقِ","مَا ٱلطَّـٰرِقُ","وَمَآ أَدْرَىٰكَ مَا ٱلطَّـٰرِقُ","ٱلنَّجْمُ ٱلثَّاقِبُ","إِن كُلُّ نَفْسٍۭ لَّمَّا عَلَيْهَا حَافِظٌۭ"],
+    87:["سَبِّحِ ٱسْمَ رَبِّكَ ٱلْأَعْلَى","ٱلَّذِى خَلَقَ فَسَوَّىٰ","وَٱلَّذِى قَدَّرَ فَهَدَىٰ","وَٱلَّذِى أَخْرَجَ ٱلْمَرْعَىٰ","فَجَعَلَهُۥ غُثَآءً أَحْوَىٰ"],
+    88:["هَلْ أَتَىٰكَ حَدِيثُ ٱلْغَـٰشِيَةِ","وُجُوهٌۭ يَوْمَئِذٍۢ مُّسْفِرَةٌۭ","ضَاحِكَةٌۭ مُّسْتَبْشِرَةٌۭ","وَوُجُوهٌۭ يَوْمَئِذٍۢ عَلَيْهَا غَبَرَةٌۭ","تَرْهَقُهَا قَتَرَةٌۭ","أُو۟لَـٰٓئِكَ هُمُ ٱلْكَفَرَةُ ٱلْجَهْرَةُ"],
+    89:["وَٱلْفَجْرِ","وَلَيَـٰلٍ عَشْرٍۢ","وَٱلشَّفْعِ وَٱلْوَتْرِ","وَٱللَّيْلِ إِذَا يَسْرِ","هَلْ فِى ذَٰلِكَ قَسَمٌۭ لِّذِى حِجْرٍ"],
+    90:["لَآ أُقْسِمُ بِهَـٰذَا ٱلْبَلَدِ","وَأَنتَ حِلٌّۭ بِهَـٰذَا ٱلْبَلَدِ","وَوَالِدٍۭ وَمَا وَلَدَ","لَقَدْ خَلَقْنَا ٱلْإِنسَـٰنَ فِى كَبَدٍ","أَيَحْسَبُ أَن لَّن يَّقْدِرَ عَلَيْهِ أَحَدٌۭ"],
+    91:["وَٱلشَّمْسِ وَضُحَىٰهَا","وَٱلْقَمَرِ إِذَا تَلَىٰهَا","وَٱلنَّهَارِ إِذَا جَلَّىٰهَا","وَٱللَّيْلِ إِذَا يَغْشَىٰهَا","وَٱلسَّمَآءِ وَمَا بَنَىٰهَا","وَٱلْأَرْضِ وَمَا طَحَىٰهَا","وَنَفْسٍۭ وَمَا سَوَّىٰهَا","فَأَلْهَمَهَا فُجُورَهَا وَتَقْوَىٰهَا","قَدْ أَفْلَحَ مَن زَكَّىٰهَا","وَقَدْ خَابَ مَن دَسَّىٰهَا"],
+    92:["وَٱللَّيْلِ إِذَا يَغْشَىٰ","وَٱلنَّهَارِ إِذَا تَجَلَّىٰ","مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ","وَلَلْـَٔاخِرَةُ خَيْرٌۭ لَّكَ مِنَ ٱلْأُولَىٰ","وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ","أَلَمْ يَجِدْكَ يَتِيمًۭا فَوَاعَدَكَ","وَوَجَدَكَ ضَآلًّا فَهَدَىٰ","وَوَجَدَكَ عَائِلًۭا فَأَغْنَىٰ","فَأَمَّا ٱلْيَتِيمَ فَلَا تَقْهَرْ","وَأَمَّا ٱلسَّآئِلَ فَلَا تَنْهَرْ","وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ"],
+    93:["وَٱلضُّحَىٰ","وَٱللَّيْلِ إِذَا سَجَىٰ","مَا وَدَّعَكَ رَبُّكَ وَمَا قَلَىٰ","وَلَلْـَٔاخِرَةُ خَيْرٌۭ لَّكَ مِنَ ٱلْأُولَىٰ","وَلَسَوْفَ يُعْطِيكَ رَبُّكَ فَتَرْضَىٰٓ","أَلَمْ يَجِدْكَ يَتِيمًۭا فَوَاعَدَكَ","وَوَجَدَكَ ضَآلًّا فَهَدَىٰ","وَوَجَدَكَ عَائِلًۭا فَأَغْنَىٰ","فَأَمَّا ٱلْيَتِيمَ فَلَا تَقْهَرْ","وَأَمَّا ٱلسَّآئِلَ فَلَا تَنْهَرْ","وَأَمَّا بِنِعْمَةِ رَبِّكَ فَحَدِّثْ"],
+    94:["أَلَمْ نَشْرَحْ لَكَ صَدْرَكَ","وَوَضَعْنَا عَنْكَ وِزْرَكَ","ٱلَّذِىٓ أَنقَضَ ظَهْرَكَ","وَرَفَعْنَا لَكَ ذِكْرَكَ","فَإِنَّ مَعَ ٱلْعُسْرِ يُسْرًا","إِنَّ مَعَ ٱلْعُسْرِ يُسْرًا","فَإِذَا فَرَغْتَ فَانْصَبْ","وَإِلَىٰ رَبِّكَ فَارْغَبْ"],
+    95:["وَٱلتِّينِ وَٱلزَّيْتُونِ","وَطُورِ سِينِينَ","وَهَـٰذَا ٱلْبَلَدِ ٱلْأَمِينِ","لَقَدْ خَلَقْنَا ٱلْإِنسَـٰنَ فِى أَحْسَنِ تَقْوِيمٍۢ","ثُمَّ رَدَدْنَـٰهُ أَسْفَلَ سَـٰفِلِينَ","إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ فَلَهُمْ أَجْرٌ غَيْرُ مَمْنُونٍۢ"],
+    96:["ٱقْرَأْ بِٱسْمِ رَبِّكَ ٱلَّذِى خَلَقَ","خَلَقَ ٱلْإِنسَـٰنَ مِنْ عَلَقٍۢ","ٱقْرَأْ وَرَبُّكَ ٱلْأَكْرَمُ","ٱلَّذِى عَلَّمَ بِٱلْقَلَمِ","عَلَّمَ ٱلْإِنسَـٰنَ مَا لَمْ يَعْلَمْ","كَلَّآ إِنَّ ٱلْإِنسَـٰنَ لَيَطْغَىٰٓ","أَن رَّآهُ ٱسْتَغْنَىٰٓ","إِنَّ إِلَىٰ رَبِّكَ ٱلرُّجْعَىٰٓ","أَرَأَيْتَ ٱلَّذِى يَنْهَىٰٓ","عَبْدًا إِذَا صَلَّىٰٓ","أَرَأَيْتَ إِن كَانَ عَلَى ٱلْهُدَىٰٓ","أَوْ أَمَرَ بِٱلتَّقْوَىٰٓ","أَرَأَيْتَ إِن كَذَّبَ وَتَوَلَّىٰٓ","أَلَمْ يَعْلَم بِأَنَّ ٱللَّهَ يَرَىٰٓ","كَلَّا لَئِن لَّمْ يَنتَهِى لَنَسْفَعَنّ بِٱلنَّاصِيَةِ","نَاصِيَةٍۢ كَاذِبَةٍ خَاطِئَةٍۢ","فَلْيَدْعُ نَادِيَهُۥ","سَنَدْعُ ٱلزَّبَانِيَةَ","كَلَّا لَا تُطِعْهُ وَٱسْجُدْ وَٱقْتَرِبْ"],
+    97:["إِنَّآ أَنزَلْنَـٰهُ فِى لَيْلَةِ ٱلْقَدْرِ","وَمَآ أَدْرَىٰكَ مَا لَيْلَةُ ٱلْقَدْرِ","لَيْلَةُ ٱلْقَدْرِ خَيْرٌۭ مِّنْ أَلْفِ شَهْرٍۢ","تَنَزَّلُ ٱلْمَلَـٰٓئِكَةُ وَٱلرُّوحُ فِيهَا بِإِذْنِ رَبِّهِم مِّن كُلِّ أَمْرٍۢ","سَلَـٰمٌۭ ہِىَ حَتَّىٰ مَطْلَعِ ٱلْفَجْرِ"],
+    98:["لَمْ يَكُنِ ٱلَّذِينَ كَفَرُوا۟ مِنْ أَهْلِ ٱلْكِتَـٰبِ وَٱلْمُشْرِكِينَ مُنفَكِّينَ حَتَّىٰ تَأْتِيَهُمُ ٱلْبَيِّنَةُ","رَسُولٌۭ مِّنَ ٱللَّهِ يَتْلُوا۟ صُحُفًا مُّطَهَّرَةًۭ","فِيهَا كُتُبٌۭ قَيِّمَةٌۭ","وَمَا تَفَرَّقَ ٱلَّذِينَ أُوتُوا۟ ٱلْكِتَـٰبَ إِلَّا مِنۢ بَعْدِ مَا جَآءَتْهُمُ ٱلْبَيِّنَةُ","وَمَآ أُمِرُوٓا۟ إِلَّا لِيَعْبُدُوا۟ ٱللَّهَ مُخْلِصِينَ لَهُ ٱلدِّينَ حُنَفَآءَ وَيُقِيمُوا۟ ٱلصَّلَوٰةَ وَيُؤْتُوا۟ ٱلزَّكَوٰةَ ۚ وَذَٰلِكَ دِينُ ٱلْقَيِّمَةِ","إِنَّ ٱلَّذِينَ كَفَرُوا۟ مِنْ أَهْلِ ٱلْكِتَـٰبِ وَٱلْمُشْرِكِينَ فِى نَارِ جَهَنَّمَ خَـٰلِدِينَ فِيهَآ ۚ أُو۟لَـٰٓئِكَ هُمْ شَرُّ ٱلْبَرِيَّةِ","إِنَّ ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ أُو۟لَـٰٓئِكَ هُمْ خَيْرُ ٱلْبَرِيَّةِ","جَزَآؤُهُمْ عِندَ رَبِّهِمْ جَنَّـٰتُ عَدْنٍۢ تَجْرِى مِن تَحْتِهَا ٱلْأَنْهَـٰرُ خَـٰلِدِينَ فِيهَآ أَبَدًۭا ۖ رَّضِىَ ٱللَّهُ عَنْهُمْ وَرَضُوا۟ عَنْهُ ۚ ذَٰلِكَ لِمَنْ خَشِىَ رَبَّهُۥ"],
+    99:["إِذَا زُلْزِلَتِ ٱلْأَرْضُ زِلْزَالَهَا","وَأَخْرَجَتِ ٱلْأَرْضُ أَثْقَالَهَا","وَقَالَ ٱلْإِنسَـٰنُ مَا لَهَا","يَوْمَئِذٍۢ تُحَدِّثُ أَخْبَارَهَا","بِأَنَّ رَبَّكَ أَوْحَىٰ لَهَا","يَوْمَئِذٍۢ يَصْدُرُ ٱلنَّاسُ أَشْتَاتًۭا لِّيُرَوْا۟ أَعْمَـٰلَهُمْ","فَمَن يَّعْمَلْ مِثْقَالَ ذَرَّةٍ خَيْرًۭا يَرَهُۥ","وَمَن يَّعْمَلْ مِثْقَالَ ذَرَّةٍ شَرًّا يَرَهُۥ"],
+    100:["وَٱلْعَـٰدِيَـٰتِ ضَبْحًۭا","فَٱلْمُورِيَـٰتِ قَدْحًۭا","فَٱلْمُغِيرَاتِ صُبْحًۭا","فَأَثَرْنَ بِهِۦ نَقْعًۭا","فَوَسَطْنَ بِهِۦ جَمْعًۭا","إِنَّ ٱلْإِنسَـٰنَ لِرَبِّهِۦ لَكَنُودٌۭ","وَإِنَّهُۥ عَلَىٰ ذَٰلِكَ لَشَهِيدٌۭ","وَإِنَّهُۥ لِحُبِّ ٱلْخَيْرِ لَشَدِيدٌ","أَفَلَا يَعْلَمُ إِذَا بُعْثِرَ مَا فِى ٱلْقُبُورِ","وَحُصِّلَ مَا فِى ٱلصُّدُورِ","إِنَّ رَبَّهُم بِهِمْ يَوْمَئِذٍ لَّخَبِيرٌۢ"],
+    101:["ٱلْقَـٰرِعَةُ","مَا ٱلْقَـٰرِعَةُ","وَمَآ أَدْرَىٰكَ مَا ٱلْقَـٰرِعَةُ","يَوْمَ يَكُونُ ٱلنَّاسُ كَٱلْفَرَاشِ ٱلْمَبْثُوثِ","وَتَكُونُ ٱلْجِبَالُ كَٱلْعِهْنِ ٱلْمَنفُوشِ","فَأَمَّا مَن ثَقُلَتْ مَوَزِينُهُۥ","فَهُوَ فِى عِيشَةٍۢ رَّاضِيَةٍۢ","وَأَمَّا مَنْ خَفَّتْ مَوَزِينُهُۥ","فَأُمُّهُۥ هَاوِيَةٌۭ","وَمَآ أَدْرَىٰكَ مَا هَاوِيَةٌ","نَّارٌ حَامِيَةٌۢ"],
+    102:["أَلْهَاكُمُ ٱلتَّكَـٰثُرُ","حَتَّىٰ زُرْتُمُ ٱلْمَقَابِرَ","كَلَّا سَوْفَ تَعْلَمُونَ","ثُمَّ كَلَّا سَوْفَ تَعْلَمُونَ","كَلَّا لَوْ تَعْلَمُونَ عِلْمَ ٱلْيَقِينِ","لَتَرَوْنَ ٱلْجَحِيمَ","ثُمَّ لَتَرَوْنَهَا عَيْنَ ٱلْيَقِينِ","ثُمَّ لَتُسْـَٔلُنَّ يَوْمَئِذٍ عَنِ ٱلنَّعِيمِ"],
+    103:["وَٱلْعَصْرِ","إِنَّ ٱلْإِنسَـٰنَ لَفِى خُسْرٍ","إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّـٰلِحَـٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ"],
+    104:["وَيْلٌۭ لِّكُلِّ هَمَزَةٍۢ لُّمَزَةٍۢ","ٱلَّذِى جَمَعَ مَالًۭا وَعَدَّدَهُۥ","يَحْسَبُ أَنَّ مَالَهُۥٓ أَخْلَدَهُۥ","كَلَّا لَيُنۢبَذَنَّ فِى ٱلْحُطَمَةِ","وَمَآ أَدْرَىٰكَ مَا ٱلْحُطَمَةُ","نَّارُ ٱللَّهِ ٱلْمُوقَدَةُ","ٱلَّتِى تَطَّلِعُ عَلَى ٱلْأَفْـِٔدَةِ","إِنَّهَا عَلَيْهِم مُّؤَصَّدَةٌۭ","فِى عَمَدٍۢ مُّدَمَّمَةٍۢ"],
+    105:["أَلَمْ تَرَ كَيْفَ فَعَلَ رَبُّكَ بِأَصْحَـٰبِ ٱلْفِيلِ","أَلَمْ يَجْعَلْ كَيْدَهُمْ فِى تَضْلِيلٍۢ","وَأَرْسَلَ عَلَيْهِمْ طَيْرًا أَبَابِيلَ","تَرْمِيهِم بِحِجَارَةٍۢ مِّن سِجِّيلٍۢ","فَجَعَلَهُمْ كَعَصْفٍ مَّأْكُولٍۢ"],
+    106:["لِإِيلَـٰفِ قُرَيْشٍ","إِيلَـٰفِهِمْ رِحْلَةَ ٱلشِّتَآءِ وَٱلصَّيْفِ","فَلْيَعْبُدُوا۟ رَبَّ هَـٰذَا ٱلْبَيْتِ","ٱلَّذِىٓ أَطْعَمَهُم مِّن جُوعٍۢ وَءَامَنَهُم مِّنْ خَوْفٍۢ"],
+    107:["أَرَءَيْتَ ٱلَّذِى يُكَذِّبُ بِٱلدِّينِ","فَذَٰلِكَ ٱلَّذِى يَدُعُّ ٱلْيَتِيمَ","وَلَا يَحُضُّ عَلَىٰ طَعَامِ ٱلْمِسْكِينِ","فَوَيْلٌۭ لِّلصَّـٰلِينَ","ٱلَّذِينَ هُمْ عَنْ صَلَاتِهِمْ سَاهُونَ","ٱلَّذِينَ هُمْ يُرَآءُونَ","وَيَمْنَعُونَ ٱلْمَاعُونَ"],
+    108:["إِنَّآ أَعْطَيْنَـٰكَ ٱلْكَوْثَرَ","فَصَلِّ لِرَبِّكَ وَٱنْحَرْ","إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ"],
+    109:["قُلْ يَـٰٓأَيُّهَا ٱلْكَـٰفِرُونَ","لَآ أَعْبُدُ مَا تَعْبُدُونَ","وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ","وَلَآ أَنَا۠ عَابِدٌۭ مَّا عَبَدتُّمْ","وَلَآ أَنتُمْ عَـٰبِدُونَ مَآ أَعْبُدُ","لَكُمْ دِينُكُمْ وَلِىَ دِينُ"],
+    110:["إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ","وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًۭا","فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۭا"]
+  };
+
+  let hifzData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(hifzData)); }
+
+  const grid = document.getElementById('hifzGrid');
+  const summary = document.getElementById('hifzSummary');
+  const testArea = document.getElementById('hifzTest');
+  const statsDiv = document.getElementById('hifzStats');
+
+  function renderGrid(){
+    grid.innerHTML = '';
+    for(let i = 1; i <= 114; i++){
+      const s = SURAHS[i-1];
+      const state = hifzData[i] || '';
+      const tile = document.createElement('button');
+      tile.className = 'hifz-tile' + (state === 'memorized' ? ' memorized' : state === 'partial' ? ' partial' : state === 'tested' ? ' tested' : '');
+      tile.innerHTML = '<span class="tile-tip">' + s.en + ' (' + i + ')</span>' + i;
+      tile.addEventListener('click', (function(n){ return function(){ cycleState(n); }; })(i));
+      grid.appendChild(tile);
+    }
+    renderSummary();
+    renderStats();
+  }
+
+  function cycleState(n){
+    const states = ['','partial','memorized','tested'];
+    const cur = states.indexOf(hifzData[n] || '');
+    const next = states[(cur + 1) % states.length];
+    if(next) hifzData[n] = next; else delete hifzData[n];
+    save();
+    renderGrid();
+  }
+
+  function renderSummary(){
+    let mem = 0, part = 0, tested = 0;
+    for(let i = 1; i <= 114; i++){
+      if(hifzData[i] === 'memorized') mem++;
+      else if(hifzData[i] === 'partial') part++;
+      else if(hifzData[i] === 'tested') tested++;
+    }
+    summary.innerHTML =
+      '<span class="stat-pill"><span class="dot-g"></span>' + mem + ' memorized</span>' +
+      '<span class="stat-pill"><span class="dot-y"></span>' + part + ' partial</span>' +
+      (tested ? '<span class="stat-pill" style="background:#d1e7dd;border-color:#6db89a;color:#0f5132;">' + tested + ' tested</span>' : '') +
+      '<button class="hifz-btn" onclick="hifzOpenTest()" style="margin-left:auto;">Start Test</button>';
+  }
+
+  function renderStats(){
+    let memCount = 0, partCount = 0, totalWords = 0;
+    for(let i = 1; i <= 114; i++){
+      const s = SURAHS[i-1];
+      if(hifzData[i] === 'memorized' || hifzData[i] === 'tested'){ memCount++; totalWords += s.ayahs; }
+      else if(hifzData[i] === 'partial'){ partCount++; totalWords += Math.round(s.ayahs * 0.5); }
+    }
+    const lastTest = localStorage.getItem('hifzLastTest') || 'Never';
+    statsDiv.innerHTML =
+      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0;">' +
+        '<div class="rq-card" style="padding:14px;text-align:center;"><b style="font-size:22px;color:var(--green);">' + memCount + '</b><p style="margin:4px 0 0;font-size:12px;color:var(--text-muted);">Fully Memorized</p></div>' +
+        '<div class="rq-card" style="padding:14px;text-align:center;"><b style="font-size:22px;color:var(--gold);">' + partCount + '</b><p style="margin:4px 0 0;font-size:12px;color:var(--text-muted);">Partially Memorized</p></div>' +
+        '<div class="rq-card" style="padding:14px;text-align:center;"><b style="font-size:22px;color:var(--ink);">' + totalWords + '</b><p style="margin:4px 0 0;font-size:12px;color:var(--text-muted);">Approx. Ayat Memorized</p></div>' +
+        '<div class="rq-card" style="padding:14px;text-align:center;"><b style="font-size:22px;color:var(--ink-soft);">' + lastTest + '</b><p style="margin:4px 0 0;font-size:12px;color:var(--text-muted);">Last Test Date</p></div>' +
+      '</div>';
+  }
+
+  /* ========== TEST MODE ========== */
+  window.hifzOpenTest = function(){
+    const memorized = [];
+    for(let i = 1; i <= 114; i++){
+      if(hifzData[i] === 'memorized' || hifzData[i] === 'tested') memorized.push(i);
+    }
+    if(!memorized.length){ testArea.innerHTML = '<h3>No Surahs to Test</h3><p>Mark at least one surah as memorized first.</p>'; testArea.style.display = 'block'; return; }
+    let opts = '<option value="">Select a surah...</option>';
+    memorized.forEach(function(n){ opts += '<option value="' + n + '">' + n + '. ' + SURAHS[n-1].en + '</option>'; });
+    testArea.innerHTML = '<h3>Am I Really Memorized?</h3><p>Pick a memorized surah. Review it, then we progressively hide the text to test your recall.</p>' +
+      '<select class="hifz-select" id="hifzTestSelect" onchange="hifzStartReview(this.value)">' + opts + '</select>';
+    testArea.style.display = 'block';
+    testArea.scrollIntoView({ behavior:'smooth', block:'start' });
+  };
+
+  var testSurah = null, testLevel = 0;
+
+  window.hifzStartReview = function(n){
+    if(!n) return;
+    n = parseInt(n);
+    testSurah = n;
+    testLevel = 0;
+    var arText = SHORT_SURAHS_AR[n];
+    if(!arText){
+      testArea.innerHTML = '<h3>Text Not Available</h3><p>Arabic text for this surah is not included in the test bank yet. Try one of the short surahs (78-114, 1, 108-110).</p>' +
+        '<div class="hifz-btn-row"><button class="hifz-btn" onclick="hifzOpenTest()">Back</button></div>';
+      return;
+    }
+    renderTestStep(arText, 0);
+  };
+
+  function getHiddenCount(total, level){
+    if(level === 0) return 0;
+    return Math.round(total * (level * 0.25));
+  }
+
+  function renderTestStep(arText, level){
+    var total = arText.length;
+    var hideCount = getHiddenCount(total, level);
+    var indices = [];
+    for(var i = 0; i < total; i++) indices.push(i);
+    for(var i = indices.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = indices[i]; indices[i] = indices[j]; indices[j] = tmp;
+    }
+    var hiddenSet = {};
+    for(var i = 0; i < hideCount; i++) hiddenSet[indices[i]] = true;
+
+    var html = '<h3>Test: ' + SURAHS[testSurah-1].en + '</h3>';
+    if(level === 0){
+      html += '<p>Review the text below. When you are ready, tap "I\'m Ready" to begin the test.</p>';
+    } else {
+      var pct = [0,25,50,75,100][level];
+      html += '<p>Level: <b>' + pct + '% hidden</b> — Can you recall the hidden words?</p>';
+    }
+    html += '<div class="hifz-test-arabic">';
+    arText.forEach(function(ayah, idx){
+      var words = ayah.split(' ');
+      words.forEach(function(w, wi){
+        var gi = idx * 100 + wi;
+        var cls = hiddenSet[gi] ? 'hifz-word hidden' : 'hifz-word';
+        html += '<span class="' + cls + '">' + w + '</span> ';
+      });
+      html += '<br>';
+    });
+    html += '</div>';
+
+    html += '<div class="hifz-level-dots">';
+    for(var l = 0; l <= 4; l++){
+      var cls = l < level ? 'ld done' : l === level ? 'ld active' : 'ld';
+      html += '<span class="' + cls + '"></span>';
+    }
+    html += '</div>';
+
+    html += '<div class="hifz-btn-row">';
+    if(level === 0){
+      html += '<button class="hifz-btn primary" onclick="hifzAdvance()">I\'m Ready</button>';
+    } else if(level >= 4){
+      html += '<button class="hifz-btn primary" onclick="hifzConfirmed()">I Got It! Confirmed</button>';
+      html += '<button class="hifz-btn danger" onclick="hifzNeedPractice()">Need More Practice</button>';
+    } else {
+      html += '<button class="hifz-btn primary" onclick="hifzAdvance()">I Got It</button>';
+      html += '<button class="hifz-btn danger" onclick="hifzNeedPractice()">Need Practice</button>';
+    }
+    html += '<button class="hifz-btn" onclick="hifzOpenTest()">Change Surah</button>';
+    html += '</div>';
+
+    testArea.innerHTML = html;
+  }
+
+  window.hifzAdvance = function(){
+    testLevel++;
+    renderTestStep(SHORT_SURAHS_AR[testSurah], testLevel);
+  };
+
+  window.hifzNeedPractice = function(){
+    renderTestStep(SHORT_SURAHS_AR[testSurah], testLevel);
+  };
+
+  window.hifzConfirmed = function(){
+    hifzData[testSurah] = 'tested';
+    save();
+    localStorage.setItem('hifzLastTest', new Date().toLocaleDateString());
+    testArea.innerHTML = '<h3>Mashallah!</h3><p>You\'ve confirmed memorization of <b>' + SURAHS[testSurah-1].en + '</b> (Surah ' + testSurah + ').</p>' +
+      '<div class="hifz-quote" style="border-color:var(--green);background:rgba(46,125,91,0.06);">' +
+      '<b>Encouragement:</b> "Whoever recites a letter from the Book of Allah will have a reward, and each reward is multiplied by ten. I do not say Alif-Lam-Mim is one letter, but Alif is a letter, Lam is a letter, and Mim is a letter."<br>— Jami at-Tirmidhi 2910</div>' +
+      '<div class="hifz-btn-row"><button class="hifz-btn primary" onclick="hifzOpenTest()">Test Another</button></div>';
+    renderGrid();
+  };
+
+  renderGrid();
+})();
+
+/* ================= OFFLINE CONTENT PACKS (IndexedDB) ================= */
+(function(){
+  const DB_NAME = 'sabeel-offline-packs';
+  const DB_VERSION = 1;
+  const STORE = 'packs';
+  const SHORT_SURAHS_NUMS = [78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,1,2,3,4,5];
+
+  const PACKS = [
+    {
+      id:'short-surahs-audio',
+      name:'Short Surahs Audio',
+      desc:'Audio recitations of 15 short surahs (78–114 + 1–5) by Maher Al-Muaiqly for offline listening.',
+      getFiles(){
+        const rec = RECITERS[0];
+        const surahAyahCount = {1:7,2:0,3:0,4:0,5:0,78:40,79:46,80:42,81:29,82:19,83:36,84:25,85:22,86:17,87:19,88:26,89:30,89:30,90:20,91:15,92:21,93:11,94:8,95:8,96:19,97:5,98:8,99:8,100:11,101:11,102:8,103:3,104:9,105:5,106:4,107:7,108:3,109:6,110:3,111:5,112:4,113:5,114:6};
+        const files = [];
+        const used = new Set();
+        for(const s of [1,2,3,4,5,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114]){
+          const max = s===1 ? 7 : (surahAyahCount[s] || 6);
+          for(let a=1; a<=max; a++){
+            const key = s+':'+a;
+            if(used.has(key)) continue;
+            used.add(key);
+            files.push({url: reciterUrl(rec, s, a), label: 'Surah '+s+' ayah '+a});
+          }
+        }
+        return files;
+      },
+      estSize:'~3.2 MB'
+    },
+    {
+      id:'complete-duas',
+      name:'Complete Duas Collection',
+      desc:'All human-recorded dua audio from the Du\'a Explorer — offline access to every supplication.',
+      getFiles(){
+        return Object.entries(HUMAN_AUDIO).filter(([k])=> k.startsWith('dua:')).map(([k,v])=>({url:v, label:k.replace('dua:','')}));
+      },
+      estSize:'~1.5 MB'
+    },
+    {
+      id:'fatihah-practice',
+      name:'Al-Fatihah + Practice Recitations',
+      desc:'Al-Fatihah ayah-by-ayah audio plus practice recitation audio for learning.',
+      getFiles(){
+        const rec = RECITERS[0];
+        const files = [];
+        for(let a=1;a<=7;a++) files.push({url:reciterUrl(rec,1,a), label:'Al-Fatihah ayah '+a});
+        return files;
+      },
+      estSize:'~0.6 MB'
+    },
+    {
+      id:'arabic-alphabet',
+      name:'Arabic Alphabet Audio',
+      desc:'Pronunciation audio for all 28 Arabic letters — hear how each letter sounds.',
+      getFiles(){
+        const letters = ['alif','ba','ta','tha','jim','ha','kha','dal','dhal','ra','zay','seen','sheen','sad','dad','ta_emph','dha','ain','ghain','fa','qaf','kaf','lam','mim','nun','ha_final','waw','ya'];
+        return letters.map(l=>({url:'https://cdn.islamic.network/quran/audio/128/ar.alafasy/1.mp3', label:'Letter: '+l+' (placeholder)'}));
+      },
+      estSize:'~0.9 MB'
+    },
+    {
+      id:'salah-companion',
+      name:'Salah Companion Audio',
+      desc:'Audio for all prayer positions — takbir, ruku, sujud, tashahhud, and salawat.',
+      getFiles(){
+        const keys = ['takbir','istiadha','ruku-dua','itidal','sujud-dua','jalsa','tashahhud','salawat'];
+        return keys.filter(k=> HUMAN_AUDIO[k]).map(k=>({url:HUMAN_AUDIO[k], label:k}));
+      },
+      estSize:'~0.8 MB'
+    }
+  ];
+
+  let db = null;
+
+  function openDB(){
+    return new Promise((resolve,reject)=>{
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = e => {
+        const d = e.target.result;
+        if(!d.objectStoreNames.contains(STORE)){
+          d.createObjectStore(STORE, {keyPath:'packId'});
+        }
+      };
+      req.onsuccess = e => { db = e.target.result; resolve(db); };
+      req.onerror = e => reject(e.target.error);
+    });
+  }
+
+  function txGet(packId){
+    return new Promise((resolve,reject)=>{
+      if(!db) return reject(new Error('DB not open'));
+      const tx = db.transaction(STORE,'readonly');
+      const store = tx.objectStore(STORE);
+      const req = store.get(packId);
+      req.onsuccess = () => resolve(req.result || null);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function txPut(record){
+    return new Promise((resolve,reject)=>{
+      if(!db) return reject(new Error('DB not open'));
+      const tx = db.transaction(STORE,'readwrite');
+      const store = tx.objectStore(STORE);
+      const req = store.put(record);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function txDelete(packId){
+    return new Promise((resolve,reject)=>{
+      if(!db) return reject(new Error('DB not open'));
+      const tx = db.transaction(STORE,'readwrite');
+      const store = tx.objectStore(STORE);
+      const req = store.delete(packId);
+      req.onsuccess = () => resolve();
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function txGetAll(){
+    return new Promise((resolve,reject)=>{
+      if(!db) return reject(new Error('DB not open'));
+      const tx = db.transaction(STORE,'readonly');
+      const store = tx.objectStore(STORE);
+      const req = store.getAll();
+      req.onsuccess = () => resolve(req.result || []);
+      req.onerror = () => reject(req.error);
+    });
+  }
+
+  function estimateSize(bytes){
+    if(bytes < 1024) return bytes + ' B';
+    if(bytes < 1048576) return (bytes/1024).toFixed(1) + ' KB';
+    return (bytes/1048576).toFixed(1) + ' MB';
+  }
+
+  const activeDownloads = {};
+
+  function renderPacks(){
+    const list = document.getElementById('packList');
+    if(!list) return;
+    txGetAll().then(records => {
+      const recordMap = {};
+      records.forEach(r => { recordMap[r.packId] = r; });
+      list.innerHTML = PACKS.map(p => {
+        const rec = recordMap[p.id];
+        const isDownloaded = !!rec;
+        const isDownloading = !!activeDownloads[p.id];
+        const progress = activeDownloads[p.id] || 0;
+        const files = p.getFiles();
+        const statusCls = isDownloaded ? 'downloaded' : (isDownloading ? 'downloading' : 'not-downloaded');
+        const statusText = isDownloaded ? 'Downloaded ✓' : (isDownloading ? 'Downloading… '+Math.round(progress)+'%' : 'Not downloaded');
+        const downloadedInfo = rec ? ' · '+estimateSize(rec.totalSize||0)+' · '+new Date(rec.downloadedAt).toLocaleDateString() : '';
+        return `<div class="pack-card" id="pack-${p.id}">
+          <div class="pack-head">
+            <div>
+              <div class="pack-name">${p.name}</div>
+              <div class="pack-desc">${p.desc}</div>
+            </div>
+            <span class="pack-status ${statusCls}">
+              ${isDownloaded ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+              ${statusText}
+            </span>
+          </div>
+          <div class="pack-meta">
+            <span>${files.length} files</span>
+            <span>${p.estSize}</span>
+            ${downloadedInfo ? '<span>'+downloadedInfo+'</span>' : ''}
+          </div>
+          ${isDownloading ? '<div class="pack-progress"><div class="pack-progress-fill" style="width:'+progress+'%"></div></div>' : ''}
+          <div style="display:flex;gap:8px;align-items:center;">
+            ${isDownloaded
+              ? '<button class="pack-btn danger" onclick="OfflinePacks.deletePack(\''+p.id+'\')">Delete</button>'
+              : isDownloading
+                ? '<button class="pack-btn" disabled>Downloading…</button>'
+                : '<button class="pack-btn primary" onclick="OfflinePacks.downloadPack(\''+p.id+'\')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Download
+                  </button>'
+            }
+          </div>
+        </div>`;
+      }).join('');
+      updateStorageInfo(records);
+    }).catch(()=>{});
+  }
+
+  function updateStorageInfo(records){
+    const info = document.getElementById('storageInfo');
+    if(!info) return;
+    let total = 0;
+    let count = 0;
+    records.forEach(r => { total += (r.totalSize || 0); count++; });
+    info.querySelector('span').innerHTML = '<b>'+count+'</b> pack'+(count!==1?'s':'')+' downloaded · <b>'+estimateSize(total)+'</b> total storage used';
+  }
+
+  async function downloadPack(packId){
+    if(activeDownloads[packId]) return;
+    const pack = PACKS.find(p=>p.id===packId);
+    if(!pack) return;
+    const existing = await txGet(packId);
+    if(existing){ renderPacks(); return; }
+    const files = pack.getFiles();
+    activeDownloads[packId] = 0;
+    renderPacks();
+    const blobs = [];
+    let totalSize = 0;
+    for(let i=0; i<files.length; i++){
+      try{
+        const resp = await fetch(files[i].url);
+        if(!resp.ok) continue;
+        const blob = await resp.blob();
+        blobs.push({url:files[i].url, blob});
+        totalSize += blob.size;
+      }catch(e){}
+      activeDownloads[packId] = ((i+1)/files.length)*100;
+      renderPacks();
+    }
+    const record = {
+      packId: pack.id,
+      name: pack.name,
+      files: blobs,
+      totalSize: totalSize,
+      downloadedAt: Date.now()
+    };
+    await txPut(record);
+    delete activeDownloads[packId];
+    renderPacks();
+    showToast('"'+pack.name+'" downloaded for offline use');
+  }
+
+  async function deletePack(packId){
+    const pack = PACKS.find(p=>p.id===packId);
+    if(!pack) return;
+    await txDelete(packId);
+    renderPacks();
+    showToast('"'+pack.name+'" removed from offline storage');
+  }
+
+  window.OfflinePacks = { downloadPack, deletePack, renderPacks };
+
+  openDB().then(()=>{ renderPacks(); }).catch(()=>{});
+})();
+
 /* ================= SERVICE WORKER (true offline PWA) ================= */
 if('serviceWorker' in navigator){
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
+
+/* ================= MULTI-LANGUAGE SYSTEM (i18n) ================= */
+(function(){
+  const LANG_KEY = 'sabeelLang';
+
+  const TRANSLATIONS = {
+    en: {
+      /* Section labels */
+      section_start: "Start Here",
+      section_essentials: "Essentials",
+      section_worship: "Worship Tools",
+      section_study: "Study",
+      /* Sidebar nav */
+      nav_welcome: "Welcome",
+      nav_today: "Today",
+      nav_roadmap: "New Muslim Roadmap",
+      nav_practice: "Guided Practice",
+      nav_essentials: "Core Topics",
+      nav_duas: "Du'a Explorer",
+      nav_quran: "Qur'an",
+      nav_quiz: "Knowledge Check",
+      nav_prayertimes: "Prayer Times",
+      nav_qibla: "Qibla Finder",
+      nav_wudhu: "Wudhu & Salah",
+      nav_dhikr: "Dhikr Counter",
+      nav_qada: "Missed Prayers",
+      nav_companion: "Pray Along",
+      nav_hijri: "Islamic Calendar",
+      nav_arabic: "Arabic Reading",
+      nav_hifz: "Hifz Tracker",
+      nav_tawheed: "Tawheed",
+      nav_fiqh: "Fiqh Basics",
+      nav_ramadan: "Ramadan & Fasting",
+      nav_hajj: "Hajj & Umrah",
+      /* Page titles */
+      page_welcome: 'Welcome to <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "the path")</span>',
+      page_roadmap: "New Muslim Roadmap",
+      page_essentials: "Core Topics",
+      page_duas: "Du'a Explorer",
+      page_quran: "Qur'an Reader",
+      page_quiz: "Knowledge Check",
+      page_prayertimes: "Prayer Times",
+      page_qibla: "Qibla Finder",
+      page_wudhu: "Wudhu & Salah",
+      page_dhikr: "Dhikr Counter",
+      page_qada: "Missed Prayers & Fasting",
+      page_hijri: "Islamic Calendar",
+      page_companion: "Pray Along — Real-Time Salah Guide",
+      page_arabic: "Learn to Read Arabic",
+      page_hifz: "Hifz — Memorization Tracker",
+      page_offline: "Offline Content Packs",
+      page_tawheed: "Tawheed — The Oneness of God",
+      page_fiqh: "Fiqh Basics",
+      page_ramadan: "Ramadan & Fasting",
+      page_hajj: "Hajj & Umrah",
+      page_practice: "Guided Practice",
+      page_today: "Today",
+      hero_title: 'Welcome to <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "the path")</span>',
+      /* Hero / welcome */
+      hero_greet: "Assalamu alaykum",
+      hero_sub: 'A quiet, private companion for <em>new Muslims and the curious</em>: the core beliefs, the five daily prayers, the Qibla, the calendar — everything cited from the Qur\'an and authenticated hadith, with differences between scholars stated honestly.',
+      /* Eyebrows */
+      roadmap_eyebrow: "Six first steps",
+      essentials_eyebrow: "14 foundational subjects",
+      quiz_eyebrow: "26 questions",
+      /* Key buttons & labels */
+      btn_calculate: "Calculate",
+      btn_start: "Start",
+      btn_reset: "Reset",
+      btn_save: "Save",
+      btn_search_ph: "Search topics…",
+      status_done_today: "All five done today",
+      status_recite_paused: "Recitation paused",
+      /* Footer */
+      footer_privacy: "Private & offline: nothing is saved or sent anywhere.",
+      footer_tip: "Tip: press 1–9 to jump between sections, / to search"
+    },
+
+    es: {
+      section_start: "Empezar Aquí",
+      section_essentials: "Fundamentos",
+      section_worship: "Herramientas de Adoración",
+      section_study: "Estudio",
+      nav_welcome: "Bienvenido",
+      nav_today: "Tareas de Hoy",
+      nav_roadmap: "Hoja de Ruta del Nuevo Musulmán",
+      nav_practice: "Práctica Guiada",
+      nav_essentials: "Temas Fundamentales",
+      nav_duas: "Explorador de Duas",
+      nav_quran: "Corán",
+      nav_quiz: "Verificación de Conocimiento",
+      nav_prayertimes: "Horarios de Oración",
+      nav_qibla: "Cibla",
+      nav_wudhu: "Wudhu y Salah",
+      nav_dhikr: "Contador de Dhikr",
+      nav_qada: "Oraciones Perdidas",
+      nav_companion: "Rezar Con…",
+      nav_hijri: "Calendario Islámico",
+      nav_arabic: "Lectura Árabe",
+      nav_hifz: "Rastreador de Hifz",
+      nav_tawheed: "Tawhid",
+      nav_fiqh: "Fiqh Básico",
+      nav_ramadan: "Ramadán y Ayuno",
+      nav_hajj: "Hajj y Umrah",
+      page_welcome: 'Bienvenido a <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "el camino")</span>',
+      page_roadmap: "Hoja de Ruta del Nuevo Musulmán",
+      page_essentials: "Temas Fundamentales",
+      page_duas: "Explorador de Duas",
+      page_quran: "Lector del Corán",
+      page_quiz: "Verificación de Conocimiento",
+      page_prayertimes: "Horarios de Oración",
+      page_qibla: "Cibla",
+      page_wudhu: "Wudhu y Salah",
+      page_dhikr: "Contador de Dhikr",
+      page_qada: "Oraciones Perdidas y Ayuno",
+      page_hijri: "Calendario Islámico",
+      page_companion: "Rezar Con — Guía en Tiempo Real",
+      page_arabic: "Aprende a Leer Árabe",
+      page_hifz: "Hifz — Rastreador de Memorización",
+      page_offline: "Paquetes de Contenido Offline",
+      page_tawheed: "Tawhid — La Unicidad de Dios",
+      page_fiqh: "Fiqh Básico",
+      page_ramadan: "Ramadán y Ayuno",
+      page_hajj: "Hajj y Umrah",
+      page_practice: "Práctica Guiada",
+      page_today: "Hoy",
+      hero_title: 'Bienvenido a <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "el camino")</span>',
+      hero_greet: "Assalamu alaykum",
+      hero_sub: 'Un compañero tranquilo y privado para <em>nuevos musulmanes y curiosos</em>: las creencias fundamentales, las cinco oraciones diarias, la Cibla, el calendario — todo citado del Corán y hadices autenticados.',
+      roadmap_eyebrow: "Seis primeros pasos",
+      essentials_eyebrow: "14 temas fundamentales",
+      quiz_eyebrow: "26 preguntas",
+      btn_calculate: "Calcular",
+      btn_start: "Iniciar",
+      btn_reset: "Reiniciar",
+      btn_save: "Guardar",
+      btn_search_ph: "Buscar temas…",
+      status_done_today: "Las cinco de hoy completadas",
+      status_recite_paused: "Recitación pausada",
+      footer_privacy: "Privado y sin conexión: nada se guarda ni se envía.",
+      footer_tip: "Consejo: presiona 1–9 para saltar entre secciones, / para buscar"
+    },
+
+    fr: {
+      section_start: "Commencer Ici",
+      section_essentials: "Essentiels",
+      section_worship: "Outils d'Adoration",
+      section_study: "Étude",
+      nav_welcome: "Bienvenue",
+      nav_today: "Aujourd'hui",
+      nav_roadmap: "Feuille de Route du Nouveau Musulman",
+      nav_practice: "Pratique Guidée",
+      nav_essentials: "Thèmes Essentiels",
+      nav_duas: "Explorateur de Duas",
+      nav_quran: "Coran",
+      nav_quiz: "Vérification des Connaissances",
+      nav_prayertimes: "Heures de Prière",
+      nav_qibla: "Qibla",
+      nav_wudhu: "Wudhu et Salah",
+      nav_dhikr: "Compteur de Dhikr",
+      nav_qada: "Prières Manquées",
+      nav_companion: "Prier Avec…",
+      nav_hijri: "Calendrier Islamique",
+      nav_arabic: "Lecture Arabe",
+      nav_hifz: "Suivi Hifz",
+      nav_tawheed: "Tawhid",
+      nav_fiqh: "Fiqh Fondamental",
+      nav_ramadan: "Ramadan et Jeûne",
+      nav_hajj: "Hajj et Omra",
+      page_welcome: 'Bienvenue sur <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "le chemin")</span>',
+      page_roadmap: "Feuille de Route du Nouveau Musulman",
+      page_essentials: "Thèmes Essentiels",
+      page_duas: "Explorateur de Duas",
+      page_quran: "Lecteur du Coran",
+      page_quiz: "Vérification des Connaissances",
+      page_prayertimes: "Heures de Prière",
+      page_qibla: "Qibla",
+      page_wudhu: "Wudhu et Salah",
+      page_dhikr: "Compteur de Dhikr",
+      page_qada: "Prières Manquées et Jeûne",
+      page_hijri: "Calendrier Islamique",
+      page_companion: "Prier Avec — Guide de Salah en Temps Réel",
+      page_arabic: "Apprendre à Lire l'Arabe",
+      page_hifz: "Hifz — Suivi de Mémorisation",
+      page_offline: "Packs de Contenu Hors Ligne",
+      page_tawheed: "Tawhid — L'Unicité de Dieu",
+      page_fiqh: "Fiqh Fondamental",
+      page_ramadan: "Ramadan et Jeûne",
+      page_hajj: "Hajj et Omra",
+      page_practice: "Pratique Guidée",
+      page_today: "Aujourd'hui",
+      hero_title: 'Bienvenue sur <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "le chemin")</span>',
+      hero_greet: "Assalamu alaykum",
+      hero_sub: 'Un compagnon discret et privé pour <em>les nouveaux musulmans et les curieux</em> : les croyances fondamentales, les cinq prières quotidiennes, la Qibla, le calendrier — tout cité du Coran et des hadiths authentifiés.',
+      roadmap_eyebrow: "Six premiers pas",
+      essentials_eyebrow: "14 sujets fondamentaux",
+      quiz_eyebrow: "26 questions",
+      btn_calculate: "Calculer",
+      btn_start: "Commencer",
+      btn_reset: "Réinitialiser",
+      btn_save: "Enregistrer",
+      btn_search_ph: "Rechercher des sujets…",
+      status_done_today: "Les cinq prières du jour terminées",
+      status_recite_paused: "Récitation en pause",
+      footer_privacy: "Privé et hors ligne : rien n'est enregistré ni envoyé.",
+      footer_tip: "Astuce : appuyez sur 1–9 pour naviguer, / pour rechercher"
+    },
+
+    tr: {
+      section_start: "Buradan Başlayın",
+      section_essentials: "Temel Bilgiler",
+      section_worship: "İbadet Araçları",
+      section_study: "Çalışma",
+      nav_welcome: "Hoş Geldiniz",
+      nav_today: "Bugünün Görevleri",
+      nav_roadmap: "Yeni Müslüman Yol Haritası",
+      nav_practice: "Yönlendirmeli Pratik",
+      nav_essentials: "Temel Konular",
+      nav_duas: "Dua Keşifçisi",
+      nav_quran: "Kur'an",
+      nav_quiz: "Bilgi Testi",
+      nav_prayertimes: "Namaz Vakitleri",
+      nav_qibla: "Kıble",
+      nav_wudhu: "Abdest ve Namaz",
+      nav_dhikr: "Zikir Sayacı",
+      nav_qada: "Kılınmayan Namazlar",
+      nav_companion: "Namaz Kıl…",
+      nav_hijri: "İslam Takvimi",
+      nav_arabic: "Arapça Okuma",
+      nav_hifz: "Hifz Takibi",
+      nav_tawheed: "Tevhid",
+      nav_fiqh: "Fıkıh Temelleri",
+      nav_ramadan: "Ramazan ve Oruç",
+      nav_hajj: "Hac ve Umre",
+      page_welcome: '<bdi lang="ar" dir="rtl">سبيل</bdi>\'e Hoş Geldiniz <span class="latin-name">(Sabeel — "yol")</span>',
+      page_roadmap: "Yeni Müslüman Yol Haritası",
+      page_essentials: "Temel Konular",
+      page_duas: "Dua Keşifçisi",
+      page_quran: "Kur'an Okuyucu",
+      page_quiz: "Bilgi Testi",
+      page_prayertimes: "Namaz Vakitleri",
+      page_qibla: "Kıble",
+      page_wudhu: "Abdest ve Namaz",
+      page_dhikr: "Zikir Sayacı",
+      page_qada: "Kılınmayan Namazlar ve Oruç",
+      page_hijri: "İslam Takvimi",
+      page_companion: "Namaz Kıl — Gerçek Zamanlı Namaz Rehberi",
+      page_arabic: "Arapçayı Öğrenin",
+      page_hifz: "Hifz — Ezber Takibi",
+      page_offline: "Çevrimdışı İçerik Paketleri",
+      page_tawheed: "Tevhid — Allah'ın Birliği",
+      page_fiqh: "Fıkıh Temelleri",
+      page_ramadan: "Ramazan ve Oruç",
+      page_hajj: "Hac ve Umre",
+      page_practice: "Yönlendirmeli Pratik",
+      page_today: "Bugün",
+      hero_title: '<bdi lang="ar" dir="rtl">سبيل</bdi>\'e Hoş Geldiniz <span class="latin-name">(Sabeel — "yol")</span>',
+      hero_greet: "Assalamu alaykum",
+      hero_sub: '<em>Yeni Müslümanlar ve meraklıları</em> için sessiz, özel bir yol arkadaşınız: temel inançlar, beş vakit namaz, Kıble, takvim — her şey Kur\'an ve sahih hadislerden nakledilmiştir.',
+      roadmap_eyebrow: "İlk altı adım",
+      essentials_eyebrow: "14 temel konu",
+      quiz_eyebrow: "26 soru",
+      btn_calculate: "Hesapla",
+      btn_start: "Başla",
+      btn_reset: "Sıfırla",
+      btn_save: "Kaydet",
+      btn_search_ph: "Konu ara…",
+      status_done_today: "Bugün beş vakit tamamlandı",
+      status_recite_paused: "Okuma duraklatıldı",
+      footer_privacy: "Özel ve çevrimdışı: hiçbir şey kaydedilmez veya gönderilmez.",
+      footer_tip: "İpucu: bölümler arası geçiş için 1–9, arama için / tuşuna basın"
+    },
+
+    ur: {
+      section_start: "یہاں سے شروع کریں",
+      section_essentials: "بنیادی اصول",
+      section_worship: "عبادت کے اوزار",
+      section_study: "مطالعہ",
+      nav_welcome: "خوش آمدید",
+      nav_today: "آج کے کام",
+      nav_roadmap: "نئے مسلمان رود میپ",
+      nav_practice: "رہنمائی مشق",
+      nav_essentials: "بنیادی موضوعات",
+      nav_duas: "دعا ایکسپلورر",
+      nav_quran: "قرآن",
+      nav_quiz: "علمی جانچ",
+      nav_prayertimes: "نماز کے اوقات",
+      nav_qibla: "قبلہ",
+      nav_wudhu: "وضوء و نماز",
+      nav_dhikr: "ذکر کاؤنٹر",
+      nav_qada: "قضا نمازیں",
+      nav_companion: "نماز پڑھیں۔۔۔",
+      nav_hijri: "اسلامی کیلنڈر",
+      nav_arabic: "عربی پڑھنا",
+      nav_hifz: "حفظ ٹریکر",
+      nav_tawheed: "توحید",
+      nav_fiqh: "فقہ کی بنیادیں",
+      nav_ramadan: "رمضان و روزہ",
+      nav_hajj: "حج و عمرہ",
+      page_welcome: '<bdi lang="ar" dir="rtl">سبيل</bdi> میں خوش آمدید <span class="latin-name">(سبیل — "راستہ")</span>',
+      page_roadmap: "نئے مسلمان رود میپ",
+      page_essentials: "بنیادی موضوعات",
+      page_duas: "دعا ایکسپلورر",
+      page_quran: "قرآن ریڈر",
+      page_quiz: "علمی جانچ",
+      page_prayertimes: "نماز کے اوقات",
+      page_qibla: "قبلہ",
+      page_wudhu: "وضوء و نماز",
+      page_dhikr: "ذکر کاؤنٹر",
+      page_qada: "قضا نمازیں و روزہ",
+      page_hijri: "اسلامی کیلنڈر",
+      page_companion: "نماز پڑھیں — حقیقی وقت نماز گائیڈ",
+      page_arabic: "عربی پڑھنا سیکھیں",
+      page_hifz: "حفظ — حفظ کا ٹریکر",
+      page_offline: "آف لائن مواد پیک",
+      page_tawheed: "توحید — اللہ کی وحدانیت",
+      page_fiqh: "فقہ کی بنیادیں",
+      page_ramadan: "رمضان و روزہ",
+      page_hajj: "حج و عمرہ",
+      page_practice: "رہنمائی مشق",
+      page_today: "آج",
+      hero_title: '<bdi lang="ar" dir="rtl">سبيل</bdi> میں خوش آمدید <span class="latin-name">(سبیل — "راستہ")</span>',
+      hero_greet: "السلام علیکم",
+      hero_sub: '<em>نئے مسلمانوں اور متجسسین</em> کے لیے ایک خاموش، نجی ساتھی: بنیادی عقائد، پانچ نمازیں، قبلہ، کیلنڈر — سب قرآن اور مستند احادیث سے ماخذ ہے۔',
+      roadmap_eyebrow: "پہلے چھ قدم",
+      essentials_eyebrow: "14 بنیادی موضوعات",
+      quiz_eyebrow: "26 سوالات",
+      btn_calculate: "حساب لگائیں",
+      btn_start: "شروع کریں",
+      btn_reset: "دوبارہ ترتیب",
+      btn_save: "محفوظ کریں",
+      btn_search_ph: "موضوعات تلاش کریں…",
+      status_done_today: "آج کی پانچ نمازیں مکمل",
+      status_recite_paused: "تلاش رک گئی",
+      footer_privacy: "نجی اور آف لائن: کچھ بھی محفوظ یا نہیں بھیجا جاتا۔",
+      footer_tip: "ٹپ: سیکشنز کے درمیان جانے کے لیے 1–9 دبائیں، تلاش کے لیے /"
+    },
+
+    ms: {
+      section_start: "Mulakan Di Sini",
+      section_essentials: "Asas",
+      section_worship: "Alatan Ibadah",
+      section_study: "Pembelajaran",
+      nav_welcome: "Selamat Datang",
+      nav_today: "Tugasan Hari Ini",
+      nav_roadmap: "Peta Jalan Baru Muslim",
+      nav_practice: "Amalan Terpandu",
+      nav_essentials: "Topik Utama",
+      nav_duas: "Peneroka Du'a",
+      nav_quran: "Al-Quran",
+      nav_quiz: "Semakan Pengetahuan",
+      nav_prayertimes: "Waktu Solat",
+      nav_qibla: "Qibla",
+      nav_wudhu: "Wudhu & Solat",
+      nav_dhikr: "Penghitung Dhikr",
+      nav_qada: "Solat Tertinggal",
+      nav_companion: "Solat Bersama…",
+      nav_hijri: "Kalendar Islam",
+      nav_arabic: "Pembacaan Arab",
+      nav_hifz: "Penjejak Hifz",
+      nav_tawheed: "Tawhid",
+      nav_fiqh: "Asas Fiqh",
+      nav_ramadan: "Ramadan & Puasa",
+      nav_hajj: "Haji & Umrah",
+      page_welcome: 'Selamat Datang ke <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "jalan")</span>',
+      page_roadmap: "Peta Jalan Baru Muslim",
+      page_essentials: "Topik Utama",
+      page_duas: "Peneroka Du'a",
+      page_quran: "Pembaca Al-Quran",
+      page_quiz: "Semakan Pengetahuan",
+      page_prayertimes: "Waktu Solat",
+      page_qibla: "Qibla",
+      page_wudhu: "Wudhu & Solat",
+      page_dhikr: "Penghitung Dhikr",
+      page_qada: "Solat Tertinggal & Puasa",
+      page_hijri: "Kalendar Islam",
+      page_companion: "Solat Bersama — Panduan Solat Masa Nyata",
+      page_arabic: "Belajar Membaca Arab",
+      page_hifz: "Hifz — Penjejak Hafalan",
+      page_offline: "Pek Kandungan Offlin",
+      page_tawheed: "Tawhid — Keesaan Tuhan",
+      page_fiqh: "Asas Fiqh",
+      page_ramadan: "Ramadan & Puasa",
+      page_hajj: "Haji & Umrah",
+      page_practice: "Amalan Terpandu",
+      page_today: "Hari Ini",
+      hero_title: 'Selamat Datang ke <bdi lang="ar" dir="rtl">سبيل</bdi> <span class="latin-name">(Sabeel — "jalan")</span>',
+      hero_greet: "Assalamu alaykum",
+      hero_sub: 'Rakan yang senyap dan peribadi untuk <em>Muslim baharu dan mereka yang ingin tahu</em>: kepercayaan asas, lima waktu solat, Qibla, kalendar — semuanya dirujuk dari Al-Quran dan hadis sahih.',
+      roadmap_eyebrow: "Enam langkah pertama",
+      essentials_eyebrow: "14 subjek asas",
+      quiz_eyebrow: "26 soalan",
+      btn_calculate: "Kira",
+      btn_start: "Mula",
+      btn_reset: "Tetapkan Semula",
+      btn_save: "Simpan",
+      btn_search_ph: "Cari topik…",
+      status_done_today: "Lima waktu hari ini selesai",
+      status_recite_paused: "Bacaan dijeda",
+      footer_privacy: "Peribadi dan offlin: tiada apa yang disimpan atau dihantar.",
+      footer_tip: "Petua: tekan 1–9 untuk melompat antara bahagian, / untuk mencari"
+    }
+  };
+
+  let currentLang = localStorage.getItem(LANG_KEY) || 'en';
+  if(!TRANSLATIONS[currentLang]) currentLang = 'en';
+
+  function t(key){
+    return (TRANSLATIONS[currentLang] && TRANSLATIONS[currentLang][key])
+      || (TRANSLATIONS.en && TRANSLATIONS.en[key])
+      || key;
+  }
+
+  function updateDataI18nElements(){
+    document.querySelectorAll('[data-i18n]').forEach(el=>{
+      const key = el.getAttribute('data-i18n');
+      const val = t(key);
+      if(val !== undefined){
+        if(el.tagName === 'INPUT' && el.type !== 'submit'){
+          if(el.hasAttribute('placeholder')) el.placeholder = val;
+        } else {
+          el.innerHTML = val;
+        }
+      }
+    });
+    /* update rail-btn text nodes (keep icons and pills) */
+    document.querySelectorAll('.rail-btn[data-i18n]').forEach(btn=>{
+      const key = btn.getAttribute('data-i18n');
+      const val = t(key);
+      if(val !== undefined){
+        /* find text nodes that are direct children (not inside SVG or span.new-pill) */
+        btn.childNodes.forEach(n=>{
+          if(n.nodeType === 3){
+            const trimmed = n.textContent.trim();
+            if(trimmed && trimmed !== 'New'){
+              n.textContent = '\n        ' + val + '\n      ';
+            }
+          }
+        });
+      }
+    });
+    /* update search placeholder */
+    const si = document.getElementById('railSearch');
+    if(si) si.placeholder = t('btn_search_ph');
+    /* update the html lang and dir */
+    const isRtl = currentLang === 'ur';
+    document.documentElement.setAttribute('lang', isRtl ? 'ur' : currentLang);
+    document.documentElement.setAttribute('dir', isRtl ? 'rtl' : 'ltr');
+  }
+
+  window.switchLanguage = function(lang){
+    if(!TRANSLATIONS[lang]) return;
+    currentLang = lang;
+    localStorage.setItem(LANG_KEY, lang);
+    const sel = document.getElementById('langSelect');
+    if(sel) sel.value = lang;
+    updateDataI18nElements();
+    /* update VIEW_TITLES for search */
+    if(typeof VIEW_TITLES !== 'undefined'){
+      VIEW_TITLES.welcome = t('page_welcome').replace(/<[^>]+>/g,'');
+      VIEW_TITLES.roadmap = t('page_roadmap');
+      VIEW_TITLES.essentials = t('page_essentials');
+      VIEW_TITLES.duas = t('page_duas');
+      VIEW_TITLES.quran = t('page_quran');
+      VIEW_TITLES.quiz = t('page_quiz');
+      VIEW_TITLES.prayertimes = t('page_prayertimes');
+      VIEW_TITLES.qibla = t('page_qibla');
+      VIEW_TITLES.wudhu = t('page_wudhu');
+      VIEW_TITLES.tawheed = t('page_tawheed');
+      VIEW_TITLES.fiqh = t('page_fiqh');
+      VIEW_TITLES.ramadan = t('page_ramadan');
+      VIEW_TITLES.hajj = t('page_hajj');
+      VIEW_TITLES.hifz = t('page_hifz');
+      VIEW_TITLES.arabic = t('page_arabic');
+      VIEW_TITLES.dhikr = t('page_dhikr');
+      VIEW_TITLES.qada = t('page_qada');
+      VIEW_TITLES.companion = t('page_companion');
+      VIEW_TITLES.practice = t('page_practice');
+      VIEW_TITLES.today = t('page_today');
+    }
+  };
+
+  /* expose t() globally */
+  window.sabeelT = t;
+
+  /* init on load */
+  const initLang = function(){
+    const sel = document.getElementById('langSelect');
+    if(sel) sel.value = currentLang;
+    updateDataI18nElements();
+  };
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', initLang);
+  } else {
+    initLang();
+  }
+})();
 </script>
 </body>
 </html>
