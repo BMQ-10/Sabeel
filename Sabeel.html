@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https://cdn.islamic.network https://verses.quran.com https://everyayah.com; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
 <title>سبيل Sabeel — Your Path Into Islam</title>
 <meta name="description" content="A private, offline reference for new Muslims: essentials, prayer times, Qibla, wudhu & salah, fiqh, Ramadan, Hajj.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -2601,9 +2601,13 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
     <!-- QUR'AN READER -->
     <section class="view" id="view-quran">
+      <div class="q-progress" aria-hidden="true"><div class="q-progress-fill" id="qProgressFill"></div></div>
       <div class="qwrap">
         <header class="top">
-          <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">Dark</button>
+          <div class="top-actions">
+            <button id="fsToggle" class="theme-toggle" type="button" aria-pressed="false" title="Fullscreen reading (F)">Fullscreen</button>
+            <button id="themeToggle" class="theme-toggle" type="button" aria-pressed="false">Dark</button>
+          </div>
           <div class="q-eyebrow">Recitation &amp; Translation</div>
           <h1 class="q-title" lang="ar" dir="rtl">القرآن الكريم</h1>
           <div class="subtitle">Verified reciter audio, synced word-by-word — no synthesized Qur'an speech</div>
@@ -2673,6 +2677,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
         <div id="status" class="status-line" aria-live="polite"></div>
         <div id="ayahList"></div>
+        <button id="qTopBtn" class="q-top-btn" type="button" title="Back to the first verse" aria-label="Back to top">&uarr;</button>
       </div>
 
       <footer class="qfoot">
@@ -4802,21 +4807,24 @@ function clearReviewFlags(){
   }
 
   // ---------- theme ----------
+  // Light is the default; the user's choice persists via quranTheme.
+  // NOTE: applyTheme stores the current state in quranDark — the toggle reads
+  // it directly. (Previously it read data-theme off <html>, which was never
+  // set, so the toggle could switch to dark but never back to light.)
+  let quranDark = false;
   function applyTheme(dark){
-    document.getElementById('view-quran').classList.toggle('qdark', dark);
-    themeToggle.textContent = dark ? 'Light' : 'Dark';
-    themeToggle.setAttribute('aria-pressed', String(dark));
-    storage.set('quranTheme', dark ? 'dark' : 'light');
+    quranDark = !!dark;
+    document.getElementById('view-quran').classList.toggle('qdark', quranDark);
+    themeToggle.textContent = quranDark ? 'Light' : 'Dark';
+    themeToggle.setAttribute('aria-pressed', String(quranDark));
+    storage.set('quranTheme', quranDark ? 'dark' : 'light');
   }
   (function initTheme(){
     const saved = storage.get('quranTheme');
-    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-    applyTheme(saved ? saved === 'dark' : prefersDark);
+    // Light by default; a previously saved preference always wins.
+    applyTheme(saved ? saved === 'dark' : false);
   })();
-  themeToggle.addEventListener('click', () => {
-    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-    applyTheme(!isDark);
-  });
+  themeToggle.addEventListener('click', () => applyTheme(!quranDark));
 
   // ---------- toggle chip styling + persisted settings ----------
   function syncChip(chip, checkbox){
@@ -4978,116 +4986,105 @@ function clearReviewFlags(){
     throw lastErr;
   }
 
-  // ---------- Live reciter verification ----------
-  // Fetches the actual recitations registry from api.quran.com and matches wanted reciters
-  // by name against it. Only reciters that are actually present, with a real numeric id,
-  // make it into the dropdown. This avoids ever trusting a guessed/hardcoded ID.
+  // ---------- Reciter dropdown ----------
+  // Numeric ids and names were verified directly against the live
+  // api.quran.com /resources/recitations registry (12 entries, stable).
+  // Maher Al-Muaiqly is NOT in that registry — his recitation is served from
+  // the local audio/ folder (or the Islamic Network CDN fallback), so he gets
+  // a local pseudo-id of 0: playback never needs the API when local audio or
+  // the CDN fallback is available.
+  const VERIFIED_RECITERS = [
+    { id: 0,  key: 'muaiqly',           label: 'Maher Al-Muaiqly' },
+    { id: 2,  key: 'basit',             label: 'Abdul Basit (Murattal)' },
+    { id: 1,  key: 'basit_mujawwad',    label: 'Abdul Basit (Mujawwad)' },
+    { id: 7,  key: 'afasy',             label: 'Mishary Alafasy' },
+    { id: 3,  key: 'sudais',            label: 'Abdur-Rahman As-Sudais' },
+    { id: 4,  key: 'shatri',            label: 'Abu Bakr Ash-Shatri' },
+    { id: 9,  key: 'minshawi',          label: 'Al-Minshawi (Murattal)' },
+    { id: 8,  key: 'minshawi_mujawwad', label: 'Al-Minshawi (Mujawwad)' },
+    { id: 6,  key: 'husary',            label: 'Mahmoud Al-Husary (Murattal)' },
+    { id: 12, key: 'husary_muallim',    label: 'Mahmoud Al-Husary (Muallim)' },
+    { id: 10, key: 'shuraim',           label: 'Saud Ash-Shuraym' },
+    { id: 5,  key: 'rifai',             label: 'Hani Ar-Rifai' },
+    { id: 11, key: 'tablawi',           label: 'Mohamed Al-Tablawi' }
+  ];
   async function loadVerifiedReciters(){
-    reciterSelect.innerHTML = '<option>Verifying reciters…</option>';
     reciterSelect.disabled = true;
-    try {
-      const data = await fetchJSON('https://api.quran.com/api/v4/resources/recitations?language=en');
-      const list = data.recitations || [];
-      const matched = [];
-      for (const wanted of WANTED_RECITERS){
-        const candidates = list.filter(r => wanted.match.test(r.reciter_name || (r.translated_name && r.translated_name.name) || ''));
-        if (!candidates.length) continue;
-        let chosen = candidates[0];
-        if (wanted.preferStyle){
-          const styled = candidates.find(c => wanted.preferStyle.test(c.style || ''));
-          if (styled) chosen = styled;
-        }
-        matched.push({
-          id: chosen.id,
-          key: wanted.key,
-          label: wanted.label,
-          style: chosen.style || '',
-          verifiedName: chosen.reciter_name || (chosen.translated_name && chosen.translated_name.name) || wanted.label
-        });
-      }
-      confirmedReciters = matched;
-      reciterSelect.innerHTML = '';
-      if (!matched.length){
-        // Fallback: registry reachable but none matched — surface every reciter so playback still works.
-        list.forEach(r => {
-          const opt = document.createElement('option');
-          opt.value = r.id;
-          opt.textContent = `${r.reciter_name || 'Reciter'}${r.style ? ' ('+r.style+')' : ''}`;
-          reciterSelect.appendChild(opt);
-        });
-        const basit = Array.from(reciterSelect.options).find(o => /basit|abdul/i.test(o.textContent));
-        if (basit) basit.selected = true;
-        setStatus('Could not match preferred reciters by name — showing full verified list instead.');
-      } else {
-        matched.forEach(r => {
-          const opt = document.createElement('option');
-          opt.value = r.id;
-          opt.dataset.key = r.key;
-          opt.textContent = `${r.label}${r.style ? ' · ' + r.style : ''}`;
-          opt.title = `Verified recitation id ${r.id} — "${r.verifiedName}"`;
-          reciterSelect.appendChild(opt);
-        });
-        // Default: Abdul Basit, or the user's previously chosen reciter.
-        // (No selector interpolation — a corrupted saved value must never make
-        // querySelector throw.)
-        const opts = Array.from(reciterSelect.options);
-        let desired = settings.reciter
-          ? opts.find(o => o.dataset.key === settings.reciter)
-          : null;
-        if (!desired) desired = opts.find(o => o.dataset.key === 'muaiqly');
-        if (desired) desired.selected = true;
-      }
-      const chosenOpt = reciterSelect.options[reciterSelect.selectedIndex];
-      if (chosenOpt && chosenOpt.dataset.key){
-        settings.reciter = chosenOpt.dataset.key;
-        saveSettings();
-      }
-      reciterSelect.disabled = false;
-    } catch (err){
-      /* API unreachable (file:// or offline) — provide hardcoded reciter list
-         so playback still works via the public CDN endpoints. */
-      const hardCoded = [
-        {id:1, label:'Maher Al-Muaiqly'},
-        {id:2, label:'Mishary Alafasy'},
-        {id:3, label:'Abdul Basit (Murattal)'},
-        {id:4, label:'Abdur-Rahman As-Sudais'},
-        {id:5, label:'Hudhaify'},
-        {id:7, label:'Muhammad Siddiq Al-Minshawi'},
-        {id:9, label:'Mahmoud Khalil Al-Husary'},
-        {id:11, label:'Ahmed Al Ajmi'},
-        {id:12, label:'Yasser Ad-Dussary'},
-        {id:13, label:'Abu Bakr Al-Shatri'},
-        {id:51, label:'Hani Ar-Rifai'},
-        {id:101, label:'Muhammad Ayyub'},
-      ];
-      reciterSelect.innerHTML = '';
-      hardCoded.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r.id;
-        opt.textContent = r.label;
-        reciterSelect.appendChild(opt);
-      });
-      /* Default to Maher Al-Muaiqly */
-      reciterSelect.selectedIndex = 0;
-      reciterSelect.disabled = false;
-      setStatus('Offline — showing built-in reciter list. Audio loads from the public CDN when available.', true);
-    }
+    reciterSelect.innerHTML = '';
+    confirmedReciters = VERIFIED_RECITERS.map(r => ({ id: r.id, key: r.key, label: r.label, style: '' }));
+    VERIFIED_RECITERS.forEach(r => {
+      const opt = document.createElement('option');
+      opt.value = r.id;
+      opt.dataset.key = r.key;
+      opt.textContent = r.label;
+      reciterSelect.appendChild(opt);
+    });
+    // Default: Maher Al-Muaiqly, or the user's previously chosen reciter.
+    // (No selector interpolation — a corrupted saved value must never make
+    // querySelector throw.)
+    const opts = Array.from(reciterSelect.options);
+    let desired = settings.reciter
+      ? opts.find(o => o.dataset.key === settings.reciter)
+      : null;
+    if (!desired) desired = opts.find(o => o.dataset.key === 'muaiqly');
+    if (desired) desired.selected = true;
+    settings.reciter = reciterSelect.options[reciterSelect.selectedIndex].dataset.key || '';
+    saveSettings();
+    reciterSelect.disabled = false;
+    // Warm the word-timing cache for the initial selection so the first
+    // Recite click highlights words instantly.
+    const lk = detectLocalKey(reciterSelect.value);
+    if (lk) loadSegmentData(lk).catch(() => {});
   }
 
   // ---------- Local audio + segment data ----------
   // When audio files exist under ./audio/{reciterDir}/ they are used instead of
-  // fetching from the CDN. Segment JSONs under ./segments/ provide word-level
-  // timing without any API call. If local files are missing the app falls back
-  // to the existing CDN/API paths seamlessly.
+  // fetching from the CDN. Word-timing scripts under ./segments/ provide
+  // word-precise segmentation without any API call (loaded via <script> tags so
+  // they work on file:// too). If local files are missing the app falls back to
+  // the existing CDN/API paths seamlessly.
   const LOCAL_RECITERS = {
-    muaiqly:  { dir: 'ar.mahermuaiqly',   segmentFile: 'MaherAlMuaiqly.json' },
-    afasy:    { dir: 'ar.alafasy',         segmentFile: 'Alafasy.json' },
-    shuraim:  { dir: 'ar.shuraim',         segmentFile: 'Shuraim.json' },
-    basit:    { dir: 'ar.abdulbasit',      segmentFile: 'AbdulBasit.json' }
+    muaiqly:           { dir: 'ar.mahermuaiqly',      segmentFile: 'MaherAlMuaiqly.js',   globalName: '__SEG_MaherAlMuaiqly' },
+    afasy:             { dir: 'ar.alafasy',            segmentFile: 'Alafasy.js',          globalName: '__SEG_Alafasy' },
+    shuraim:           { dir: 'ar.shuraim',            segmentFile: 'Shuraim.js',          globalName: '__SEG_Shuraim' },
+    basit:             { dir: 'ar.abdulbasit',         segmentFile: 'AbdulBasit.js',       globalName: '__SEG_AbdulBasit' },
+    basit_mujawwad:    { dir: 'ar.abdulbasitmujawwad', segmentFile: 'AbdulBasitMujawwad.js', globalName: '__SEG_AbdulBasitMujawwad' },
+    // NOTE: no 'sudais' entry — the quran-align release file for As-Sudais is
+    // corrupt (the author's alignment crashed mid-run). Sudais runs through the
+    // Quran.com API path, which supplies its own consistent audio + timing pair.
+    shatri:            { dir: 'ar.shatri',             segmentFile: 'Shatri.js',           globalName: '__SEG_Shatri' },
+    minshawi:          { dir: 'ar.minshawi',           segmentFile: 'Minshawi.js',         globalName: '__SEG_Minshawi' },
+    minshawi_mujawwad: { dir: 'ar.minshawimujawwad',   segmentFile: 'MinshawiMujawwad.js', globalName: '__SEG_MinshawiMujawwad' },
+    husary:            { dir: 'ar.husary',             segmentFile: 'Husary.js',           globalName: '__SEG_Husary' },
+    husary_muallim:    { dir: 'ar.husarymuallim',      segmentFile: 'HusaryMuallim.js',    globalName: '__SEG_HusaryMuallim' },
+    rifai:             { dir: 'ar.rifai',              segmentFile: 'Rifai.js',            globalName: '__SEG_Rifai' },
+    tablawi:           { dir: 'ar.tablawi',            segmentFile: 'Tablawi.js',          globalName: '__SEG_Tablawi' }
   };
   // In-memory cache: reciterKey → Map<"surah:ayah", entry>
   const segmentCache = new Map();
   const segmentLoading = new Map();
+  // Script-tag loading instead of fetch(): fetch() is blocked entirely on
+  // file:// (the "just open Sabeel.html" workflow), while <script src> works
+  // everywhere — http(s)://, file://, and through the service worker. Each
+  // segments/<Name>.js assigns its data array to window.__SEG_<Name>.
+  function loadSegmentScript(src){
+    return new Promise((resolve, reject) => {
+      const s = document.createElement('script');
+      let settled = false;
+      const finish = (ok) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        s.remove();
+        if (ok) resolve(); else reject(new Error('Failed to load ' + src));
+      };
+      const timer = setTimeout(() => finish(false), 20000);
+      s.onload = () => finish(true);
+      s.onerror = () => finish(false);
+      s.src = src;
+      document.head.appendChild(s);
+    });
+  }
   async function loadSegmentData(key){
     if (segmentCache.has(key)) return segmentCache.get(key);
     if (segmentLoading.has(key)) return segmentLoading.get(key);
@@ -5095,9 +5092,11 @@ function clearReviewFlags(){
     if (!info){ segmentCache.set(key, null); return null; }
     const p = (async () => {
       try {
-        const resp = await fetch(`./segments/${info.segmentFile}`);
-        if (!resp.ok) throw new Error(resp.status);
-        const data = await resp.json();
+        if (!window[info.globalName]){
+          await loadSegmentScript(`./segments/${info.segmentFile}`);
+        }
+        const data = window[info.globalName];
+        if (!Array.isArray(data) || !data.length) throw new Error('empty segment data');
         const idx = new Map();
         for (const entry of data){
           idx.set(`${entry.surah}:${entry.ayah}`, entry.segments || []);
@@ -5105,8 +5104,11 @@ function clearReviewFlags(){
         segmentCache.set(key, idx);
         return idx;
       } catch (e){
-        segmentCache.set(key, null);
+        // Deliberately NOT caching the failure — a later attempt (e.g. after
+        // the network returns or the server restarts) is allowed to retry.
         return null;
+      } finally {
+        segmentLoading.delete(key);
       }
     })();
     segmentLoading.set(key, p);
@@ -5126,51 +5128,93 @@ function clearReviewFlags(){
     return `./audio/${info.dir}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
   }
   async function checkLocalAudio(url){
+    // file:// cannot HEAD-fetch reliably — the <audio> element itself will tell
+    // us via its error handler (which retries with the CDN URL).
+    if (location.protocol === 'file:') return true;
     try {
       const resp = await fetch(url, { method: 'HEAD' });
       return resp.ok;
     } catch (e){ return false; }
+  }
+  // Local key → Islamic Network CDN edition + bitrate, used for fallback URLs
+  // when a local file is missing or when segments exist but audio doesn't.
+  // Every entry here was verified to return audio (HEAD 200) on that bitrate.
+  // Editions with no per-ayah CDN audio (shuraim, husary_muallim, basit_mujawwad,
+  // tablawi) are intentionally omitted — those reciters use the Quran.com API
+  // pair online and bare-CDN/TTS offline.
+  const LOCAL_TO_CDN = {
+    muaiqly:           { id: 'ar.mahermuaiqly',      br: 128 },
+    afasy:             { id: 'ar.alafasy',            br: 128 },
+    basit:             { id: 'ar.abdulbasitmurattal', br: 192 },
+    shatri:            { id: 'ar.shaatree',           br: 128 },
+    minshawi:          { id: 'ar.minshawi',           br: 128 },
+    minshawi_mujawwad: { id: 'ar.minshawimujawwad',   br: 64  },
+    husary:            { id: 'ar.husary',             br: 128 },
+    rifai:             { id: 'ar.hanirifai',          br: 192 }
+  };
+  // Editions with NO verified per-ayah CDN audio — mapped for detection only
+  // (local audio + API pairing still work for these reciters).
+  const LOCAL_EDITION_NO_CDN = {
+    shuraim:        'ar.saudalshuraim',
+    husary_muallim: 'ar.husarymuallim',
+    basit_mujawwad: 'ar.abdulbasitmujawwad',
+    tablawi:        'ar.mohamedtablawi'
+  };
+  // CDN edition → local key (covers the hardcoded/offline reciter dropdown,
+  // whose options carry no dataset.key).
+  const LOCAL_BY_CDN = {};
+  Object.keys(LOCAL_TO_CDN).forEach(k => { LOCAL_BY_CDN[LOCAL_TO_CDN[k].id] = k; });
+  Object.keys(LOCAL_EDITION_NO_CDN).forEach(k => { LOCAL_BY_CDN[LOCAL_EDITION_NO_CDN[k]] = k; });
+  // Best-effort detection of which local reciter (if any) the current
+  // reciterSelect selection corresponds to. Uses the option's dataset.key when
+  // verified, then the CDN id map, then a name match against WANTED_RECITERS.
+  // Murattal/Mujawwad styles are disambiguated via the style part of the
+  // option label (after the "·") so mujawwad timing never pairs with murattal
+  // audio and vice versa.
+  function detectLocalKey(reciterId){
+    const opt = reciterSelect.options[reciterSelect.selectedIndex];
+    if (opt && opt.dataset && opt.dataset.key && LOCAL_RECITERS[opt.dataset.key]) return opt.dataset.key;
+    const viaCdn = LOCAL_BY_CDN[CDN_RECITER_MAP[Number(reciterId)]];
+    if (viaCdn) return viaCdn;
+    const txt = (opt && opt.textContent) || '';
+    const stylePart = (txt.split('\u00b7')[1] || '').trim();
+    for (const w of WANTED_RECITERS){
+      if (!LOCAL_RECITERS[w.key] || !w.match.test(txt)) continue;
+      if (w.preferStyle && stylePart && !w.preferStyle.test(stylePart)) continue;
+      return w.key;
+    }
+    return null;
   }
 
   // Real per-word timing + audio from the Quran.com public content API (api.quran.com/api/v4).
   // Segment rows are [startWordIndex0based, endWordIndex1based, startMs, endMs] and a single
   // row may span several grouped words. Values may arrive as strings — normalise to numbers.
   // On file:// or offline, the API is unreachable — fall back to direct CDN URLs (no segments).
+  // Numeric ids verified against the live /resources/recitations registry (2026-08):
+  // 1 Basit Mujawwad, 2 Basit Murattal, 3 Sudais, 4 Shatri, 5 Rifai, 6 Husary,
+  // 7 Afasy, 8 Minshawi Mujawwad, 9 Minshawi Murattal, 10 Shuraym, 11 Tablawi, 12 Husary Muallim.
   const CDN_RECITER_MAP = {
-    1:'ar.mahermuaiqly', 2:'ar.alafasy', 3:'ar.abdulbasitmurattal',
-    4:'ar.husary', 5:'ar.husary', 7:'ar.minshawi', 9:'ar.husary',
-    11:'ar.alafasy', 12:'ar.yasseraldossari', 13:'ar.alafasy',
-    51:'ar.alafasy', 101:'ar.alafasy'
+    1:'ar.abdulbasitmujawwad', 2:'ar.abdulbasitmurattal', 3:'ar.abdurrahmaansudais',
+    4:'ar.shaatree', 5:'ar.hanirifai', 6:'ar.husary', 7:'ar.alafasy',
+    8:'ar.minshawimujawwad', 9:'ar.minshawi', 10:'ar.saudalshuraim',
+    11:'ar.mohamedtablawi', 12:'ar.husarymuallim'
   };
   async function fetchVerseAudioWithSegments(reciterId, surahNum, ayahNum){
     const verseKey = `${surahNum}:${ayahNum}`;
+    const localKey = detectLocalKey(reciterId);
+    const localInfo = localKey ? LOCAL_RECITERS[localKey] : null;
 
-    // --- Local path: check audio file + bundled segments first ---
-    // Map numeric Quran.com reciter ID → local reciter key via confirmedReciters.
-    const chosenOpt = reciterSelect.options[reciterSelect.selectedIndex];
-    const localKey = chosenOpt && chosenOpt.dataset.key;
-    if (localKey && LOCAL_RECITERS[localKey]){
+    // 1) Downloaded local audio + bundled word timing — instant, offline, and
+    //    the timings match these exact recordings. Preferred whenever present.
+    if (localInfo){
       const localUrl = localAudioUrl(localKey, surahNum, ayahNum);
-      const localSegs = await getLocalSegments(localKey, surahNum, ayahNum);
-      if (localUrl){
-        // HEAD-check is fast for local/same-origin files. If the file exists,
-        // return it immediately — no API call needed.
-        const exists = await checkLocalAudio(localUrl);
-        if (exists){
-          return { audioUrl: localUrl, segments: localSegs };
-        }
-      }
-      // If local file missing but we have segments, still worth using the
-      // segments with a CDN audio URL (best-effort hybrid).
-      if (localSegs){
-        const cdnId = CDN_RECITER_MAP[Number(reciterId)] || 'ar.mahermuaiqly';
-        const gNum = globalAyah(surahNum, ayahNum);
-        const audioUrl = `https://cdn.islamic.network/quran/audio/128/${cdnId}/${gNum}.mp3`;
-        return { audioUrl, segments: localSegs };
+      if (await checkLocalAudio(localUrl)){
+        const localSegs = await getLocalSegments(localKey, surahNum, ayahNum);
+        return { audioUrl: localUrl, segments: localSegs };
       }
     }
 
-    // --- Online path: fetch from Quran.com API ---
+    // 2) Quran.com API: audio + segments returned as one consistent pair.
     try {
       const url = `https://api.quran.com/api/v4/recitations/${reciterId}/by_ayah/${verseKey}?fields=segments`;
       const data = await fetchJSON(url);
@@ -5188,10 +5232,24 @@ function clearReviewFlags(){
       }
       return { audioUrl, segments };
     } catch (apiErr){
-      /* API unreachable (file://, offline, CORS) — build a direct CDN URL.
-         No segment timing is available, so word highlighting won't work,
-         but the audio will still play. */
-      const cdnId = CDN_RECITER_MAP[Number(reciterId)] || 'ar.mahermuaiqly';
+
+      // 3) API unreachable (file://, offline, CORS): bundled segments + the
+      //    matching CDN edition — same verse-by-verse recordings the timings
+      //    were measured against, so highlighting still tracks the audio.
+      if (localInfo){
+        const localSegs = await getLocalSegments(localKey, surahNum, ayahNum);
+        const cdn = LOCAL_TO_CDN[localKey];
+        if (localSegs && cdn){
+          const gNum = globalAyah(surahNum, ayahNum);
+          const audioUrl = `https://cdn.islamic.network/quran/audio/${cdn.br}/${cdn.id}/${gNum}.mp3`;
+          return { audioUrl, segments: localSegs };
+        }
+      }
+
+      // 4) Last resort: plain CDN audio, no timing (whole-verse highlight).
+      const cdnId = (localInfo && LOCAL_TO_CDN[localKey] ? LOCAL_TO_CDN[localKey].id : null)
+        || CDN_RECITER_MAP[Number(reciterId)]
+        || 'ar.mahermuaiqly';
       const gNum = globalAyah(surahNum, ayahNum);
       const audioUrl = `https://cdn.islamic.network/quran/audio/128/${cdnId}/${gNum}.mp3`;
       return { audioUrl, segments: null };
@@ -5816,6 +5874,23 @@ function clearReviewFlags(){
       // Only react for official verse playback; idle/preload failures of pooled
       // elements (and word-clip elements) must stay silent.
       if (currentAudio !== audio) return;
+      // Local file failed (missing audio/ folder or file:// quirk): retry once
+      // via the CDN before giving up.
+      const src = audio.currentSrc || audio.src || '';
+      if (!audio._cdnRetried && /audio[\/\\]/.test(src)){
+        audio._cdnRetried = true;
+        const lk = detectLocalKey(reciterSelect.value);
+        const cdn = lk ? LOCAL_TO_CDN[lk] : null;
+        const cdnId = (cdn && cdn.id)
+          || CDN_RECITER_MAP[Number(reciterSelect.value)]
+          || 'ar.mahermuaiqly';
+        const cdnBr = (cdn && cdn.br) || 128;
+        const ay = audio._entry ? audio._entry.numberInSurah : 1;
+        try { audio.currentTime = 0; } catch (e) {}
+        audio.src = `https://cdn.islamic.network/quran/audio/${cdnBr}/${cdnId}/${globalAyah(selectedSurah, ay)}.mp3`;
+        audio.play().catch(() => {});
+        return;
+      }
       const entry = audio._entry;
       if (entry){
         entry.playBtn.textContent = '▶ Recite';
@@ -5958,6 +6033,7 @@ function clearReviewFlags(){
     audio._entry = entry;
     audio._segments = info.segments;
     audio._playCount = 1;
+    audio._cdnRetried = false;
     try { if (audio.currentTime > 0 || audio.ended) audio.currentTime = 0; } catch (e) {}
 
     // Word-click seek: start recitation from a specific word (a segment row may
@@ -6240,10 +6316,19 @@ function clearReviewFlags(){
       : '';
     saveSettings();
     stopCurrentPlayback();
+    // Warm the word-timing cache for the newly chosen reciter so the first
+    // Recite click highlights words instantly instead of waiting on a fetch.
+    const lk = detectLocalKey(reciterSelect.value);
+    if (lk) loadSegmentData(lk).catch(() => {});
   });
 
   async function init(){
     await loadVerifiedReciters();
+    // Warm word-timing for the restored reciter too.
+    {
+      const lk = detectLocalKey(reciterSelect.value);
+      if (lk) loadSegmentData(lk).catch(() => {});
+    }
     // Restore the surah the user was last reading.
     settings.lastSurah = Math.min(SURAHS.length, Math.max(1, parseInt(settings.lastSurah, 10) || 1));
     selectedSurah = settings.lastSurah;
@@ -6251,6 +6336,34 @@ function clearReviewFlags(){
     if (s) surahInput.value = `${s.number}. ${s.en} — ${s.ar}`;
     loadSurah();
   }
+
+  // Exposed to the top-level script so partial-quote playback (playPartialAyah)
+  // can use the same bundled word timing + local audio as the reader.
+  window.__getLocalVerse = async function(key, s, a){
+    const info = LOCAL_RECITERS[key];
+    if (!info) return null;
+    const segs = await getLocalSegments(key, s, a);
+    if (!segs) return null;
+    const url = localAudioUrl(key, s, a);
+    if (await checkLocalAudio(url)) return { audioUrl: url, segments: segs };
+    const cdn = LOCAL_TO_CDN[key];
+    if (cdn){
+      return { audioUrl: `https://cdn.islamic.network/quran/audio/${cdn.br}/${cdn.id}/${globalAyah(s, a)}.mp3`, segments: segs };
+    }
+    return { audioUrl: null, segments: segs };
+  };
+  // Resolves a CDN edition string (e.g. 'ar.mahermuaiqly') to the verified
+  // numeric Quran.com recitation id, or null when unknown/unverified.
+  window.__quranReciterNumericId = function(cdnId){
+    let key = LOCAL_BY_CDN[cdnId];
+    if (!key){
+      const w = WANTED_RECITERS.find(w => w.match.test(cdnId || ''));
+      key = w && w.key;
+    }
+    if (!key) return null;
+    const m = confirmedReciters.find(r => r.key === key);
+    return m ? m.id : null;
+  };
 
   window.__initQuran = () => { if (!window.__quranBooted){ window.__quranBooted = true; init(); } };
 })();
@@ -7295,23 +7408,23 @@ for(let i=0;i<AYAH_COUNTS.length;i++) CUM_AYAHS.push(CUM_AYAHS[i] + AYAH_COUNTS[
 const globalAyah = (surah, ayah) => CUM_AYAHS[surah-1] + ayah;
 
 const RECITERS = [
-  {id:'ar.mahermuaiqly',       name:'Maher Al-Muaiqly',   localKey:'muaiqly'},
-  {id:'ar.alafasy',            name:'Mishary Alafasy',     localKey:'afasy'},
-  {id:'ar.saoodshuraym',       name:'Saud Al-Shuraim',     localKey:'shuraim'},
+  {id:'ar.mahermuaiqly',       name:'Maher Al-Muaiqly',   localKey:'muaiqly', localDir:'ar.mahermuaiqly'},
+  {id:'ar.alafasy',            name:'Mishary Alafasy',     localKey:'afasy',   localDir:'ar.alafasy'},
+  {id:'ar.saoodshuraym',       name:'Saud Al-Shuraim',     localKey:'shuraim', localDir:'ar.shuraim'},
   {id:'ar.yasseraldossari',    name:'Yasser Al-Dossari', everyayah:'Yasser_Ad-Dussary_128kbps'},
   {id:'ar.husary',             name:'Al-Husary'},
-  {id:'ar.abdulbasitmurattal', name:'Abdul Basit',         localKey:'basit'},
+  {id:'ar.abdulbasitmurattal', name:'Abdul Basit',         localKey:'basit',   localDir:'ar.abdulbasit'},
   {id:'ar.minshawi',           name:'Al-Minshawi'}
 ];
 /* Most reciters come from the Islamic Network CDN, addressed by GLOBAL ayah number.
    Yasser Al-Dossari is served by EveryAyah, which uses surah+ayah padded numbers
-   (e.g. 001001) — hence the dual URL builder. Both are HTTPS public services. */
+   (e.g. 001001) — hence the dual URL builder. Both are HTTPS public services.
+   Reciters with a localDir are served from the local ./audio/ folder first;
+   playNextAyah's error handler falls back to the CDN URL if the file is missing. */
 function reciterUrl(rec, surah, ayah){
-  /* Local audio: if the reciter has a localKey and the file exists locally, use it.
-     The URL is relative (./audio/...) so it works with same-origin serving. */
-  if(rec.localKey && LOCAL_RECITERS && LOCAL_RECITERS[rec.localKey]){
+  if(rec.localDir){
     const pad = (n,w)=> String(n).padStart(w,'0');
-    return `./audio/${LOCAL_RECITERS[rec.localKey].dir}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
+    return `./audio/${rec.localDir}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
   }
   if(rec.everyayah){
     const pad = (n,w)=> String(n).padStart(w,'0');
@@ -7484,20 +7597,41 @@ async function playPartialAyah(partialText, surah, ayah, btn, title){
   const reciter = RECITERS[reciterIdx];
   showRecPlayer();
   document.getElementById('rpTitle').textContent = title || 'Recitation';
-  document.getElementById('rpReciter').textContent = reciter.name + ' — loading\u2026';
+  document.getElementById('rpReciter').textContent = reciter.name + ' - loading\u2026';
   const mySession = recSession;
   try{
-    const [segResp, verseResp] = await Promise.all([
-      fetch('https://api.quran.com/api/v4/recitations/'+reciter.id+'/by_ayah/'+surah+':'+ayah+'?fields=segments'),
-      fetch('https://api.quran.com/api/v4/verses/by_key/'+surah+':'+ayah+'?words=true&language=en')
-    ]);
-    if(mySession !== recSession) return;
-    const segJson = await segResp.json();
-    const verseJson = await verseResp.json();
-    const af = segJson.audio_file;
-    const segs = af && af.segments;
+    /* Word timing: bundled local segments first (instant, offline, and measured
+       against the local recordings themselves). Only fall back to Quran.com —
+       with the VERIFIED NUMERIC reciter id, not the CDN string, which the
+       recitations endpoint would reject — when no local data exists. */
+    let segs = null, audioUrl = null;
+    if (reciter.localKey && window.__getLocalVerse){
+      const local = await window.__getLocalVerse(reciter.localKey, surah, ayah);
+      if (local && local.segments && local.segments.length && local.audioUrl){
+        segs = local.segments;
+        audioUrl = local.audioUrl;
+      }
+    }
+    let verseJson;
+    if (segs){
+      const vResp = await fetch('https://api.quran.com/api/v4/verses/by_key/'+surah+':'+ayah+'?words=true&language=en');
+      if(mySession !== recSession) return;
+      verseJson = await vResp.json();
+    } else {
+      const numId = window.__quranReciterNumericId ? window.__quranReciterNumericId(reciter.id) : null;
+      const [segResp, vResp] = await Promise.all([
+        fetch('https://api.quran.com/api/v4/recitations/'+(numId || reciter.id)+'/by_ayah/'+surah+':'+ayah+'?fields=segments'),
+        fetch('https://api.quran.com/api/v4/verses/by_key/'+surah+':'+ayah+'?words=true&language=en')
+      ]);
+      if(mySession !== recSession) return;
+      const segJson = await segResp.json();
+      verseJson = await vResp.json();
+      const af = segJson.audio_file;
+      segs = af && af.segments;
+      audioUrl = af && af.audio_url;
+    }
     const verse = verseJson.verse;
-    if(!segs || !segs.length || !verse || !verse.text_uthmani){
+    if(!segs || !segs.length || !verse || !verse.text_uthmani || !audioUrl){
       playRecitation([[surah,ayah]], partialText, btn, title);
       return;
     }
@@ -7528,7 +7662,7 @@ async function playPartialAyah(partialText, surah, ayah, btn, title){
     Recit.title = title || '';
     Recit.fallbackText = partialText || '';
     Recit.idx = 0;
-    Recit.queue = [af.audio_url];
+    Recit.queue = [audioUrl];
     Recit._partialSeek = startMs / 1000;
     Recit._partialEnd  = endMs  / 1000;
     Recit._partialDur  = durMs  / 1000;
@@ -7549,7 +7683,7 @@ async function playPartialAyah(partialText, surah, ayah, btn, title){
         hideRecPlayer();
       }
     };
-    a.src = af.audio_url;
+    a.src = audioUrl;
     a.playbackRate = Recit.rate;
     a.onloadeddata = ()=>{
       if(mySession !== recSession) return;
