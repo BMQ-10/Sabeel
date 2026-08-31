@@ -213,6 +213,7 @@ Write-Host ""
 Write-Host "  Per-reciter:" -ForegroundColor Cyan
 foreach ($r in $Reciters) {
     $cfg = $RecitersCfg[$r]
+    if (-not $cfg) { continue }   # unknown key — already warned during setup
     $dir = Join-Path $AudioRoot $cfg.Dir
     if (Test-Path $dir) {
         $mp3s  = Get-ChildItem $dir -Filter '*.mp3' -ErrorAction SilentlyContinue

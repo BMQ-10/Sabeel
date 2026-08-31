@@ -3,7 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https://cdn.islamic.network https://verses.quran.com https://everyayah.com; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
+<meta name="theme-color" content="#1F4B3F">
+<link rel="preconnect" href="https://api.quran.com" crossorigin>
+<link rel="preconnect" href="https://api.alquran.cloud" crossorigin>
+<link rel="preconnect" href="https://cdn.islamic.network" crossorigin>
+<link rel="preconnect" href="https://everyayah.com" crossorigin>
 <title>سبيل Sabeel — Your Path Into Islam</title>
 <meta name="description" content="A private, offline reference for new Muslims: essentials, prayer times, Qibla, wudhu & salah, fiqh, Ramadan, Hajj.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -509,7 +514,7 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .spk-btn .spk-label{font-size:11px;}
 .spk-btn.busy{opacity:0.7;pointer-events:none;}
 /* inline placements — keep layout tidy */
-.source-quote .arabic .spk-btn{margin-right:8px;vertical-align:middle;}
+.source-quote .arabic .spk-btn{margin-right:12px;vertical-align:middle;}
 .hero-verse .ar .spk-btn,.hero-bismillah-row .spk-btn{
   width:30px;height:30px;padding:0;justify-content:center;border-radius:50%;
 }
@@ -708,6 +713,12 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .quiz-card:hover{border-color:var(--line-soft);}
 .quiz-q-word{font-family:var(--serif);font-size:28px;color:var(--ink);margin-bottom:4px;}
 .quiz-q-arabic{font-family:var(--serif);font-size:20px;color:var(--gold);direction:rtl;margin-bottom:18px;}
+/* The Listen buttons are injected inside these blocks — give them proper
+   spacing instead of colliding with the term text. */
+.quiz-q-word,.quiz-q-arabic,.detail-arabic{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;
+}
+.quiz-q-word .spk-btn,.quiz-q-arabic .spk-btn,.detail-arabic .spk-btn{flex-shrink:0;}
 .quiz-q-prompt{font-size:13px;color:var(--text-muted);margin-bottom:16px;}
 .quiz-options{display:flex;flex-direction:column;gap:9px;}
 .quiz-opt{
@@ -1617,9 +1628,11 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 /* ===== QURAN LOOK & FEEL UPGRADES ===== */
 #view-quran header.top .theme-toggle{position:static;}
 #view-quran .top-actions{position:absolute;top:0;right:0;display:flex;gap:8px;}
-/* Reading progress bar — sticky under the very top edge while the surah scrolls */
+/* Reading progress bar — sticky under the very top edge while the surah scrolls.
+   Invisible at rest, fades in only once the verses start scrolling. */
 #view-quran .q-progress{position:sticky;top:0;z-index:36;height:3px;pointer-events:none;background:transparent;}
-#view-quran .q-progress-fill{height:100%;width:0%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--qgreen),var(--qgold));transition:width .15s linear;}
+#view-quran .q-progress-fill{height:100%;width:0%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--qgreen),var(--qgold));transition:width .15s linear;opacity:0;}
+#view-quran .q-progress.scrolling .q-progress-fill{opacity:1;}
 /* Controls stay reachable on long surahs */
 #view-quran .controls{position:sticky;top:6px;z-index:30;box-shadow:0 10px 26px var(--qshadow);}
 #view-quran .surah-dropdown{z-index:50;}
@@ -1643,23 +1656,44 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 #view-quran .arabic-line .end-mark{
   background:linear-gradient(135deg,var(--qgold3),transparent);
 }
-/* Back to top */
-#view-quran .q-top-btn{
+/* Reading pill — scroll-aware position readout; tapping it returns to the
+   first verse. Replaces both the old top progress sliver and the plain
+   back-to-top button. */
+#view-quran .q-read-pill{
   position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));
-  width:40px;height:40px;border-radius:50%;border:1px solid var(--qline);
-  background:var(--qcard);color:var(--qink2);font-size:17px;line-height:1;cursor:pointer;
-  box-shadow:0 8px 20px var(--qshadow);z-index:70;opacity:0;pointer-events:none;
-  transform:translateY(8px);transition:opacity .2s ease,transform .2s ease,color .15s ease,border-color .15s ease;
+  display:flex;align-items:center;gap:9px;
+  padding:7px 14px 9px 8px;border-radius:22px;
+  border:1px solid var(--qline);background:var(--qcard);
+  box-shadow:0 10px 26px var(--qshadow);cursor:pointer;
+  font-family:var(--sans);z-index:70;overflow:hidden;
+  opacity:0;pointer-events:none;transform:translateY(10px);
+  transition:opacity .25s ease,transform .25s ease,border-color .15s ease,box-shadow .2s ease;
 }
-#view-quran .q-top-btn.visible{opacity:1;pointer-events:auto;transform:translateY(0);}
-#view-quran .q-top-btn:hover{color:var(--qgreen);border-color:var(--qgreen2);}
+#view-quran .q-read-pill.visible{opacity:1;pointer-events:auto;transform:translateY(0);}
+#view-quran .q-read-pill:hover{border-color:var(--qgreen2);box-shadow:0 12px 30px var(--qshadow);transform:translateY(-2px);}
+#view-quran .q-read-pill:active{transform:translateY(0) scale(.97);}
+#view-quran .q-read-pill .qrp-arrow{
+  width:28px;height:28px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--qgreen),var(--qgreen2));
+  color:#fff;font-size:14px;line-height:1;
+}
+#view-quran .q-read-pill .qrp-info{display:flex;flex-direction:column;align-items:flex-start;gap:1px;min-width:84px;}
+#view-quran .q-read-pill .qrp-surah{font-size:12px;font-weight:700;color:var(--qgreen);white-space:nowrap;}
+#view-quran .q-read-pill .qrp-meta{font-size:10.5px;color:var(--qink3);font-variant-numeric:tabular-nums;white-space:nowrap;}
+#view-quran .q-read-pill .qrp-bar{position:absolute;left:0;right:0;bottom:0;height:2px;background:var(--qpd);}
+#view-quran .q-read-pill .qrp-bar-fill{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--qgreen),var(--qgold));transition:width .15s linear;}
+@media (prefers-reduced-motion:reduce){
+  #view-quran .q-read-pill{transition:opacity .2s ease;}
+  #view-quran .q-read-pill:hover{transform:none;}
+}
 /* Fullscreen reading */
 #view-quran:fullscreen,#view-quran:-webkit-full-screen{
   overflow-y:auto;background:var(--qp);padding:20px 0 110px;
 }
 #view-quran:fullscreen .qwrap,#view-quran:-webkit-full-screen .qwrap{max-width:940px;}
 #view-quran:fullscreen .controls,#view-quran:-webkit-full-screen .controls{top:4px;}
-#view-quran:fullscreen .q-top-btn,#view-quran:-webkit-full-screen .q-top-btn{right:26px;bottom:26px;}
+#view-quran:fullscreen .q-read-pill,#view-quran:-webkit-full-screen .q-read-pill{right:26px;bottom:26px;}
 /* ===== MODERN FIELD & BUTTON POLISH (app-wide) ===== */
 input,select,textarea{transition:border-color .16s ease,box-shadow .18s ease,background .16s ease;}
 input:hover,select:hover{border-color:var(--green-bright);}
@@ -1685,7 +1719,6 @@ button:active{transform:scale(0.97);}
 #view-quran .toggle-chip{transition:all .18s ease;}
 #view-quran .toggle-chip:hover{transform:translateY(-1px);border-color:var(--qgreen2);}
 #view-quran .toggle-chip:active{transform:scale(0.95);}
-#view-quran .q-top-btn:active{transform:translateY(0) scale(0.92);}
 #view-quran .surah-dropdown.open{animation:qDropIn .18s ease;}
 @keyframes qDropIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
 @media (prefers-reduced-motion:reduce){
@@ -1820,7 +1853,10 @@ button:active{transform:scale(0.97);}
   .tool-row select.tool-input{flex:1 1 100%;}
   .search-box{padding:10px 12px;}
   .search-box kbd{display:none;}
-  .spk-btn{width:32px;height:32px;}
+  /* Bigger tap targets on touch-size screens. min-* (not fixed w/h): icon-only
+     buttons still hit 32px, but LABELED buttons ("Listen"/"Recite") grow to fit
+     their content — fixed 32px made the label overflow outside the pill. */
+  .spk-btn{min-width:32px;min-height:32px;}
   .spk-btn svg{width:16px;height:16px;}
 
   /* compass scales to narrow screens */
@@ -1866,8 +1902,8 @@ button:active{transform:scale(0.97);}
   user-select:none;-webkit-user-select:none;
 }
 .hifz-tile:hover{transform:scale(1.15);z-index:2;box-shadow:var(--shadow-sm);}
-.hifz-tile.partial{background:#fef3cd;border-color:#e0c36a;color:#856404;}
-.hifz-tile.memorized{background:#d1e7dd;border-color:#6db89a;color:#0f5132;}
+.hifz-tile.partial{background:linear-gradient(135deg,#fef3cd,#f8e9b0);border-color:#e0c36a;color:#856404;}
+.hifz-tile.memorized{background:linear-gradient(135deg,#d1e7dd,#b9ddc9);border-color:#6db89a;color:#0f5132;}
 .hifz-tile.tested{background:#2E7D5B;border-color:#1C4A38;color:#fff;}
 .hifz-tile .tile-tip{
   position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);
@@ -1913,6 +1949,117 @@ button:active{transform:scale(0.97);}
   font-size:13px;color:var(--ink-soft);line-height:1.6;
 }
 .hifz-quote b{color:var(--green-deep);}
+
+/* ===== HIJRI CALENDAR ===== */
+.hijri-hero{
+  position:relative;overflow:hidden;text-align:center;
+  background:linear-gradient(135deg,rgba(46,125,91,0.10),rgba(196,158,84,0.10));
+  border:1px solid rgba(217,179,106,0.35);border-radius:var(--radius);
+  padding:28px 20px 24px;box-shadow:var(--shadow-sm);
+  animation:heroIn .45s cubic-bezier(.22,.9,.35,1);
+}
+@keyframes heroIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+.hijri-hero::before{
+  content:'';position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(196,158,84,0.25),transparent 70%);pointer-events:none;
+}
+.hijri-hero .hh-greg{font-family:var(--sans);font-size:13px;color:var(--text-muted);letter-spacing:.4px;}
+.hijri-hero .hh-ar{
+  font-family:var(--serif);font-size:clamp(30px,5.4vw,42px);color:var(--gold-deep);
+  margin:10px 0 6px;line-height:1.5;
+}
+.hijri-hero .hh-en{font-family:var(--sans);font-size:17px;font-weight:700;color:var(--ink);}
+.hijri-hero .hh-monthbar{
+  height:5px;border-radius:6px;background:var(--line-soft);overflow:hidden;
+  max-width:320px;margin:16px auto 6px;
+}
+.hijri-hero .hh-monthbar-fill{
+  display:block;height:100%;border-radius:6px;
+  background:linear-gradient(90deg,var(--green),var(--gold));
+  transition:width .6s var(--ease-soft);
+}
+.hijri-hero .hh-monthmeta{font-family:var(--sans);font-size:12px;color:var(--text-muted);font-variant-numeric:tabular-nums;}
+.hijri-up-title{
+  font-family:var(--sans);font-size:12px;text-transform:uppercase;letter-spacing:1.4px;
+  color:var(--text-muted);margin:26px 0 10px;font-weight:700;
+}
+.hijri-event{
+  display:flex;gap:14px;align-items:flex-start;
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;margin-bottom:8px;box-shadow:var(--shadow-sm);
+  transition:transform var(--dur-fast) ease,box-shadow var(--dur-fast) ease,border-color var(--dur-fast) ease;
+  animation:heroIn .4s ease backwards;
+}
+.hijri-event:nth-child(2){animation-delay:.04s;}
+.hijri-event:nth-child(3){animation-delay:.08s;}
+.hijri-event:nth-child(4){animation-delay:.12s;}
+.hijri-event:nth-child(5){animation-delay:.16s;}
+.hijri-event:nth-child(6){animation-delay:.2s;}
+.hijri-event:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);border-color:var(--gold);}
+.hijri-event.today{border-color:var(--green);background:linear-gradient(135deg,rgba(46,125,91,0.08),var(--card) 60%);}
+.hijri-event .he-when{
+  flex-shrink:0;min-width:92px;text-align:center;
+  border-right:1px dashed var(--line);padding-right:14px;
+}
+.hijri-event .he-when b{
+  display:block;font-family:var(--sans);font-size:13px;color:var(--green-deep);
+}
+.hijri-event.today .he-when b{color:var(--gold-deep);}
+.hijri-event .he-when span{display:block;font-family:var(--sans);font-size:11px;color:var(--text-muted);margin-top:3px;font-variant-numeric:tabular-nums;}
+.hijri-event .he-body b{font-family:var(--sans);font-size:14px;color:var(--ink);display:block;margin-bottom:3px;}
+.hijri-event .he-body p{margin:0;font-size:12.5px;color:var(--ink-soft);line-height:1.55;}
+.hijri-months-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;}
+.hijri-month{
+  background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:10px 12px;transition:transform var(--dur-fast) ease,border-color var(--dur-fast) ease,box-shadow var(--dur-fast) ease;
+}
+.hijri-month:hover{transform:translateY(-2px);box-shadow:var(--shadow-sm);}
+.hijri-month.current{border-color:var(--gold);background:linear-gradient(135deg,rgba(196,158,84,0.12),var(--card) 70%);}
+.hijri-month .hm-en{font-family:var(--sans);font-size:13px;font-weight:700;color:var(--ink);}
+.hijri-month .hm-ar{font-family:var(--serif);font-size:13px;color:var(--ink-soft);margin-top:2px;}
+.hijri-month .hm-cur{font-family:var(--sans);font-size:10px;color:var(--gold-deep);font-weight:800;letter-spacing:.5px;margin-top:4px;}
+
+/* ===== ARABIC COURSE overall progress ===== */
+.arabic-overall{margin:2px 0 12px;}
+.arabic-overall-bar{
+  height:8px;border-radius:8px;background:var(--bg-deep);overflow:hidden;
+  border:1px solid var(--line);
+}
+.arabic-overall-fill{
+  display:block;height:100%;border-radius:8px;
+  background:linear-gradient(90deg,var(--green),var(--gold));
+  transition:width .6s var(--ease-soft);
+}
+.arabic-overall-label{
+  font-family:var(--sans);font-size:11.5px;color:var(--text-muted);
+  margin-top:5px;text-align:center;font-variant-numeric:tabular-nums;
+}
+
+/* ===== HIFZ overall progress + legend ===== */
+.hifz-overall{width:100%;margin-bottom:10px;}
+.hifz-overall-head{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:var(--sans);font-size:12.5px;color:var(--ink-soft);margin-bottom:5px;
+}
+.hifz-overall-head b{font-size:16px;color:var(--green-deep);font-variant-numeric:tabular-nums;}
+.hifz-overall-bar{height:9px;border-radius:8px;background:var(--bg-deep);border:1px solid var(--line);overflow:hidden;}
+.hifz-overall-bar span{
+  display:block;height:100%;border-radius:8px;
+  background:linear-gradient(90deg,var(--green),var(--gold));
+  transition:width .6s var(--ease-soft);
+}
+.hifz-legend{
+  display:flex;gap:14px;flex-wrap:wrap;justify-content:center;
+  font-family:var(--sans);font-size:11.5px;color:var(--text-muted);margin:-8px 0 20px;
+}
+.hifz-legend .lg{
+  display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;
+  vertical-align:-1px;border:1px solid var(--line);
+}
+.hifz-legend .lg-none{background:var(--bg-deep);}
+.hifz-legend .lg-partial{background:#fef3cd;border-color:#e0c36a;}
+.hifz-legend .lg-mem{background:#d1e7dd;border-color:#6db89a;}
+.hifz-legend .lg-tested{background:#2E7D5B;border-color:#1C4A38;}
 
 /* ===== HOVER / FOCUS CLARITY ===== */
 
@@ -2775,7 +2922,14 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
         <div id="status" class="status-line" aria-live="polite"></div>
         <div id="ayahList"></div>
-        <button id="qTopBtn" class="q-top-btn" type="button" title="Back to the first verse" aria-label="Back to top">&uarr;</button>
+        <button id="qTopBtn" class="q-read-pill" type="button" title="Back to the first verse" aria-label="Back to top - shows your reading position">
+          <span class="qrp-arrow">&uarr;</span>
+          <span class="qrp-info">
+            <span class="qrp-surah" id="qrpSurah">—</span>
+            <span class="qrp-meta"><span id="qrpVerse">verse —</span> · <span id="qrpPct">0%</span></span>
+          </span>
+          <span class="qrp-bar" aria-hidden="true"><span class="qrp-bar-fill" id="qrpBarFill"></span></span>
+        </button>
       </div>
 
       <footer class="qfoot">
@@ -2853,10 +3007,10 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
     <section class="view" id="view-hijri">
       <div class="eyebrow"><span class="dot"></span>Islamic date</div>
       <h1 class="page-title" data-i18n="page_hijri">Islamic Calendar</h1>
-      <p class="page-lede">Hijri dates computed locally — no internet needed. Flags important Islamic occasions.</p>
-      <div id="hijriToday" class="rq-card" style="text-align:center;padding:24px;"></div>
-      <div id="hijriEvents" style="margin-top:16px;"></div>
-      <div id="hijriMonths" style="margin-top:20px;"></div>
+      <p class="page-lede">Hijri dates computed locally — no internet needed, accurate anywhere in the world. Tracks upcoming Islamic occasions with countdowns.</p>
+      <div id="hijriToday" class="hijri-hero"></div>
+      <div id="hijriEvents"></div>
+      <div id="hijriMonths"></div>
     </section>
 
     <!-- PRAY ALONG COMPANION -->
@@ -3005,6 +3159,12 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
       <div id="hifzGridWrap">
         <div class="hifz-grid" id="hifzGrid"></div>
+        <div class="hifz-legend">
+          <span><i class="lg lg-none"></i>Untouched</span>
+          <span><i class="lg lg-partial"></i>Partial</span>
+          <span><i class="lg lg-mem"></i>Memorized</span>
+          <span><i class="lg lg-tested"></i>Tested</span>
+        </div>
       </div>
 
       <div id="hifzTest" class="hifz-test-area" style="display:none;"></div>
@@ -4820,6 +4980,16 @@ function clearReviewFlags(){
         const c = await caches.open(QCACHE);
         const hit = await c.match(url);
         if (hit){
+          // Cap the blob cache: blob URLs hold decoded audio in memory, so an
+          // unbounded map would leak over a long session. The oldest entry is
+          // revoked; if a pooled audio still referenced it, its error handler
+          // falls back to the CDN URL gracefully.
+          if (blobUrlCache.size > 40){
+            const oldestKey = blobUrlCache.keys().next().value;
+            const oldestUrl = blobUrlCache.get(oldestKey);
+            blobUrlCache.delete(oldestKey);
+            try { URL.revokeObjectURL(oldestUrl); } catch (e) {}
+          }
           const blob = await hit.blob();
           const u = URL.createObjectURL(blob);
           blobUrlCache.set(url, u);
@@ -5707,7 +5877,7 @@ function clearReviewFlags(){
         box.appendChild(document.createTextNode('Could not load this surah. '));
         const retry = document.createElement('button');
         retry.type = 'button';
-        retry.className = 'primary';
+        retry.className = 'qbtn primary';
         retry.textContent = '↻ Retry';
         retry.addEventListener('click', loadSurah);
         box.appendChild(retry);
@@ -5718,7 +5888,9 @@ function clearReviewFlags(){
       if (seq === loadSeq) loadBtn.disabled = false;
       // Refresh the reading progress bar and back-to-top state for the new surah.
       try { updateQProgress(); } catch (e) {}
-      window.scrollTo({ top: 0, behavior: 'auto' });
+      const sc = (typeof qScroller === 'function') ? qScroller() : null;
+      if (sc) sc.scrollTo({ top: 0, behavior: 'auto' });
+      else window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }
 
@@ -6403,31 +6575,80 @@ function clearReviewFlags(){
     document.addEventListener('webkitfullscreenchange', syncFsButton);
   }
 
-  // ---------- reading progress + back to top ----------
+  // ---------- reading progress bar + pill (position, progress, back to top) ----------
+  const qProgressEl = document.querySelector('#view-quran .q-progress');
   const qProgressFill = document.getElementById('qProgressFill');
-  const qTopBtn = document.getElementById('qTopBtn');
+  const qPill = document.getElementById('qTopBtn');
+  const qrpSurah = document.getElementById('qrpSurah');
+  const qrpVerse = document.getElementById('qrpVerse');
+  const qrpPct = document.getElementById('qrpPct');
+  const qrpBarFill = document.getElementById('qrpBarFill');
+  function quranPillName(){
+    const s = (typeof SURAHS !== 'undefined') ? SURAHS.find(x => x.number === selectedSurah) : null;
+    return s ? s.en : 'Qur\u2019an';
+  }
+  // Cards are ordered top→bottom, so a binary search finds the card covering
+  // the viewport midline in ~9 rect reads regardless of surah length.
+  function estimateCurrentVerse(viewH){
+    if (!currentAyahCards.length) return null;
+    const mid = viewH * 0.5;
+    let lo = 0, hi = currentAyahCards.length - 1, ans = null;
+    while (lo <= hi){
+      const midIdx = (lo + hi) >> 1;
+      const r = currentAyahCards[midIdx].card.getBoundingClientRect();
+      if (r.top <= mid){ ans = currentAyahCards[midIdx].numberInSurah; lo = midIdx + 1; }
+      else hi = midIdx - 1;
+    }
+    return ans;
+  }
   function updateQProgress(){
     const rect = ayahList.getBoundingClientRect();
     const viewH = window.innerHeight || document.documentElement.clientHeight;
-    if (rect.height < 40){ if (qProgressFill) qProgressFill.style.width = '0%'; return; }
     // 0% when the list's top reaches the viewport's upper half, 100% when its
-    // bottom does — so the bar starts empty and ends exactly full.
+    // bottom does — the bar starts empty and ends exactly full.
     const total = Math.max(rect.height - viewH * 0.5, 1);
     const passed = Math.min(Math.max(viewH * 0.5 - rect.top, 0), total);
-    if (qProgressFill) qProgressFill.style.width = Math.round((passed / total) * 100) + '%';
-    if (qTopBtn) qTopBtn.classList.toggle('visible', rect.top < -(viewH * 0.75));
+    const pct = Math.min(100, Math.max(0, Math.round((passed / total) * 100)));
+    const scrolled = rect.height >= 40 && rect.top < -(viewH * 0.35);
+    // Top bar: full width of the section, fades in only while actually reading.
+    if (qProgressEl) qProgressEl.classList.toggle('scrolling', scrolled);
+    if (qProgressFill) qProgressFill.style.width = pct + '%';
+    // Pill: appears deeper into the surah.
+    const show = rect.height >= 40 && rect.top < -(viewH * 0.55);
+    if (qPill) qPill.classList.toggle('visible', show);
+    if (!show){
+      if (qrpBarFill) qrpBarFill.style.width = '0%';
+      return;
+    }
+    // "Aware": while reciting, show the EXACT playing verse; otherwise
+    // estimate from the scroll position.
+    let verseNum = currentPlayingCard ? parseInt(currentPlayingCard.dataset.ayahNumber, 10) : null;
+    if (!verseNum) verseNum = estimateCurrentVerse(viewH);
+    if (qrpSurah) qrpSurah.textContent = quranPillName();
+    if (qrpVerse) qrpVerse.textContent = verseNum ? ('verse ' + verseNum) : 'verse —';
+    if (qrpPct) qrpPct.textContent = pct + '%';
+    if (qrpBarFill) qrpBarFill.style.width = pct + '%';
   }
   let qProgressRaf = 0;
-  window.addEventListener('scroll', () => {
+  // In fullscreen the #view-quran element itself is the scroll container; in
+  // normal mode the window scrolls. The pill must handle both.
+  function qScroller(){
+    return quranFsElement() ? document.getElementById('view-quran') : null;
+  }
+  function qOnScroll(){
     if (!document.getElementById('view-quran').classList.contains('active')) return;
     if (!qProgressRaf) qProgressRaf = requestAnimationFrame(() => { qProgressRaf = 0; updateQProgress(); });
-  }, { passive: true });
+  }
+  window.addEventListener('scroll', qOnScroll, { passive: true });
+  document.getElementById('view-quran').addEventListener('scroll', qOnScroll, { passive: true });
   window.addEventListener('resize', () => {
     if (!document.getElementById('view-quran').classList.contains('active')) return;
     updateQProgress();
   });
-  if (qTopBtn){
-    qTopBtn.addEventListener('click', () => {
+  if (qPill){
+    qPill.addEventListener('click', () => {
+      const sc = qScroller();
+      if (sc){ sc.scrollTo({ top: 0, behavior: 'smooth' }); return; }
       const y = ayahList.getBoundingClientRect().top + window.scrollY - 110;
       window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' });
     });
@@ -9090,9 +9311,15 @@ try{ renderQada(); }catch(e){ console.warn('Qada init failed:', e); }
 
 /* ================= HIJRI CALENDAR (tabular algorithm, no API) ================= */
 function gregorianToJulian(y,m,d){
-  if(m<=2){y--;m+=12;}
-  const A=Math.floor(y/100);
-  return Math.floor(365.25*(y+4716))+Math.floor(30.6001*(m+1))+d-A+Math.floor(A/4)+1721119;
+  /* Fliegel & Van Flandern, integer form. `k` equals Math.trunc((m-14)/12)
+     using floor-safe arithmetic. The previous implementation double-counted
+     the Julian epoch constant (+4716 years AND +1721119), which pushed every
+     Hijri date ~4,860 years into the future (year 6309 instead of 1448). */
+  const k = Math.floor((m+9)/12) - 1;
+  return Math.floor((1461*(y + 4800 + k))/4)
+       + Math.floor((367*(m - 2 - 12*k))/12)
+       - Math.floor((3*Math.floor((y + 4900 + k)/100))/4)
+       + d - 32075;
 }
 function julianToHijri(jd){
   const l=jd-1948440+10632;
@@ -9107,17 +9334,68 @@ function julianToHijri(jd){
 }
 const HIJRI_MONTHS = ['Muharram','Safar','Rabi al-Awwal','Rabi al-Thani','Jumada al-Ula','Jumada al-Thani','Rajab','Sha\'ban','Ramadan','Shawwal','Dhul Qi\'dah','Dhul Hijjah'];
 const HIJRI_MONTHS_AR = ['مُحَرَّم','صَفَر','رَبِيع الأَوَّل','رَبِيع الثَّانِي','جُمَادَى الأُولَى','جُمَادَى الثَّانِيَة','رَجَب','شَعْبَان','رَمَضَان','شَوَّال','ذُو القِعْدَة','ذُو الحِجَّة'];
+function hijriToJulian(hy,hm,hd){
+  return Math.floor((11*hy+3)/30)+354*hy+30*hm-Math.floor((hm-1)/2)+hd+1948440-385;
+}
+function julianToGregorian(jd){
+  const a=jd+32044;
+  const b=Math.floor((4*a+3)/146097);
+  const c=a-Math.floor(146097*b/4);
+  const d=Math.floor((4*c+3)/1461);
+  const e=c-Math.floor(1461*d/4);
+  const m=Math.floor((5*e+2)/153);
+  return new Date(
+    100*b+d-4800+Math.floor(m/10),
+    m+3-12*Math.floor(m/10)-1,
+    e-Math.floor((153*m+2)/5)+1
+  );
+}
+/* Inverse of julianToHijri. The tabular inverse can drift a day or two, so
+   normalize against the forward algorithm until the round-trip lands exactly
+   on the intended Hijri date - this keeps occasion countdowns precise. */
+function hijriToGregorian(hy,hm,hd){
+  let jd=hijriToJulian(hy,hm,hd);
+  const ord=(y,m,d)=>y*360+m*30+d;
+  const target=ord(hy,hm,hd);
+  for(let i=0;i<4;i++){
+    const back=julianToHijri(jd);
+    const diff=target-ord(back.hYear,back.hMonth,back.hDay);
+    if(diff===0) break;
+    jd+=diff>0?1:-1;
+  }
+  return jd;
+}
+const HIJRI_OCCASIONS = [
+  {m:1, d:1,  name:"Islamic New Year", desc:"1 Muharram - the start of the Hijri calendar year."},
+  {m:1, d:10, name:"Day of Ashura", desc:"10 Muharram - the Prophet (peace be upon him) fasted this day; it expiates the sins of the previous year (Sahih Muslim 1162)."},
+  {m:3, d:12, name:"Mawlid an-Nabi", desc:"12 Rabi al-Awwal - the birth of the Prophet Muhammad (peace be upon him)."},
+  {m:7, d:27, name:"Isra and Mi\u2019raj", desc:"27 Rajab - the Night Journey and Ascension."},
+  {m:8, d:15, name:"Mid-Sha\u2019ban", desc:"15 Sha\u2019ban - the Night of Record, a night of forgiveness."},
+  {m:9, d:1,  name:"Ramadan begins", desc:"1 Ramadan - the month of fasting, mercy and Qur\u2019an."},
+  {m:9, d:27, name:"Laylat al-Qadr (likely)", desc:"Odd nights in the last 10 of Ramadan - the Night of Decree, better than 1,000 months (Qur\u2019an 97:3)."},
+  {m:10,d:1,  name:"Eid al-Fitr", desc:"1 Shawwal - the festival marking the end of Ramadan fasting."},
+  {m:12,d:9,  name:"Day of Arafah", desc:"9 Dhul Hijjah - the best day of the year; fasting expiates two years of sins (Sahih Muslim 1162)."},
+  {m:12,d:10, name:"Eid al-Adha", desc:"10 Dhul Hijjah - the festival of sacrifice during Hajj."}
+];
 function renderHijriCalendar(){
   try{
     const now = new Date();
     const jd = gregorianToJulian(now.getFullYear(), now.getMonth()+1, now.getDate());
     const hijri = julianToHijri(jd);
     const dayOfWeek = now.toLocaleDateString('en',{weekday:'long'});
+    const gregStr = now.toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'});
+    // Length of the current Hijri month via the normalized inverse
+    const nHy = hijri.hMonth===12 ? hijri.hYear+1 : hijri.hYear;
+    const nHm = hijri.hMonth===12 ? 1 : hijri.hMonth+1;
+    const monthLen = hijriToGregorian(nHy,nHm,1) - hijriToGregorian(hijri.hYear,hijri.hMonth,1);
+    const monthPct = Math.min(100, Math.round(hijri.hDay/monthLen*100));
     const todayEl = document.getElementById('hijriToday');
     if(todayEl) todayEl.innerHTML = `
-      <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px;">${dayOfWeek}, ${now.toLocaleDateString('en',{month:'long',day:'numeric',year:'numeric'})}</div>
-      <div style="font-size:clamp(28px,5vw,38px);font-family:var(--serif);color:var(--gold-deep);margin:8px 0;">${hijri.hDay} ${HIJRI_MONTHS_AR[hijri.hMonth-1]} ${hijri.hYear}</div>
-      <div style="font-size:16px;color:var(--ink);">${hijri.hDay} ${HIJRI_MONTHS[hijri.hMonth-1]} ${hijri.hYear} AH</div>
+      <div class="hh-greg">${dayOfWeek}, ${gregStr}</div>
+      <div class="hh-ar" dir="rtl" lang="ar">${hijri.hDay} ${HIJRI_MONTHS_AR[hijri.hMonth-1]} ${hijri.hYear} \u0647\u0640</div>
+      <div class="hh-en">${hijri.hDay} ${HIJRI_MONTHS[hijri.hMonth-1]} ${hijri.hYear} AH</div>
+      <div class="hh-monthbar"><span class="hh-monthbar-fill" style="width:${monthPct}%"></span></div>
+      <div class="hh-monthmeta">Day ${hijri.hDay} of about ${monthLen} \u00b7 ${HIJRI_MONTHS[hijri.hMonth-1]} \u00b7 ${monthPct}% of the month</div>
     `;
     renderHijriEvents(hijri);
     renderHijriMonths(hijri);
@@ -9125,44 +9403,45 @@ function renderHijriCalendar(){
 }
 function renderHijriEvents(h){
   try{
-    const events = [];
-    if(h.hMonth===1 && h.hDay===1) events.push({name:'Islamic New Year',desc:'1 Muharram — the start of the Hijri calendar year.'});
-    if(h.hMonth===1 && h.hDay===10) events.push({name:'Day of Ashura',desc:'10 Muharram — the Prophet ﷺ fasted this day; it expiates the sins of the previous year (Sahih Muslim 1162).'});
-    if(h.hMonth===3 && h.hDay===12) events.push({name:'Mawlid an-Nabi',desc:'12 Rabi al-Awwal — the birthday of the Prophet Muhammad ﷺ.'});
-    if(h.hMonth===7 && h.hDay===27) events.push({name:'Isra and Mi\'raj',desc:'27 Rajab — the Night Journey and Ascension.'});
-    if(h.hMonth===8 && h.hDay>=25) events.push({name:'Laylat al-Bara\'ah',desc:'25-27 Sha\'ban — the Night of Record, the night before the 15th of Sha\'ban.'});
-    if(h.hMonth===9) events.push({name:'Ramadan',desc:`${HIJRI_MONTHS_AR[8]} — the month of fasting. Day ${h.hDay} of 29-30.`});
-    if(h.hMonth===9 && h.hDay>=21) events.push({name:'Laylat al-Qadr (likely)',desc:'Odd nights in the last 10 of Ramadan — the Night of Decree, better than 1,000 months (Qur\'an 97:3).'});
-    if(h.hMonth===10 && h.hDay===1) events.push({name:'Eid al-Fitr',desc:'1 Shawwal — the festival marking the end of Ramadan fasting.'});
-    if(h.hMonth===12 && h.hDay===9) events.push({name:'Day of Arafah',desc:'9 Dhul Hijjah — the best day of the year; fasting expiates two years of sins (Sahih Muslim 1162).'});
-    if(h.hMonth===12 && h.hDay===10) events.push({name:'Eid al-Adha',desc:'10 Dhul Hijjah — the festival of sacrifice during Hajj.'});
     const el = document.getElementById('hijriEvents');
     if(!el) return;
-    if(!events.length){ el.innerHTML=''; return; }
-    el.innerHTML = events.map(e=>
-      `<div class="rq-card" style="border-left:3px solid var(--gold);"><b>${e.name}</b><p>${e.desc}</p></div>`
-    ).join('');
+    const todayMid = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+    // Next occurrence of every global occasion, on-or-after today, soonest first.
+    const upcoming = HIJRI_OCCASIONS.map(o=>{
+      let hy = h.hYear;
+      if (o.m*40+o.d < h.hMonth*40+h.hDay) hy++;
+      const jd = hijriToGregorian(hy,o.m,o.d);
+      const g = julianToGregorian(jd);
+      const days = Math.round((new Date(g.getFullYear(),g.getMonth(),g.getDate()) - todayMid)/86400000);
+      return {name:o.name, desc:o.desc, hm:o.m, hd:o.d, hy, g, days};
+    }).sort((a,b)=>a.days-b.days);
+    const greg = (g)=>g.toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
+    el.innerHTML =
+      '<div class="hijri-up-title">Upcoming Islamic dates</div>' +
+      upcoming.slice(0,6).map((e,i)=>
+        `<div class="hijri-event${e.days===0?' today':''}" style="animation-delay:${i*0.04}s">` +
+          `<div class="he-when"><b>${e.days===0?'Today':e.days===1?'Tomorrow':'in '+e.days+' days'}</b><span>${greg(e.g)}</span></div>` +
+          `<div class="he-body"><b>${e.name}</b><p>${e.hd} ${HIJRI_MONTHS[e.hm-1]} ${e.hy} AH \u00b7 ${e.desc}</p></div>` +
+        `</div>`
+      ).join('');
   }catch(e){ console.warn('renderHijriEvents failed:', e); }
 }
 function renderHijriMonths(current){
   try{
-    const now = new Date();
-    const jd = gregorianToJulian(now.getFullYear(), now.getMonth()+1, now.getDate());
     const el = document.getElementById('hijriMonths');
     if(!el) return;
     el.innerHTML = `
-      <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Hijri Months Reference</div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px;">
-      ${HIJRI_MONTHS.map((m,i)=>`<div class="rq-card" style="padding:10px 12px;${i+1===current.hMonth?'border-color:var(--gold);background:var(--gold-glow);':''}">
-        <div style="font-size:13px;font-weight:600;color:var(--ink);">${m}</div>
-        <div style="font-size:12px;color:var(--ink-soft);" dir="rtl" lang="ar">${HIJRI_MONTHS_AR[i]}</div>
-        ${i+1===current.hMonth?'<div style="font-size:10px;color:var(--gold-deep);margin-top:2px;font-weight:700;">● Current</div>':''}
+      <div class="hijri-up-title">The 12 Hijri months</div>
+      <div class="hijri-months-grid">
+      ${HIJRI_MONTHS.map((m,i)=>`<div class="hijri-month${i+1===current.hMonth?' current':''}">
+        <div class="hm-en">${i+1}. ${m}</div>
+        <div class="hm-ar" dir="rtl" lang="ar">${HIJRI_MONTHS_AR[i]}</div>
+        ${i+1===current.hMonth?'<div class="hm-cur">\u25cf CURRENT MONTH</div>':''}
       </div>`).join('')}
       </div>
     `;
   }catch(e){ console.warn('renderHijriMonths failed:', e); }
 }
-
 /* hijri depends on the consts above — render after they are initialized (file:// timing + TDZ) */
 try{ renderHijriCalendar(); }catch(e){ console.warn('Hijri init failed:', e); }
 
@@ -9625,7 +9904,14 @@ function companionComplete(){
     const conn = Object.keys(progress.connections||{}).filter(k=>progress.connections[k]).length;
     const words = Object.keys(progress.words||{}).filter(k=>progress.words[k]).length;
     const surahs = Object.keys(progress.surahs||{}).filter(k=>progress.surahs[k]).length;
+    const total = 28 + 6 + WORDS.length + SHORT_SURAHS.length;
+    const done = alph + conn + words + surahs;
+    const pct = total ? Math.round(done / total * 100) : 0;
     document.getElementById('arabicProgress').innerHTML = `
+      <div class="arabic-overall">
+        <div class="arabic-overall-bar"><span class="arabic-overall-fill" style="width:${pct}%"></span></div>
+        <div class="arabic-overall-label">${pct}% of the course complete · ${done} of ${total} items mastered</div>
+      </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
         <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${alph}/28</b><p style="margin:0;">Letters</p></div>
         <div class="rq-card muted" style="flex:1;min-width:80px;text-align:center;padding:10px 8px;"><b>${conn}/6</b><p style="margin:0;">Groups</p></div>
@@ -9786,7 +10072,13 @@ function companionComplete(){
       else if(hifzData[i] === 'partial') part++;
       else if(hifzData[i] === 'tested') tested++;
     }
+    // Partial surahs count as half progress toward the whole Qur'an.
+    const overall = Math.round(((mem + part * 0.5) / 114) * 100);
     summary.innerHTML =
+      '<div class="hifz-overall">' +
+        '<div class="hifz-overall-head"><span>Overall memorization progress</span><b>' + overall + '%</b></div>' +
+        '<div class="hifz-overall-bar"><span style="width:' + overall + '%"></span></div>' +
+      '</div>' +
       '<span class="stat-pill"><span class="dot-g"></span>' + mem + ' memorized</span>' +
       '<span class="stat-pill"><span class="dot-y"></span>' + part + ' partial</span>' +
       (tested ? '<span class="stat-pill" style="background:#d1e7dd;border-color:#6db89a;color:#0f5132;">' + tested + ' tested</span>' : '') +

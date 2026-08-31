@@ -20,7 +20,7 @@ Sabeel is a single HTML file that covers almost everything a new Muslim needs to
 - **Fiqh Overview** — The four Sunni schools: what they agree on, where they differ
 - **Ramadan &amp; Hajj** — Obligations, step-by-step guides, and common questions answered
 - **Duas Collection** — 70+ supplications from Hisnul Muslim with Arabic, transliteration, English, and audio
-- **Qur'an Reader** — Browse any verse with 7 real reciters, play/pause, and speed control
+- **Qur'an Reader** — 13 reciters with word-precise highlighting, fullscreen reading mode, reading progress bar, verse repeat, and keyboard shortcuts (Space / ←→ / F / +/- / Esc / /)
 - **Knowledge Check** — Quiz yourself across all topics with scoring and streaks
 
 **Worship Tools**
