@@ -2080,7 +2080,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
     <div class="rail-foot">
       <span class="dot"></span>
-      <span>No account, no analytics. Data stays on your device. <span class="ver">v2.0</span><br>Tip: press <span class="ver">1–9</span> to jump between sections, <span class="ver">/</span> to search</span>
+      <span>No account, no analytics. Your progress stays on your device; Qur'an content is loaded from Quran.com and other trusted public APIs when needed. <span class="ver">v2.0</span><br>Tip: press <span class="ver">1–9</span> to jump between sections, <span class="ver">/</span> to search</span>
       <div class="lang-select-wrap">
         <select class="lang-select" id="langSelect" aria-label="Interface language" onchange="switchLanguage(this.value)">
           <option value="en" data-flag="🇬🇧">🇬🇧 EN</option>
@@ -2184,7 +2184,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
       <div style="margin-top:26px;">
         <div class="notice-box">
           <strong>How this works, briefly:</strong> everything runs in your browser's memory (RAM) only.
-          There's no server, no account, and nothing is ever sent about you. Three things live on your
+          There's no account, no login, and no analytics. When you play Qur'an audio or load translations, your browser fetches them directly from Quran.com and other trusted public APIs. Three things live on your
           device, disclosed openly: the Qur'an reader keeps your bookmarks, reciter, display settings and
           your place in the Qur'an in this browser's local storage (clear site data to wipe them); verse
           recitations stream from trusted public Qur'an servers over HTTPS when you play them; and any
@@ -2821,6 +2821,16 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         .companion-ctrl-btn:active{transform:scale(0.97);}
         .companion-ctrl-btn:disabled{opacity:.4;cursor:default;}
         #view-companion{}
+        .toggle-switch{position:relative;display:inline-block;width:48px;height:26px;cursor:pointer;}
+        .toggle-switch input{opacity:0;width:0;height:0;}
+        .toggle-slider{position:absolute;inset:0;background:var(--line);border-radius:26px;transition:background .25s ease;}
+        .toggle-slider::before{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .25s ease;box-shadow:0 1px 3px rgba(0,0,0,.2);}
+        .toggle-switch input:checked + .toggle-slider{background:var(--green);}
+        .toggle-switch input:checked + .toggle-slider::before{transform:translateX(22px);}
+        body.private-mode .resume-line{display:none !important;}
+        body.private-mode #todayGrid{opacity:0.15;pointer-events:none;}
+        body.private-mode #todayCount{opacity:0.15;}
+        body.private-mode #todayFill{opacity:0.15;}
       </style>
     </section>
 
@@ -3169,7 +3179,13 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
       <div class="acc-item">
         <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Data stored on this device (localStorage) <span class="plus">+</span></button>
         <div class="acc-body">
-          <p>All data below is stored in your browser's localStorage — it never leaves your device unless you explicitly share it.</p>
+          <p>The app stores your progress and settings in three places on your device:</p>
+          <ul style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:8px 0 12px 16px;">
+            <li><strong>localStorage</strong> — your checklist, counters, and settings</li>
+            <li><strong>Cache Storage</strong> — downloaded Qur'an audio</li>
+            <li><strong>IndexedDB</strong> — offline content packs</li>
+          </ul>
+          <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:0;">None of this is sent to the app developer.</p>
           <div style="overflow-x:auto;margin:12px 0;">
             <table style="font-size:13px;border-collapse:collapse;width:100%;">
               <tr style="border-bottom:1.5px solid var(--line);"><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Key</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">What it stores</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Sensitive?</th></tr>
@@ -3211,7 +3227,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Service worker &amp; offline caching <span class="plus">+</span></button>
         <div class="acc-body">
           <p>Sabeel registers a service worker (<code>sw.js</code>) to enable offline use. The service worker caches the app's own files (HTML, CSS, JS, icon) using a cache-first strategy, and caches CDN resources using stale-while-revalidate.</p>
-          <p style="margin-top:8px;">The service worker's full caching and network behavior is defined in <code>sw.js</code> and cannot be fully verified from this file alone. The service worker does not collect or transmit any data — it only caches files locally.</p>
+          <p style="margin-top:8px;">The service worker (<code>sw.js</code>) helps the app work offline. It caches the app's own files and some audio/API responses in your browser. It does not contain analytics or tracking code. The servers it contacts (Qur'an APIs, CDNs) still see normal web requests like any website.</p>
         </div>
       </div>
 
@@ -3219,13 +3235,12 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
       <div class="acc-item">
         <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">External servers contacted <span class="plus">+</span></button>
         <div class="acc-body">
-          <p>When you use online features, your browser contacts the following external services to retrieve Qur'an text, translations, reciter metadata, audio, and — when you choose it — browser geolocation for local prayer-time/Qibla calculations. Each request necessarily exposes your IP address, request metadata, and the resource you request to that server. <strong>The app code itself contains no tracking, analytics, or advertising.</strong></p>
+          <p>The app only contacts these public Qur'an services to load text, translations, and audio. When you use online features, your browser also contacts additional services for audio and geolocation. Each request necessarily exposes your IP address, request metadata, and the resource you request to that server. <strong>The app code itself contains no tracking, analytics, or advertising.</strong></p>
           <div style="overflow-x:auto;margin:12px 0;">
             <table style="font-size:13px;border-collapse:collapse;width:100%;">
               <tr style="border-bottom:1.5px solid var(--line);"><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Service</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Purpose</th></tr>
-              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">api.quran.com</td><td style="padding:8px 10px;">Qur'an text, verse data, reciter metadata, word-by-word translations</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">quran.com (api.quran.com, verses.quran.com)</td><td style="padding:8px 10px;">Qur'an text, verse data, reciter metadata, audio</td></tr>
               <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">api.alquran.cloud</td><td style="padding:8px 10px;">Qur'an text, English translations, transliterations</td></tr>
-              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">verses.quran.com</td><td style="padding:8px 10px;">Qur'an audio delivery (fallback)</td></tr>
               <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">cdn.islamic.network</td><td style="padding:8px 10px;">Qur'an audio, Arabic alphabet audio</td></tr>
               <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">everyayah.com</td><td style="padding:8px 10px;">Qur'an audio (fallback)</td></tr>
               <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">hisnmuslim.com</td><td style="padding:8px 10px;">Human dua recordings (Hisn al-Muslim)</td></tr>
@@ -3254,8 +3269,36 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         </div>
       </div>
 
+      <!-- PRIVATE MODE -->
+      <div class="tool-card" style="border-color:var(--green);margin-top:18px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div class="section-h3" style="font-size:17px;margin-bottom:4px;"><span class="num" style="background:var(--green);color:#fff;">👁</span>Private mode</div>
+            <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:0;">Hides streaks, counters, and "continue where you left off" hints from the main screens. For extra privacy when needed.</p>
+          </div>
+          <label class="toggle-switch" style="flex-shrink:0;">
+            <input type="checkbox" id="privateModeToggle" onchange="togglePrivateMode(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <!-- AUTO-CLEAR ON CLOSE -->
+      <div class="tool-card" style="border-color:var(--gold);margin-top:12px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div>
+            <div class="section-h3" style="font-size:17px;margin-bottom:4px;"><span class="num" style="background:var(--gold);color:#fff;">🗑</span>Clear all data when tab is closed</div>
+            <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:0;">Removes bookmarks, counters, progress, and offline packs when you close the tab. For extra privacy when needed.</p>
+          </div>
+          <label class="toggle-switch" style="flex-shrink:0;">
+            <input type="checkbox" id="autoClearToggle" onchange="toggleAutoClear(this.checked)">
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
       <!-- CLEAR ALL DATA -->
-      <div class="tool-card" style="border-color:var(--rose);margin-top:18px;">
+      <div class="tool-card" style="border-color:var(--rose);margin-top:12px;">
         <div class="section-h3" style="font-size:17px;color:var(--rose);"><span class="num" style="background:var(--rose);color:#fff;">✕</span>Clear all data</div>
         <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:8px 0 12px 0;">
           This will permanently delete all locally stored data: bookmarks, settings, daily checklists, dhikr counts, qada tracker, Arabic course progress, Hifz tracker, downloaded Qur'an audio, and offline content packs. This action cannot be undone.
@@ -7869,7 +7912,7 @@ function playDua(i, btn){
 }
 document.getElementById('duaSearch').addEventListener('input', e=>{ duaQuery = e.target.value; renderDuas(); });
 
-/* ================= RIPPLE MICRO-ANIMATION ================= */
+/* ================= PRIVATE MODE & AUTO-CLEAR (Privacy) ================= */
 document.addEventListener('pointerdown', function(e){
   const target = e.target.closest('.start-card, .ess-card, .rail-btn, .tool-btn, .acc-head, .quiz-opt');
   if(!target || target.disabled) return;
@@ -7884,6 +7927,59 @@ document.addEventListener('pointerdown', function(e){
   setTimeout(()=> rip.remove(), 700);
 });
 
+/* ================= PRIVATE MODE & AUTO-CLEAR (Privacy) ================= */
+function getSetting(key, fallback){
+  try{ const v = localStorage.getItem(key); return v === null ? fallback : v === '1'; }catch(e){ return fallback; }
+}
+function setSetting(key, val){
+  try{ localStorage.setItem(key, val ? '1' : '0'); }catch(e){}
+}
+function togglePrivateMode(on){
+  setSetting('sabeelPrivateMode', on);
+  document.body.classList.toggle('private-mode', on);
+}
+function toggleAutoClear(on){
+  setSetting('sabeelAutoClear', on);
+  if(on){
+    window.addEventListener('beforeunload', _autoClearHandler);
+  } else {
+    window.removeEventListener('beforeunload', _autoClearHandler);
+  }
+}
+function _autoClearHandler(){
+  try{
+    /* Clear all localStorage */
+    localStorage.clear();
+    /* Clear Cache API */
+    if('caches' in window){
+      caches.delete('sabeel-quran-audio-v1').catch(()=>{});
+      caches.delete('sabeel-v2').catch(()=>{});
+    }
+    /* Clear IndexedDB */
+    if('indexedDB' in window){
+      indexedDB.deleteDatabase('sabeel-offline-packs');
+    }
+    /* Unregister service worker */
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      navigator.serviceWorker.getRegistrations().then(regs=> regs.forEach(r=> r.unregister())).catch(()=>{});
+    }
+    /* Send a synchronous beacon to confirm clearing (best-effort) */
+    if(navigator.sendBeacon) navigator.sendBeacon('/clear', 'done');
+  }catch(e){}
+}
+/* Restore privacy settings on load */
+(function initPrivacySettings(){
+  const pm = getSetting('sabeelPrivateMode', false);
+  document.body.classList.toggle('private-mode', pm);
+  const toggle = document.getElementById('privateModeToggle');
+  if(toggle) toggle.checked = pm;
+
+  const ac = getSetting('sabeelAutoClear', false);
+  if(ac) window.addEventListener('beforeunload', _autoClearHandler);
+  const acToggle = document.getElementById('autoClearToggle');
+  if(acToggle) acToggle.checked = ac;
+})();
+
 /* ================= CLEAR ALL DATA (Privacy) ================= */
 function confirmClearAllData(){
   const status = document.getElementById('clearDataStatus');
@@ -7895,7 +7991,7 @@ async function clearAllData(){
   const status = document.getElementById('clearDataStatus');
   try{
     /* 1. Clear all localStorage keys */
-    const keys = ['todayChecked','quranResume','dhikrState','qadaState','arabicCourse','hifzData','hifzLastTest','sabeelLang'];
+    const keys = ['todayChecked','quranResume','dhikrState','qadaState','arabicCourse','hifzData','hifzLastTest','sabeelLang','sabeelPrivateMode','sabeelAutoClear'];
     /* also clear dynamic quran:* keys */
     for(let i = localStorage.length - 1; i >= 0; i--){
       const k = localStorage.key(i);
@@ -9479,7 +9575,7 @@ if('serviceWorker' in navigator){
       status_done_today: "All five done today",
       status_recite_paused: "Recitation paused",
       /* Footer */
-      footer_privacy: "No account, no analytics. Data stays on your device — but see the Privacy view for full details.",
+      footer_privacy: "No account, no analytics. Your progress stays on your device; Qur'an content is loaded from Quran.com and other trusted public APIs when needed.",
       footer_tip: "Tip: press 1–9 to jump between sections, / to search"
     },
 
@@ -9544,7 +9640,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Buscar temas…",
       status_done_today: "Las cinco de hoy completadas",
       status_recite_paused: "Recitación pausada",
-      footer_privacy: "Sin cuenta, sin análisis. Los datos se quedan en tu dispositivo —consulta la vista Privacidad para detalles.",
+      footer_privacy: "Sin cuenta, sin análisis. Tu progreso se queda en tu dispositivo; el contenido del Corán se carga desde Quran.com y otras APIs públicas de confianza cuando se necesita.",
       footer_tip: "Consejo: presiona 1–9 para saltar entre secciones, / para buscar"
     },
 
@@ -9609,7 +9705,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Rechercher des sujets…",
       status_done_today: "Les cinq prières du jour terminées",
       status_recite_paused: "Récitation en pause",
-      footer_privacy: "Pas de compte, pas d'analyse. Les données restent sur votre appareil — consultez la vue Confidentialité pour les détails.",
+      footer_privacy: "Pas de compte, pas d'analyse. Votre progression reste sur votre appareil ; le contenu du Corán est chargé depuis Quran.com et d'autres API publiques de confiance si nécessaire.",
       footer_tip: "Astuce : appuyez sur 1–9 pour naviguer, / pour rechercher"
     },
 
@@ -9674,7 +9770,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Konu ara…",
       status_done_today: "Bugün beş vakit tamamlandı",
       status_recite_paused: "Okuma duraklatıldı",
-      footer_privacy: "Hesap yok, analiz yok. Veriler cihazınızda kalır — ayrıntılar için Görünüm menüsünden 'Gizlilik ve Veri'yi açın.",
+      footer_privacy: "Hesap yok, analiz yok. İlerlemeniz cihazınızda kalır; Kur'an içeriği gerektiğinde Quran.com ve diğer güvenilir kamu API'lerinden yüklenir.",
       footer_tip: "İpucu: bölümler arası geçiş için 1–9, arama için / tuşuna basın"
     },
 
@@ -9739,7 +9835,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "موضوعات تلاش کریں…",
       status_done_today: "آج کی پانچ نمازیں مکمل",
       status_recite_paused: "تلاش رک گئی",
-      footer_privacy: "کوئی اکاؤنٹ نہیں، کوئی تجزیہ نہیں۔ ڈیٹا آپ کے ڈیوائس پر رہتا ہے — تفصیلات کے لیے پرائیویسی ویو دیکھیں۔",
+      footer_privacy: "کوئی اکاؤنٹ نہیں، کوئی تجزیہ نہیں۔ آپ کی پیشرفت آپ کے ڈیوائس پر رہتی ہے؛ قرآن کا مواد ضرورت پر Quran.com اور دوسرے قابل اعتماد عوامی API سے لوڈ ہوتا ہے۔",
       footer_tip: "ٹپ: سیکشنز کے درمیان جانے کے لیے 1–9 دبائیں، تلاش کے لیے /"
     },
 
@@ -9804,7 +9900,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Cari topik…",
       status_done_today: "Lima waktu hari ini selesai",
       status_recite_paused: "Bacaan dijeda",
-      footer_privacy: "Tiada akaun, tiada analitik. Data kekal pada peranti anda — lihat paparan Privasi untuk butiran.",
+      footer_privacy: "Tiada akaun, tiada analitik. Kemajuan anda kekal pada peranti anda; kandungan Al-Quran dimuatkan dari Quran.com dan API awam dipercayai lain apabila diperlukan.",
       footer_tip: "Petua: tekan 1–9 untuk melompat antara bahagian, / untuk mencari"
     }
   };
