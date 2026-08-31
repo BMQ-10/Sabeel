@@ -1375,24 +1375,42 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 /* ===== LIVE PRAYER RIBBON ===== */
 .pribbon{
   position:sticky;top:0;z-index:30;
-  display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
-  min-height:38px;
-  background:linear-gradient(135deg,rgba(246,242,231,0.95),rgba(238,232,214,0.92));
-  -webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;gap:9px;flex-wrap:wrap;
+  min-height:42px;
+  background:linear-gradient(135deg,rgba(250,247,238,0.96),rgba(240,234,218,0.9));
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
   border-bottom:1px solid var(--line);
-  padding:8px 16px;font-size:12px;color:var(--ink-soft);
+  padding:9px 46px 9px 18px;font-size:12.5px;color:var(--ink-soft);
   cursor:pointer;text-align:center;
-  transition:background var(--dur-fast),box-shadow var(--dur-fast);
+  transition:background .2s ease,box-shadow .2s ease,transform .3s ease,opacity .3s ease;
+  animation:ribbonIn .4s cubic-bezier(.22,.9,.35,1);
 }
-.pribbon:hover{background:rgba(238,232,214,0.98);box-shadow:0 2px 12px rgba(18,32,27,0.06);}
+@keyframes ribbonIn{from{transform:translateY(-100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+.pribbon.hiding{transform:translateY(-110%);opacity:0;}
+.pribbon:hover{background:rgba(244,239,227,0.98);box-shadow:0 4px 16px rgba(18,32,27,0.08);}
 .pribbon b{color:var(--green-deep);}
 .pribbon .pr-dot{
-  width:7px;height:7px;border-radius:50%;background:var(--green-bright);flex-shrink:0;
+  width:8px;height:8px;border-radius:50%;background:var(--green-bright);flex-shrink:0;
   animation:pulse-dot 2s ease-in-out infinite;
 }
 .pribbon .pr-sep{color:var(--line);margin:0 2px;}
-.pribbon .count{font-family:var(--serif);font-size:14px;color:var(--ink);}
+.pribbon .count{
+  font-family:var(--serif);font-size:14px;color:var(--ink);
+  font-variant-numeric:tabular-nums;
+  background:rgba(63,145,116,0.1);border-radius:8px;padding:1px 7px;
+}
 .pribbon .pr-set{font-weight:600;color:var(--green-deep);}
+.pribbon .pr-dismiss{
+  position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  width:26px;height:26px;border-radius:50%;border:1px solid transparent;
+  background:rgba(18,32,27,0.05);color:var(--ink-soft);cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;line-height:1;padding:0;
+  transition:background .15s ease,color .15s ease,transform .15s ease;
+}
+.pribbon .pr-dismiss:hover{background:rgba(140,59,46,0.12);color:#8C3B2E;transform:translateY(-50%) scale(1.1);}
+.pribbon .pr-dismiss:active{transform:translateY(-50%) scale(.92);}
+@media (prefers-reduced-motion:reduce){ .pribbon{animation:none;} }
 
 /* ===== PURIFICATION CARDS ===== */
 .pur-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:12px 0 8px 0;}
@@ -1596,6 +1614,84 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 #view-quran .toggle-chip select{margin:0;padding:0;border:none;background:transparent;color:inherit;font:inherit;cursor:pointer;}
 #view-quran .toggle-chip select:focus{outline:none;}
 #view-quran .font-ctrl,#view-quran .surah-nav{display:inline-flex;align-items:center;gap:5px;font-family:var(--sans);font-size:12px;color:var(--qink2);}
+/* ===== QURAN LOOK & FEEL UPGRADES ===== */
+#view-quran header.top .theme-toggle{position:static;}
+#view-quran .top-actions{position:absolute;top:0;right:0;display:flex;gap:8px;}
+/* Reading progress bar — sticky under the very top edge while the surah scrolls */
+#view-quran .q-progress{position:sticky;top:0;z-index:36;height:3px;pointer-events:none;background:transparent;}
+#view-quran .q-progress-fill{height:100%;width:0%;border-radius:0 3px 3px 0;background:linear-gradient(90deg,var(--qgreen),var(--qgold));transition:width .15s linear;}
+/* Controls stay reachable on long surahs */
+#view-quran .controls{position:sticky;top:6px;z-index:30;box-shadow:0 10px 26px var(--qshadow);}
+#view-quran .surah-dropdown{z-index:50;}
+/* Ayah cards: calmer borders, gentle hover lift, living active state */
+#view-quran .ayah{transition:box-shadow .22s ease,transform .22s ease,border-color .22s ease;}
+#view-quran .ayah:hover{border-color:var(--qgold2);box-shadow:0 8px 22px var(--qshadow);transform:translateY(-1px);}
+#view-quran .ayah.active-ayah{border-color:var(--qgold2);animation:qAyahPulse 2.6s ease-in-out infinite;}
+#view-quran .ayah.active-ayah:hover{transform:none;}
+@keyframes qAyahPulse{
+  0%,100%{box-shadow:0 0 0 2px var(--qgold2),0 10px 28px var(--qshadow);}
+  50%{box-shadow:0 0 0 3px var(--qgold2),0 16px 38px var(--qshadow);}
+}
+@media (prefers-reduced-motion:reduce){
+  #view-quran .ayah.active-ayah{animation:none;}
+}
+#view-quran .ayah-number .badge{
+  background:linear-gradient(135deg,var(--qgold3),var(--qcard));
+  box-shadow:inset 0 0 0 1px var(--qgold2);
+}
+#view-quran .arabic-line .word.playing{background:var(--qhl-ar);box-shadow:inset 0 0 0 1px var(--qgreen2);}
+#view-quran .arabic-line .end-mark{
+  background:linear-gradient(135deg,var(--qgold3),transparent);
+}
+/* Back to top */
+#view-quran .q-top-btn{
+  position:fixed;right:18px;bottom:calc(84px + env(safe-area-inset-bottom));
+  width:40px;height:40px;border-radius:50%;border:1px solid var(--qline);
+  background:var(--qcard);color:var(--qink2);font-size:17px;line-height:1;cursor:pointer;
+  box-shadow:0 8px 20px var(--qshadow);z-index:70;opacity:0;pointer-events:none;
+  transform:translateY(8px);transition:opacity .2s ease,transform .2s ease,color .15s ease,border-color .15s ease;
+}
+#view-quran .q-top-btn.visible{opacity:1;pointer-events:auto;transform:translateY(0);}
+#view-quran .q-top-btn:hover{color:var(--qgreen);border-color:var(--qgreen2);}
+/* Fullscreen reading */
+#view-quran:fullscreen,#view-quran:-webkit-full-screen{
+  overflow-y:auto;background:var(--qp);padding:20px 0 110px;
+}
+#view-quran:fullscreen .qwrap,#view-quran:-webkit-full-screen .qwrap{max-width:940px;}
+#view-quran:fullscreen .controls,#view-quran:-webkit-full-screen .controls{top:4px;}
+#view-quran:fullscreen .q-top-btn,#view-quran:-webkit-full-screen .q-top-btn{right:26px;bottom:26px;}
+/* ===== MODERN FIELD & BUTTON POLISH (app-wide) ===== */
+input,select,textarea{transition:border-color .16s ease,box-shadow .18s ease,background .16s ease;}
+input:hover,select:hover{border-color:var(--green-bright);}
+input:focus,select:focus,textarea:focus{box-shadow:0 0 0 3px rgba(58,102,86,0.12);}
+button{transition:background var(--dur-fast,0.15s) ease,border-color .16s ease,box-shadow .18s ease,transform .12s ease,color .15s ease;}
+button:active{transform:scale(0.97);}
+.tool-btn:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.tool-btn:active{transform:translateY(0) scale(0.96);box-shadow:var(--shadow-sm);}
+.tool-input:hover{border-color:var(--green-bright);}
+.tool-input:focus{box-shadow:0 0 0 3px rgba(58,102,86,0.12);}
+.spk-btn{transition:background .15s ease,color .15s ease,transform .12s ease,box-shadow .18s ease;}
+.spk-btn:hover{transform:scale(1.07);}
+.spk-btn:active{transform:scale(0.9);}
+@media (prefers-reduced-motion:reduce){
+  button:active,.spk-btn:hover,.spk-btn:active,.tool-btn:hover,.tool-btn:active{transform:none;}
+}
+/* --- Quran tab micro-interactions --- */
+#view-quran .qbtn,#view-quran select,#view-quran .surah-picker input,#view-quran .verse-jump input{transition:all .16s ease;}
+#view-quran .surah-picker input:hover,#view-quran select:hover,#view-quran .verse-jump input:hover{border-color:var(--qgreen2);}
+#view-quran .surah-picker input:focus,#view-quran select:focus,#view-quran .verse-jump input:focus{box-shadow:0 0 0 3px var(--qhl-ar);}
+#view-quran .qbtn:hover{transform:translateY(-1px);box-shadow:0 5px 14px var(--qshadow);}
+#view-quran .qbtn:active{transform:translateY(0) scale(0.96);box-shadow:none;}
+#view-quran .toggle-chip{transition:all .18s ease;}
+#view-quran .toggle-chip:hover{transform:translateY(-1px);border-color:var(--qgreen2);}
+#view-quran .toggle-chip:active{transform:scale(0.95);}
+#view-quran .q-top-btn:active{transform:translateY(0) scale(0.92);}
+#view-quran .surah-dropdown.open{animation:qDropIn .18s ease;}
+@keyframes qDropIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:translateY(0);}}
+@media (prefers-reduced-motion:reduce){
+  #view-quran .qbtn:hover,#view-quran .toggle-chip:hover{transform:none;}
+  #view-quran .surah-dropdown.open{animation:none;}
+}
 @media (max-width:480px){
   #view-quran .arabic-line{font-size:calc(var(--ar-size,1.85rem)*0.84);line-height:2.1;}
   #view-quran h1.q-title{font-size:26px;}
@@ -2123,9 +2219,11 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
   <!-- ===== MAIN ===== -->
   <main class="main" id="main">
-    <div class="pribbon" id="pribbon" title="Tap to set your location">
-      <span class="pr-set">Set your location to see live prayer windows &rarr;</span>
-      <button class="pr-dismiss" onclick="dismissRibbon()" aria-label="Dismiss" style="background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:16px;padding:2px 6px;">✕</button>
+    <div class="pribbon" id="pribbon" title="Prayer windows - tap to open Prayer Times" role="button" tabindex="0">
+      <span class="pr-dot"></span>
+      <span class="pr-set">Set your location to see live prayer windows</span>
+      <span class="pr-go">Prayer Times &rsaquo;</span>
+      <button class="pr-dismiss" onclick="event.stopPropagation();dismissRibbon()" aria-label="Hide the prayer ribbon" title="Hide">&times;</button>
     </div>
 
 
@@ -2681,15 +2779,9 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
       </div>
 
       <footer class="qfoot">
-        Verse audio and per-word timing come from the Quran.com public content API, verified live against its
-        reciter registry — reciter IDs are never hardcoded blindly. Arabic (Uthmani) text also comes from
-        Quran.com so every word aligns exactly with the recitation timing; translation and transliteration
-        come from Al-Quran Cloud. English narration uses your browser's built-in speech for the translation
-        only — the Arabic recitation is always real reciter audio, never machine-generated speech.
-        <br>Shortcuts (here): <b>Space</b> play/pause · <b>←/→</b> previous/next verse · <b>Esc</b> stop ·
-        <b>/</b> search surahs · click any Arabic word to recite from that word, or enable
-        <b>Word-by-word</b> to hear a single word's own recording.
-      </footer>
+  Recitations: 12 reciters ship with bundled word-precise timing (quran-align &amp; QuranLife, CC BY 4.0) and the four default reciters can be fully offline via <b>scripts/download-audio.ps1</b>; other recitations stream from Quran.com and the Islamic Network CDN. Arabic (Uthmani) text comes from Quran.com so every word aligns exactly with the recitation timing; translation and transliteration come from Al-Quran Cloud. English narration uses your browser built-in speech for the translation only - the Arabic recitation is always real reciter audio, never machine-generated speech.
+  <br>Shortcuts (here): <b>Space</b> play/pause &middot; <b>&larr;/&rarr;</b> previous/next verse &middot; <b>Esc</b> stop &middot; <b>F</b> fullscreen &middot; <b>+/&minus;</b> Arabic text size &middot; <b>/</b> search surahs &middot; click any Arabic word to recite from that word, or enable <b>Word-by-word</b> to hear a single word own recording.
+</footer>
 
       <div id="miniPlayer" class="qmini" aria-hidden="true">
         <button id="mpPlayPause" class="qbtn primary icon-btn" type="button" aria-label="Play or pause">⏸</button>
@@ -3430,6 +3522,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <span id="ptNextText"></span>
         </div>
         <div class="tool-row" style="flex-wrap:wrap;gap:8px;">
+          <button class="tool-btn secondary" id="ribbonToggle" type="button" title="Show or hide the live prayer ribbon at the top of every page">Prayer ribbon: on</button>
           <button class="tool-btn" id="ptLocBtn" onclick="getLocationForPrayer()"><span class="btn-spinner"></span>📍 Use my location</button>
         </div>
         <div class="tool-row" style="position:relative;">
@@ -5623,6 +5716,9 @@ function clearReviewFlags(){
       }
     } finally {
       if (seq === loadSeq) loadBtn.disabled = false;
+      // Refresh the reading progress bar and back-to-top state for the new surah.
+      try { updateQProgress(); } catch (e) {}
+      window.scrollTo({ top: 0, behavior: 'auto' });
     }
   }
 
@@ -6271,8 +6367,71 @@ function clearReviewFlags(){
       e.preventDefault();
       surahInput.focus();
       surahInput.select();
+    } else if (e.key === 'f' || e.key === 'F'){
+      e.preventDefault();
+      toggleQuranFullscreen();
+    } else if (e.key === '+' || e.key === '='){
+      fontPlus.click();
+    } else if (e.key === '-' || e.key === '_'){
+      fontMinus.click();
     }
   });
+
+  // ---------- fullscreen reading mode ----------
+  const fsToggle = document.getElementById('fsToggle');
+  function quranFsElement(){ return document.fullscreenElement || document.webkitFullscreenElement || null; }
+  function toggleQuranFullscreen(){
+    try {
+      if (quranFsElement()){
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document);
+      } else {
+        const qv = document.getElementById('view-quran');
+        const req = qv.requestFullscreen || qv.webkitRequestFullscreen;
+        if (req) req.call(qv);
+      }
+    } catch (e) { setStatus('Fullscreen is not available in this browser.', true); }
+  }
+  function syncFsButton(){
+    const on = !!quranFsElement();
+    fsToggle.textContent = on ? 'Exit fullscreen' : 'Fullscreen';
+    fsToggle.setAttribute('aria-pressed', String(on));
+  }
+  if (fsToggle){
+    fsToggle.addEventListener('click', toggleQuranFullscreen);
+    document.addEventListener('fullscreenchange', syncFsButton);
+    document.addEventListener('webkitfullscreenchange', syncFsButton);
+  }
+
+  // ---------- reading progress + back to top ----------
+  const qProgressFill = document.getElementById('qProgressFill');
+  const qTopBtn = document.getElementById('qTopBtn');
+  function updateQProgress(){
+    const rect = ayahList.getBoundingClientRect();
+    const viewH = window.innerHeight || document.documentElement.clientHeight;
+    if (rect.height < 40){ if (qProgressFill) qProgressFill.style.width = '0%'; return; }
+    // 0% when the list's top reaches the viewport's upper half, 100% when its
+    // bottom does — so the bar starts empty and ends exactly full.
+    const total = Math.max(rect.height - viewH * 0.5, 1);
+    const passed = Math.min(Math.max(viewH * 0.5 - rect.top, 0), total);
+    if (qProgressFill) qProgressFill.style.width = Math.round((passed / total) * 100) + '%';
+    if (qTopBtn) qTopBtn.classList.toggle('visible', rect.top < -(viewH * 0.75));
+  }
+  let qProgressRaf = 0;
+  window.addEventListener('scroll', () => {
+    if (!document.getElementById('view-quran').classList.contains('active')) return;
+    if (!qProgressRaf) qProgressRaf = requestAnimationFrame(() => { qProgressRaf = 0; updateQProgress(); });
+  }, { passive: true });
+  window.addEventListener('resize', () => {
+    if (!document.getElementById('view-quran').classList.contains('active')) return;
+    updateQProgress();
+  });
+  if (qTopBtn){
+    qTopBtn.addEventListener('click', () => {
+      const y = ayahList.getBoundingClientRect().top + window.scrollY - 110;
+      window.scrollTo({ top: Math.max(y, 0), behavior: 'smooth' });
+    });
+  }
 
   // ---------- connectivity notices ----------
   window.addEventListener('offline', () => setStatus('You are offline — recitation and loading pause until reconnection.', true));
@@ -6977,22 +7136,45 @@ function updatePtNext(){
   wrap.style.display='inline-flex';
   updateRibbon();
 }
-/* live ribbon — same data, visible on every view */
+/* live ribbon - same data, visible on every view. The close button exists in
+   BOTH states (prompt + live data) and a dismissal is remembered across all
+   of them - the ribbon can always be removed and restored from Prayer Times. */
+function ribbonHidden(){ return localStorage.getItem('sabeelRibbonDismissed') === '1'; }
 function dismissRibbon(){
   localStorage.setItem('sabeelRibbonDismissed','1');
   const el = document.getElementById('pribbon');
-  if(el) el.style.display = 'none';
+  if(el){
+    el.classList.add('hiding');
+    setTimeout(()=>{ el.style.display = 'none'; el.classList.remove('hiding'); }, 300);
+  }
+  syncRibbonToggle();
 }
+function restoreRibbon(){
+  localStorage.removeItem('sabeelRibbonDismissed');
+  const el = document.getElementById('pribbon');
+  if(el){ el.style.display = ''; el.classList.remove('hiding'); }
+  updateRibbon();
+  syncRibbonToggle();
+}
+function syncRibbonToggle(){
+  const btn = document.getElementById('ribbonToggle');
+  if(btn) btn.textContent = ribbonHidden() ? 'Prayer ribbon: off' : 'Prayer ribbon: on';
+}
+syncRibbonToggle();
+const PR_DISMISS_BTN = '<button class="pr-dismiss" onclick="event.stopPropagation();dismissRibbon()" aria-label="Hide the prayer ribbon" title="Hide">&times;</button>';
 function updateRibbon(){
   const el = document.getElementById('pribbon');
   if(!el) return;
-  /* Hide ribbon once location is set (shows live data instead) or if dismissed */
+  /* A dismissal wins in every state - even after a location is set. */
+  if(ribbonHidden()){ el.style.display = 'none'; return; }
   if(!ptLastTimes){
-    if(localStorage.getItem('sabeelRibbonDismissed')==='1'){ el.style.display='none'; return; }
     el.style.display = '';
+    el.innerHTML =
+      '<span class="pr-dot"></span><span class="pr-set">Set your location to see live prayer windows</span>' +
+      '<span class="pr-go">Prayer Times &rsaquo;</span>' + PR_DISMISS_BTN;
     return;
   }
-  /* Location is set — replace prompt with live prayer data */
+  /* Location is set - show live prayer data */
   el.style.display = '';
   const now = new Date();
   const nowDec = ptUseDeviceTz
@@ -7000,7 +7182,7 @@ function updateRibbon(){
     : (now.getUTCHours() + now.getUTCMinutes()/60 + ptLastOffset);
   const cur = currentPrayerLabel(ptLastTimes, nowDec);
   const labels = {fajr:'Fajr window', dhuhr:'Dhuhr window', asr:'Asr window', maghrib:'Maghrib window', isha:'Isha window'};
-  const curLabel = cur ? labels[cur] : 'Voluntary time — Duha & adhkar';
+  const curLabel = cur ? labels[cur] : 'Voluntary time - Duha &amp; adhkar';
   const seq = [['fajr','Fajr'],['dhuhr','Dhuhr'],['asr','Asr'],['maghrib','Maghrib'],['isha','Isha']];
   let nextName = null, nextAt = null;
   seq.forEach(([k,l])=>{
@@ -7015,12 +7197,13 @@ function updateRibbon(){
     mm = Math.round((diff-hh2)*60);
     if(mm===60){ mm=0; hh2++; }
   }
-  const sr = (ptLastTimes.sunrise !== null && !isNaN(ptLastTimes.sunrise)) ? decToTime(ptLastTimes.sunrise) : '—';
-  const mid = (ptLastTimes.maghrib !== null && ptLastTimes.fajr !== null) ? decToTime((ptLastTimes.maghrib + (ptLastTimes.fajr + 24))/2) : '—';
+  const sr = (ptLastTimes.sunrise !== null && !isNaN(ptLastTimes.sunrise)) ? decToTime(ptLastTimes.sunrise) : '\u2014';
+  const mid = (ptLastTimes.maghrib !== null && ptLastTimes.fajr !== null) ? decToTime((ptLastTimes.maghrib + (ptLastTimes.fajr + 24))/2) : '\u2014';
   el.innerHTML =
-    `<span class="pr-dot"></span><b>${curLabel || ('Voluntary time — Duha &amp; adhkar')}</b>` +
-    (nextName ? `<span class="pr-sep">·</span>Next: <b>${nextName}</b> in <span class="count">${hh2}h ${String(mm).padStart(2,'0')}m</span>` : '') +
-    `<span class="pr-sep">·</span>Sunrise ${sr}<span class="pr-sep">·</span>Midnight ${mid}<span class="pr-go">Prayer Times ›</span>`;
+    '<span class="pr-dot"></span><b>' + (curLabel || 'Voluntary time') + '</b>' +
+    (nextName ? '<span class="pr-sep">&middot;</span>Next: <b>' + nextName + '</b> in <span class="count">' + hh2 + 'h ' + String(mm).padStart(2,'0') + 'm</span>' : '') +
+    '<span class="pr-sep">&middot;</span>Sunrise ' + sr + '<span class="pr-sep">&middot;</span>Midnight ' + mid +
+    '<span class="pr-go">Prayer Times &rsaquo;</span>' + PR_DISMISS_BTN;
 }
 setInterval(updatePtNext, 30000);
 
