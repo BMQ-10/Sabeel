@@ -491,16 +491,32 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 }
 .term-pop .tp-say:hover{background:rgba(217,179,106,0.3);}
 
+/* ===== SPEAK BUTTON — tool-look (matches .tool-btn) ===== */
 .spk-btn{
-  width:28px;height:28px;border-radius:50%;border:1px solid rgba(217,179,106,0.35);
-  background:rgba(217,179,106,0.10);color:var(--gold-bright);cursor:pointer;
-  display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;
-  transition:background var(--dur-fast),transform var(--dur-fast) var(--ease);
+  display:inline-flex;align-items:center;gap:6px;
+  padding:7px 12px;border-radius:9px;
+  border:1px solid rgba(237,231,211,0.14);
+  background:var(--ink);color:var(--gold-bright);
+  font-family:var(--sans);font-size:11px;font-weight:700;
+  letter-spacing:0.4px;line-height:1;cursor:pointer;flex-shrink:0;
+  transition:background var(--dur-fast),border-color var(--dur-fast),transform var(--dur-fast) var(--ease-soft),box-shadow var(--dur-fast);
+  box-shadow:var(--shadow-sm), inset 0 1px 0 rgba(255,255,255,0.06);
 }
-.spk-btn:hover{background:rgba(217,179,106,0.25);transform:scale(1.1);}
-.spk-btn:active{transform:scale(0.92);}
-.spk-btn svg{width:14px;height:14px;pointer-events:none;}
-.source-quote .arabic .spk-btn,.hero-verse .ar .spk-btn{margin-right:8px;vertical-align:middle;}
+.spk-btn:hover{background:#060d0b;border-color:rgba(217,179,106,0.35);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.spk-btn:active{transform:translateY(0) scale(0.98);}
+.spk-btn svg{width:13px;height:13px;pointer-events:none;flex-shrink:0;}
+.spk-btn .spk-label{font-size:11px;}
+.spk-btn.busy{opacity:0.7;pointer-events:none;}
+/* inline placements — keep layout tidy */
+.source-quote .arabic .spk-btn{margin-right:8px;vertical-align:middle;}
+.hero-verse .ar .spk-btn,.hero-bismillah-row .spk-btn{
+  width:30px;height:30px;padding:0;justify-content:center;border-radius:50%;
+}
+.hero-verse .ar .spk-btn .spk-label,.hero-bismillah-row .spk-btn .spk-label{display:none;}
+.hero-verse .tr .spk-btn{
+  padding:5px 9px;font-size:10.5px;
+}
+.spk-btn + .spk-btn{margin-left:6px;}
 
 .hero-meta{
   display:flex;flex-wrap:wrap;gap:22px;
@@ -2056,11 +2072,15 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         Hajj &amp; Umrah
         <span class="new-pill">New</span>
       </button>
+      <button class="rail-btn" data-view="privacy">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        Privacy &amp; Data
+      </button>
     </div>
 
     <div class="rail-foot">
       <span class="dot"></span>
-      <span>Private &amp; offline: nothing is saved or sent anywhere. <span class="ver">v2.0</span><br>Tip: press <span class="ver">1–9</span> to jump between sections, <span class="ver">/</span> to search</span>
+      <span>No account, no analytics. Data stays on your device. <span class="ver">v2.0</span><br>Tip: press <span class="ver">1–9</span> to jump between sections, <span class="ver">/</span> to search</span>
       <div class="lang-select-wrap">
         <select class="lang-select" id="langSelect" aria-label="Interface language" onchange="switchLanguage(this.value)">
           <option value="en" data-flag="🇬🇧">🇬🇧 EN</option>
@@ -2404,7 +2424,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <ul>
             <li>After sexual activity or emission of seminal fluid: "If you are in a state of janabah, purify yourselves" (Qur'an 4:43).</li>
             <li>After menstruation or post-natal bleeding ends — the Prophet ﷺ commanded women in that state to perform ghusl and pray (Sahih al-Bukhari 326).</li>
-            <li>Recommended, not required: Friday (Sahih al-Bukhari 876), entering ihram, and the Eid prayers.</li>
+            <li>Recommended, not required: Friday (Sahih al-Bukhari 876 — jurists differ over the legal force of "wajib" here), entering ihram, and the Eid prayers.</li>
           </ul>
         </div>
         <div class="pur-card">
@@ -2436,7 +2456,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">3. Standing recitation (Qiyam) <span class="plus">+</span></button>
         <div class="acc-body">
           <p>Hands placed on the chest (right over left, per the stronger hadith evidence, though schools differ on exact placement). Recite Surah al-Fatihah — obligatory in every rak'ah — followed by another portion of the Qur'an in the first two rak'ahs.</p>
-          <div class="source-quote"><div class="arabic">لَا صَلَاةَ لِمَنْ لَمْ يَقْرَأْ بِفَاتِحَةِ الْكِتَابِ</div><p>"There is no prayer for the one who does not recite the Opening of the Book (فَاتِحَةِ الْكِتَابِ — Surah al-Fatihah)."</p><div class="ref">Sahih al-Bukhari 756, Sahih Muslim 394 <span class="grade sahih">Sahih</span></div></div>
+          <div class="source-quote"><div class="arabic">لَا صَلَاةَ لِمَنْ لَمْ يَقْرَأْ بِفَاتِحَةِ الْكِتَابِ</div><p>"There is no prayer for the one who does not recite the Opening of the Book (فَاتِحَةِ الْكِتَابِ — Surah al-Fatihah)." — jurists differ over how this applies when praying behind an imam.</p><div class="ref">Sahih al-Bukhari 756, Sahih Muslim 394 <span class="grade sahih">Sahih</span></div></div>
         </div>
       </div>
       <div class="acc-item">
@@ -2501,7 +2521,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <p>The Prophet ﷺ taught a brief set of glorifications after each obligatory prayer:</p>
           <div class="source-quote"><div class="arabic">سُبْحَانَ اللَّهِ ﴿٣٣﴾ وَالْحَمْدُ لِلَّهِ ﴿٣٣﴾ وَاللَّهُ أَكْبَرُ ﴿٣٣﴾… لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ</div><p>Say "SubhanAllah" (Glory be to Allah) 33 times, "Alhamdulillah" (All praise is Allah's) 33 times, and "Allahu Akbar" (Allah is greatest) 33 times — then to complete one hundred: "There is no god but Allah alone, without partner; His is the dominion and His is the praise, and He is over all things competent."</p><div class="ref">Sahih Muslim 595 <span class="grade sahih">Sahih</span></div></div>
           <p>Also, reciting Ayat al-Kursi (Qur'an 2:255) after each prayer is strongly rewarded:</p>
-          <div class="source-quote"><p>"Whoever recites Ayat al-Kursi after every obligatory prayer, nothing stands between him and entering Paradise except death."</p><div class="ref">Sunan an-Nasa'i 100 — graded sahih by al-Albani <span class="grade sahih">Sahih</span></div></div>
+          <div class="source-quote"><p>"Whoever recites Ayat al-Kursi after every obligatory prayer, nothing stands between him and entering Paradise except death."</p><div class="ref">Sunan al-Nasa'i 992 — graded sahih by al-Albani <span class="grade sahih">Sahih</span></div></div>
         </div>
       </div>
       <div class="acc-item">
@@ -2527,7 +2547,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <div class="source-quote"><div class="arabic" data-quran="62:9" data-partial="1">يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا نُودِيَ لِلصَّلَاةِ مِن يَوْمِ الْجُمُعَةِ فَاسْعَوْا إِلَىٰ ذِكْرِ اللَّهِ وَذَرُوا الْبَيْعَ</div><p>"O you who believe! When the call is proclaimed for prayer on the day of Friday, hasten to the remembrance of Allah and leave off trade. That is better for you, if you only knew."</p><div class="ref">Qur'an 62:9</div></div>
           <div class="source-quote"><p>"The best day on which the sun has risen is Friday: on it Adam was created, on it he entered Paradise, and on it he was expelled from it."</p><div class="ref">Sahih Muslim 854 <span class="grade sahih">Sahih</span></div></div>
           <p>It is recommended to perform ghusl (a full bath) before attending, wear one's best clothes, and arrive early.</p>
-          <div class="source-quote"><p>"Ghusl on Friday is a duty for every adult Muslim."</p><div class="ref">Sahih al-Bukhari 876 <span class="grade sahih">Sahih</span></div></div>
+          <div class="source-quote"><p>"Ghusl on Friday is a duty for every adult Muslim." — the hadith uses the wording wajib; jurists differ over whether this means obligatory or strongly emphasized.</p><div class="ref">Sahih al-Bukhari 876 <span class="grade sahih">Sahih</span></div></div>
         </div>
       </div>
       <div class="scholar-note" style="margin-top:8px;">
@@ -2735,9 +2755,12 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <div class="companion-progress" id="companionProgressBar"></div>
         <div class="companion-hint" id="companionHint">Tap anywhere to advance</div>
         <div id="companionInstruction" style="font-size:14px;color:var(--ink-soft);margin:10px 0 16px;line-height:1.5;text-align:center;max-width:540px;margin-left:auto;margin-right:auto;"></div>
-        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;">
-          <button onclick="companionPause()" id="companionPauseBtn" style="padding:10px 22px;border:1.5px solid var(--line);border-radius:var(--radius-sm);background:var(--card);font-size:14px;font-weight:600;cursor:pointer;color:var(--ink);">Pause</button>
-          <button onclick="companionReset()" style="padding:10px 22px;border:1.5px solid var(--rose);border-radius:var(--radius-sm);background:var(--card);font-size:14px;font-weight:600;cursor:pointer;color:var(--rose);">Reset</button>
+        <div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">
+          <button onclick="companionBack()" id="companionBackBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">← Back</button>
+          <button onclick="companionAdvance()" id="companionNextBtn" class="companion-ctrl-btn" style="border-color:var(--green);color:var(--green);background:var(--green-glow);">Next →</button>
+          <button onclick="companionToggleAudio()" id="companionAudioBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">🔊 Audio On</button>
+          <button onclick="companionPause()" id="companionPauseBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">Pause</button>
+          <button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);color:var(--rose);">Reset</button>
         </div>
       </div>
 
@@ -2789,7 +2812,15 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           text-align:center;font-size:13px;color:var(--text-muted);
           letter-spacing:1px;margin-bottom:4px;font-variant-numeric:tabular-nums;
         }
-        #view-companion{cursor:pointer;}
+        .companion-ctrl-btn{
+          padding:10px 20px;border:1.5px solid var(--line);border-radius:var(--radius-sm);
+          background:var(--card);font-size:13px;font-weight:600;cursor:pointer;
+          transition:background .15s ease,transform .1s ease;
+        }
+        .companion-ctrl-btn:hover{background:var(--line-soft);}
+        .companion-ctrl-btn:active{transform:scale(0.97);}
+        .companion-ctrl-btn:disabled{opacity:.4;cursor:default;}
+        #view-companion{}
       </style>
     </section>
 
@@ -2959,7 +2990,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <p>Ijtihad is the effort a qualified scholar (mujtahid) makes to derive a ruling on a matter not explicitly and unambiguously addressed in the primary texts, using the established sources and methodology.</p>
           <div class="source-quote"><p>A widely cited report describes the Prophet ﷺ asking Mu'adh ibn Jabal, before sending him to Yemen, how he would judge matters — Mu'adh answered: by the Qur'an, then the Sunnah, then his own reasoning (ijtihad) if he found nothing in either, and the Prophet ﷺ approved.</p><div class="ref">Sunan Abu Dawud 3592 <span class="grade daif">Da'if</span> — hadith critics including al-Albani judge its chain weak (unidentified narrators); scholars of usul al-fiqh still cite it widely as illustrating an established methodology, but it should not be leaned on as a strong proof by itself</div></div>
           <p>Where ijtihad on the same question produces different conclusions between sincere, qualified scholars, classical scholarship generally holds that the mujtahid who reaches the correct conclusion is rewarded twice, and the one who reasoned carefully but erred is still rewarded once for the effort.</p>
-          <div class="source-quote"><p>"If a judge gives a verdict, having tried his best to decide correctly, and he is right, then he will have a double reward. If he gives a verdict after having tried his best but he is wrong, then he will have a single reward."</p><div class="ref">Sahih al-Bukhari 7352 <span class="grade sahih">Sahih</span></div></div>
+          <div class="source-quote"><p>"If a judge gives a verdict, having tried his best to decide correctly, and he is right, then he will have a double reward. If he gives a verdict after having tried his best but he is wrong, then he will have a single reward." — this concerns a judge exercising ijtihad in a specific case.</p><div class="ref">Sahih al-Bukhari 7352 <span class="grade sahih">Sahih</span></div></div>
         </div>
       </div>
 
@@ -3111,6 +3142,126 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <div class="source-quote"><p>"Umrah to Umrah is expiation for whatever [sins] come between them…"</p><div class="ref">Sahih al-Bukhari 1773 <span class="grade sahih">Sahih</span></div></div>
           <p>The Kaaba itself was (re)built by Ibrahim and Isma'il (Qur'an 2:127), and Muslims do not worship it — it is simply the unified direction of prayer, as Umar famously said of the Black Stone: "I know that you are a stone that neither benefits nor harms" (Sahih al-Bukhari 1597).</p>
         </div>
+      </div>
+    </section>
+
+    <!-- PRIVACY & DATA -->
+    <section class="view" id="view-privacy">
+      <div class="eyebrow"><span class="dot"></span>Your data</div>
+      <h1 class="page-title">Privacy &amp; Data</h1>
+      <p class="page-lede">
+        Sabeel does not require an account, and the supplied app code contains no obvious analytics,
+        advertising, or telemetry system. This page tells you exactly what is stored on your device,
+        what external servers are contacted, and how to clear everything.
+      </p>
+
+      <div class="acc-tools"><button class="acc-toggle-all" onclick="toggleAllAcc(this)">Open all</button></div>
+
+      <!-- SENSITIVE DATA WARNING -->
+      <div class="tool-card" style="border-color:var(--gold);background:var(--gold-glow);margin-bottom:18px;">
+        <div style="font-size:15px;font-weight:700;color:var(--gold-deep);margin-bottom:6px;">⚠ Sensitive personal data</div>
+        <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:0;">
+          Your progress, bookmarks, settings, and downloaded offline content are stored locally in browser storage on this device. This includes data that reveals religious practice and habits — missed prayers and fasts, memorization progress, dhikr counts, Qur'an reading history, and daily checklist status. Even without an account, this is sensitive personal information. Anyone with access to your browser profile, device, or browser extensions may be able to read it.
+        </p>
+      </div>
+
+      <!-- LOCAL STORAGE -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Data stored on this device (localStorage) <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>All data below is stored in your browser's localStorage — it never leaves your device unless you explicitly share it.</p>
+          <div style="overflow-x:auto;margin:12px 0;">
+            <table style="font-size:13px;border-collapse:collapse;width:100%;">
+              <tr style="border-bottom:1.5px solid var(--line);"><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Key</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">What it stores</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Sensitive?</th></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">todayChecked</td><td style="padding:8px 10px;">Daily task checklist (which of today's 5 tasks you completed)</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals daily religious practice</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">quranResume</td><td style="padding:8px 10px;">Last surah and ayah you read</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals reading habits</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">dhikrState</td><td style="padding:8px 10px;">Dhikr counter preset, count, and session history</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals worship frequency</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">qadaState</td><td style="padding:8px 10px;">Missed prayers and fasts tracker with activity log</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals missed religious obligations</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">arabicCourse</td><td style="padding:8px 10px;">Arabic reading course progress (alphabet, connections, words, surahs)</td><td style="padding:8px 10px;">Low</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">hifzData</td><td style="padding:8px 10px;">Qur'an memorization tracker (which surahs are memorized)</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals memorization level</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">hifzLastTest</td><td style="padding:8px 10px;">Date of last hifz self-test</td><td style="padding:8px 10px;">Low</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;font-family:monospace;font-size:12px;">sabeelLang</td><td style="padding:8px 10px;">Interface language preference</td><td style="padding:8px 10px;">No</td></tr>
+              <tr><td style="padding:8px 10px;font-family:monospace;font-size:12px;">quran:* (multiple)</td><td style="padding:8px 10px;">Qur'an reader settings: bookmarks, reciter, last position</td><td style="padding:8px 10px;color:var(--gold-deep);">Yes — reveals reading history</td></tr>
+            </table>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin:0;">localStorage is not encrypted. Any script running in the same origin, a browser extension with suitable access, malware, or someone with physical access to the device may be able to read it.</p>
+        </div>
+      </div>
+
+      <!-- BROWSER CACHE -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Downloaded Qur'an audio (Cache API) <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>When you download verses for offline listening, audio files are stored in a browser Cache API storage named <code>sabeel-quran-audio-v1</code>. This is <strong>persistent browser storage</strong> — it is NOT temporary and will remain until you explicitly delete it or clear site data.</p>
+          <p style="margin-top:8px;">Downloaded audio may remain in Cache Storage or IndexedDB until removed or browser site data is cleared. There is no automatic expiration. The cached audio is only accessible to this app in this browser.</p>
+        </div>
+      </div>
+
+      <!-- INDEXEDDB -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Offline content packs (IndexedDB) <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>Downloaded offline packs (short surahs audio, duas collection, etc.) are stored in an IndexedDB database named <code>sabeel-offline-packs</code> with an object store named <code>packs</code>. Each pack contains audio blobs, metadata, and download timestamps.</p>
+          <p style="margin-top:8px;">This is persistent browser storage separate from localStorage. You can delete individual packs from the <a href="#" onclick="event.preventDefault();switchView('downloads')" style="color:var(--green);text-decoration:underline;">Downloads</a> view, or clear all data from this page.</p>
+        </div>
+      </div>
+
+      <!-- SERVICE WORKER -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Service worker &amp; offline caching <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>Sabeel registers a service worker (<code>sw.js</code>) to enable offline use. The service worker caches the app's own files (HTML, CSS, JS, icon) using a cache-first strategy, and caches CDN resources using stale-while-revalidate.</p>
+          <p style="margin-top:8px;">The service worker's full caching and network behavior is defined in <code>sw.js</code> and cannot be fully verified from this file alone. The service worker does not collect or transmit any data — it only caches files locally.</p>
+        </div>
+      </div>
+
+      <!-- EXTERNAL NETWORK REQUESTS -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">External servers contacted <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>When you use online features, your browser contacts the following external services to retrieve Qur'an text, translations, reciter metadata, audio, and — when you choose it — browser geolocation for local prayer-time/Qibla calculations. Each request necessarily exposes your IP address, request metadata, and the resource you request to that server. <strong>The app code itself contains no tracking, analytics, or advertising.</strong></p>
+          <div style="overflow-x:auto;margin:12px 0;">
+            <table style="font-size:13px;border-collapse:collapse;width:100%;">
+              <tr style="border-bottom:1.5px solid var(--line);"><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Service</th><th style="text-align:left;padding:8px 10px;color:var(--ink);font-weight:700;">Purpose</th></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">api.quran.com</td><td style="padding:8px 10px;">Qur'an text, verse data, reciter metadata, word-by-word translations</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">api.alquran.cloud</td><td style="padding:8px 10px;">Qur'an text, English translations, transliterations</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">verses.quran.com</td><td style="padding:8px 10px;">Qur'an audio delivery (fallback)</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">cdn.islamic.network</td><td style="padding:8px 10px;">Qur'an audio, Arabic alphabet audio</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">everyayah.com</td><td style="padding:8px 10px;">Qur'an audio (fallback)</td></tr>
+              <tr style="border-bottom:1px solid var(--line-soft);"><td style="padding:8px 10px;">hisnmuslim.com</td><td style="padding:8px 10px;">Human dua recordings (Hisn al-Muslim)</td></tr>
+              <tr><td style="padding:8px 10px;">salafiaudio.files.wordpress.com</td><td style="padding:8px 10px;">Salah instructional audio (Dr. Saleh As-Saleh)</td></tr>
+            </table>
+          </div>
+          <p style="font-size:12px;color:var(--text-muted);margin:0;">While the app itself does not track you, these third-party servers may log IP addresses and request metadata as part of normal HTTP operation. The app does not control what these servers do with their logs.</p>
+        </div>
+      </div>
+
+      <!-- GEOLOCATION -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">Location data (geolocation) <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>The Prayer Times and Qibla tools can optionally use your device's GPS to auto-fill your coordinates. The browser will ask for permission first. Coordinates are used locally to calculate prayer times and Qibla direction — <strong>they are never sent to any server by this app</strong>.</p>
+          <p style="margin-top:8px;">You can also enter coordinates manually if you prefer not to use geolocation. Manually entered coordinates are stored in localStorage as part of your settings.</p>
+        </div>
+      </div>
+
+      <!-- NO ANALYTICS -->
+      <div class="acc-item">
+        <button class="acc-head" onclick="toggleAcc(this)" aria-expanded="false">No analytics, no tracking <span class="plus">+</span></button>
+        <div class="acc-body">
+          <p>The supplied app code contains no Google Analytics, Plausible, Firebase, tracking pixels, sendBeacon calls, or any other analytics or advertising code. There is no account system and no user identification.</p>
+          <p style="margin-top:8px;">However, the hosting platform and CDN providers may still have access to standard server logs (IP addresses, request times) for the files they serve. The service worker and its caching behavior must be reviewed separately.</p>
+        </div>
+      </div>
+
+      <!-- CLEAR ALL DATA -->
+      <div class="tool-card" style="border-color:var(--rose);margin-top:18px;">
+        <div class="section-h3" style="font-size:17px;color:var(--rose);"><span class="num" style="background:var(--rose);color:#fff;">✕</span>Clear all data</div>
+        <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:8px 0 12px 0;">
+          This will permanently delete all locally stored data: bookmarks, settings, daily checklists, dhikr counts, qada tracker, Arabic course progress, Hifz tracker, downloaded Qur'an audio, and offline content packs. This action cannot be undone.
+        </p>
+        <button class="tool-btn" onclick="confirmClearAllData()" style="border-color:var(--rose);color:var(--rose);">Delete all my data</button>
+        <span id="clearDataStatus" style="font-size:12px;color:var(--text-muted);margin-left:10px;"></span>
       </div>
     </section>
 
@@ -3768,7 +3919,7 @@ const ESSENTIALS = [
     </div>
     <h3>Before attending</h3>
     <ul>
-      <li>Ghusl (full bath) is a duty for every adult Muslim on Friday (Sahih al-Bukhari 876).</li>
+      <li>Ghusl (full bath) is a duty for every adult Muslim on Friday (Sahih al-Bukhari 876; jurists differ over whether "wajib" here means obligatory or strongly emphasized).</li>
       <li>Wear your best clothes (Sahih Muslim 849).</li>
       <li>Arrive early — the earlier one arrives, the greater the reward (Sahih al-Bukhari 881).</li>
     </ul>
@@ -3930,7 +4081,7 @@ const QUIZ_QUESTIONS = [
     "The fast-breaking meal"
   ],
   correct:1,
-  explain:"An imam is whoever leads the prayer — any knowledgeable adult Muslim; Islam has no ordained priesthood. But the word means 'leader' broadly: the Qur'an calls Ibrahim 'an imam for the people' (Qur'an 2:124). And in the full wording of Bukhari 2957 the Prophet ﷺ said: 'The imam is a shield (جُنَّة — a covering of protection) behind whom the people fight, and whoever obeys the amīr (الأَمِير — the one in authority over them) has obeyed me, and whoever disobeys the amīr has disobeyed me.' So those who led the whole community after him — like Abu Bakr and Ali — were its imams, and great scholars like 'Imam al-Bukhari' are leaders in knowledge."
+  explain:"An imam is whoever leads the prayer — any knowledgeable adult Muslim; Islam has no ordained priesthood. But the word means 'leader' broadly: the Qur'an calls Ibrahim 'an imam for the people' (Qur'an 2:124). And in the full wording of Bukhari 2957 the Prophet ﷺ said: 'The imam is a shield (جُنَّة — a covering of protection) behind whom the people fight, and whoever obeys the amīr (الأَمِير — the one in authority over them) has obeyed me, and whoever disobeys the amīr has disobeyed me.' This hadith was originally about governance, but the term is also applied to the prayer leader. So those who led the whole community after him — like Abu Bakr and Ali — were its imams, and great scholars like 'Imam al-Bukhari' are leaders in knowledge."
 },
 {
   word:"Sawm",
@@ -4162,30 +4313,30 @@ const QUIZ_QUESTIONS = [
    Each question carries the exact citation behind its answer. Shown in a
    flip card after answering; flagged terms surface in the Today view. */
 const QUIZ_SOURCES = {
-  "Shahādah":{ar:"شَهِدَ اللَّهُ أَنَّهُ لَا إِلَٰهَ إِلَّا هُوَ", text:"\"Allah witnesses that there is no deity except Him — and [so do] the angels and those of knowledge.\"", ref:"Qur'an 3:18", grade:"Sahih"},
-  "Tawheed":{ar:"قُلْ هُوَ اللَّهُ أَحَدٌ", text:"\"Say: He is Allah, [who is] One.\"", ref:"Qur'an 112:1", grade:"Sahih"},
-  "Sunnah":{ar:"وَمَا آتَاكُمُ الرَّسُولُ فَخُذُوهُ", text:"\"And whatever the Messenger has given you, take it; and whatever he has forbidden you, refrain from it.\"", ref:"Qur'an 59:7", grade:"Sahih"},
-  "Wudhu":{ar:"يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قُمْتُمْ إِلَى الصَّلَاةِ فَاغْسِلُوا وُجُوهَكُمْ وَأَيْدِيَكُمْ إِلَى الْمَرَافِقِ", text:"\"O you who believe! When you rise to pray, wash your faces and your hands up to the elbows…\"", ref:"Qur'an 5:6", grade:"Sahih"},
-  "Qibla":{ar:"فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ", text:"\"So turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it.\"", ref:"Qur'an 2:144", grade:"Sahih"},
+  "Shahādah":{ar:"شَهِدَ اللَّهُ أَنَّهُ لَا إِلَٰهَ إِلَّا هُوَ", text:"\"Allah witnesses that there is no deity except Him — and [so do] the angels and those of knowledge.\"", ref:"Qur'an 3:18", grade:""},
+  "Tawheed":{ar:"قُلْ هُوَ اللَّهُ أَحَدٌ", text:"\"Say: He is Allah, [who is] One.\"", ref:"Qur'an 112:1", grade:""},
+  "Sunnah":{ar:"وَمَا آتَاكُمُ الرَّسُولُ فَخُذُوهُ", text:"\"And whatever the Messenger has given you, take it; and whatever he has forbidden you, refrain from it.\"", ref:"Qur'an 59:7 — context: the surrounding passage concerns distribution of spoils after battle", grade:""},
+  "Wudhu":{ar:"يَا أَيُّهَا الَّذِينَ آمَنُوا إِذَا قُمْتُمْ إِلَى الصَّلَاةِ فَاغْسِلُوا وُجُوهَكُمْ وَأَيْدِيَكُمْ إِلَى الْمَرَافِقِ", text:"\"O you who believe! When you rise to pray, wash your faces and your hands up to the elbows…\"", ref:"Qur'an 5:6", grade:""},
+  "Qibla":{ar:"فَوَلِّ وَجْهَكَ شَطْرَ الْمَسْجِدِ الْحَرَامِ", text:"\"So turn your face toward al-Masjid al-Haram. And wherever you are, turn your faces toward it.\"", ref:"Qur'an 2:144", grade:""},
   "Hadith":{ar:"مَنْ كَذَبَ عَلَيَّ مُتَعَمِّدًا فَلْيَتَبَوَّأْ مَقْعَدَهُ مِنَ النَّارِ", text:"\"Whoever tells a lie against me intentionally, let him take his seat in the Fire.\" — why every report's chain was scrutinized so severely.", ref:"Sahih al-Bukhari 110", grade:"Sahih"},
   "Iman":{ar:"أَنْ تُؤْمِنَ بِاللَّهِ وَمَلَائِكَتِهِ وَكُتُبِهِ وَرُسُلِهِ وَالْيَوْمِ الْآخِرِ وَتُؤْمِنَ بِالْقَدَرِ", text:"Gabriel asked: \"What is Iman?\" The Prophet ﷺ answered: \"That you believe in Allah, His angels, His books, His messengers, the Last Day, and that you believe in divine decree — its good and its bad.\"", ref:"Sahih Muslim 8 — Hadith of Jibril", grade:"Sahih"},
-  "Imam":{ar:"الْإِمَامُ جُنَّةٌ يُقَاتَلُ مِنْ وَرَائِهِ", text:"\"The imam is a shield (جُنَّة — a covering of protection) behind whom the people fight, and whoever obeys the amīr (الأَمِير — the one in authority) has obeyed me, and whoever disobeys the amīr has disobeyed me.\"", ref:"Sahih al-Bukhari 2957", grade:"Sahih"},
-  "Sawm":{ar:"يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ", text:"\"O you who believe, fasting has been decreed upon you as it was decreed upon those before you, that you may attain taqwa.\"", ref:"Qur'an 2:183", grade:"Sahih"},
-  "Zakat":{ar:"خُذْ مِنْ أَمْوَالِهِمْ صَدَقَةً تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا", text:"\"Take from their wealth a charity by which you purify them and cause them increase.\"", ref:"Qur'an 9:103", grade:"Sahih"},
-  "Halal":{ar:"الْيَوْمَ أُحِلَّ لَكُمُ الطَّيِّبَاتُ", text:"\"Today the good things have been made lawful for you…\" — halal is Allah's permission, not people's.", ref:"Qur'an 5:5", grade:"Sahih"},
-  "Haram":{ar:"حُرِّمَتْ عَلَيْكُمُ الْمَيْتَةُ وَالدَّمُ وَلَحْمُ الْخِنزِيرِ", text:"\"Prohibited to you are carrion, blood, the flesh of swine…\" — haram is Allah's prohibition, stated clearly.", ref:"Qur'an 5:3", grade:"Sahih"},
-  "Isnad":{ar:"إِنَّ هَذَا الْعِلْمَ يُحْمَلُ عَنْ كُلِّ خَلَفٍ بُدَلَهُ", text:"\"This knowledge will be carried by the trustworthy ones of every generation — they remove from it the distortions of the excessive, the claims of the liars, and the interpretations of the ignorant.\"", ref:"Sahih al-Bukhari 100", grade:"Sahih"},
-  "Fiqh":{text:"\"If a judge gives a verdict after striving his utmost and reaches the right conclusion, he has two rewards; if he errs after striving, he still has one reward.\" — the human effort of fiqh is honoured even when it errs.", ref:"Sahih al-Bukhari 7352", grade:"Sahih"},
-  "Ummah":{ar:"إِنَّ هَٰذِهِ أُمَّتُكُمْ أُمَّةً وَاحِدَةً وَأَنَا رَبُّكُمْ فَاعْبُدُونِ", text:"\"Indeed, this, your ummah, is one ummah, and I am your Lord — so worship Me.\"", ref:"Qur'an 21:92", grade:"Sahih"},
+  "Imam":{ar:"الْإِمَامُ جُنَّةٌ يُقَاتَلُ مِنْ وَرَائِهِ", text:"\"The imam is a shield (جُنَّة — a covering of protection) behind whom the people fight, and whoever obeys the amīr (الأَمِير — the one in authority) has obeyed me, and whoever disobeys the amīr has disobeyed me.\" — originally about the leader in governance, also applied to the prayer leader.", ref:"Sahih al-Bukhari 2957", grade:"Sahih"},
+  "Sawm":{ar:"يَا أَيُّهَا الَّذِينَ آمَنُوا كُتِبَ عَلَيْكُمُ الصِّيَامُ", text:"\"O you who believe, fasting has been decreed upon you as it was decreed upon those before you, that you may attain taqwa.\"", ref:"Qur'an 2:183", grade:""},
+  "Zakat":{ar:"خُذْ مِنْ أَمْوَالِهِمْ صَدَقَةً تُطَهِّرُهُمْ وَتُزَكِّيهِم بِهَا", text:"\"Take from their wealth a charity by which you purify them and cause them increase.\"", ref:"Qur'an 9:103", grade:""},
+  "Halal":{ar:"الْيَوْمَ أُحِلَّ لَكُمُ الطَّيِّبَاتُ", text:"\"Today the good things have been made lawful for you…\" — halal is Allah's permission, not people's.", ref:"Qur'an 5:5", grade:""},
+  "Haram":{ar:"حُرِّمَتْ عَلَيْكُمُ الْمَيْتَةُ وَالدَّمُ وَلَحْمُ الْخِنزِيرِ", text:"\"Prohibited to you are carrion, blood, the flesh of swine…\" — haram is Allah's prohibition, stated clearly.", ref:"Qur'an 5:3", grade:""},
+  "Isnad":{ar:"إِنَّ هَذَا الْعِلْمَ يُحْمَلُ عَنْ كُلِّ خَلَفٍ بُدَلَهُ", text:"\"This knowledge will be carried by the trustworthy ones of every generation — they remove from it the distortions of the excessive, the claims of the liars, and the interpretations of the ignorant.\"", ref:"Kitab al-Ilm, al-Bayhaqi (Shu'ab al-Iman)", grade:"Hasan"},
+  "Fiqh":{text:"\"If a judge gives a verdict after striving his utmost and reaches the right conclusion, he has two rewards; if he errs after striving, he still has one reward.\" — concerns a judge exercising ijtihad in a specific case; jurists differ over how this applies to broader fiqh opinions.", ref:"Sahih al-Bukhari 7352", grade:"Sahih"},
+  "Ummah":{ar:"إِنَّ هَٰذِهِ أُمَّتُكُمْ أُمَّةً وَاحِدَةً وَأَنَا رَبُّكُمْ فَاعْبُدُونِ", text:"\"Indeed, this, your ummah, is one ummah, and I am your Lord — so worship Me.\"", ref:"Qur'an 21:92", grade:""},
   "Adhan":{ar:"اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ", text:"\"O Allah, Lord of this perfect call and the prayer to be offered, grant Muhammad ﷺ the intercession and favor.\"" , ref:"Sahih al-Bukhari 614", grade:"Sahih"},
   "Jumu'ah":{ar:"خَيْرُ يَوْمٍ طَلَعَتْ عَلَيْهِ الشَّمْسُ يَوْمُ الْجُمُعَةِ", text:"\"The best day on which the sun has risen is Friday: on it Adam was created, on it he entered Paradise, and on it he was expelled from it.\"", ref:"Sahih Muslim 854", grade:"Sahih"},
-  "Hajj":{ar:"وَلِلَّهِ عَلَى النَّاسِ حِجُّ الْبَيْتِ مَنِ اسْتَطَاعَ إِلَيْهِ سَبِيلًا", text:"\"And due to Allah from the people is a pilgrimage to the House — for whoever is able to find a way there.\"", ref:"Qur'an 3:97", grade:"Sahih"},
-  "Rak'ah count — Maghrib":{ar:"إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا", text:"\"Indeed, prayer has been decreed upon the believers a decree of specified times.\" The five counts (2-4-4-3-4) are transmitted by unanimous, mass-narrated practice since the Prophet ﷺ.", ref:"Qur'an 4:103", grade:"Sahih"},
-  "Articles of Iman":{ar:"وَالْإِيمَانُ بِضْعٌ وَسَبْعُونَ شُعْبَةً", text:"\"Iman has over seventy branches — the highest of them 'There is no god but Allah', and the lowest removing harm from the road.\"", ref:"Sahih al-Bukhari 50", grade:"Sahih"},
+  "Hajj":{ar:"وَلِلَّهِ عَلَى النَّاسِ حِجُّ الْبَيْتِ مَنِ اسْتَطَاعَ إِلَيْهِ سَبِيلًا", text:"\"And due to Allah from the people is a pilgrimage to the House — for whoever is able to find a way there.\"", ref:"Qur'an 3:97", grade:""},
+  "Rak'ah count — Maghrib":{ar:"إِنَّ الصَّلَاةَ كَانَتْ عَلَى الْمُؤْمِنِينَ كِتَابًا مَّوْقُوتًا", text:"\"Indeed, prayer has been decreed upon the believers a decree of specified times.\" The five counts (2-4-4-3-4) are transmitted by unanimous, mass-narrated practice since the Prophet ﷺ.", ref:"Qur'an 4:103", grade:""},
+  "Articles of Iman":{ar:"وَالْإِيمَانُ بِضْعٌ وَسَبْعُونَ شُعْبَةً", text:"\"Iman has over seventy branches — the highest of them 'There is no god but Allah', and the lowest removing harm from the road.\"", ref:"Sahih Muslim 35", grade:"Sahih"},
   "Muharram":{ar:"أَفْضَلُ الصَّوْمِ بَعْدَ رَمَضَانَ شَهْرُ اللَّهِ الْمُحَرَّمُ", text:"\"The best fasting after Ramadan is in the month of Allah, al-Muharram; and the best prayer after the obligatory is the night prayer.\"", ref:"Sahih Muslim 1163", grade:"Sahih"},
-  "InshaAllah":{ar:"وَلَا تَقُولَنَّ لِشَيْءٍ إِنِّي فَاعِلٌ ذَٰلِكَ غَدًا ۝ إِلَّا أَن يَشَاءَ اللَّهُ", text:"\"And never say of anything, 'I will do it tomorrow,' except [adding], 'If Allah wills.'\"", ref:"Qur'an 18:23–24", grade:"Sahih"},
+  "InshaAllah":{ar:"وَلَا تَقُولَنَّ لِشَيْءٍ إِنِّي فَاعِلٌ ذَٰلِكَ غَدًا ۝ إِلَّا أَن يَشَاءَ اللَّهُ", text:"\"And never say of anything, 'I will do it tomorrow,' except [adding], 'If Allah wills.'\"", ref:"Qur'an 18:23–24", grade:""},
   "Alhamdulillah":{ar:"وَالْحَمْدُ لِلَّهِ تَمْلَأُ الْمِيزَانَ", text:"\"…and Alhamdulillah fills the scale.\" — from the hadith of the two words light on the tongue, heavy on the scale.", ref:"Sahih Muslim 223", grade:"Sahih"},
-  "MashaAllah":{ar:"وَلَوْلَا إِذْ دَخَلْتَ جَنَّتَكَ قُلْتَ مَا شَاءَ اللَّهُ لَا قُوَّةَ إِلَّا بِاللَّهِ", text:"\"Why, when you entered your garden, did you not say: 'MashaAllah — there is no power except with Allah'?\"", ref:"Qur'an 18:39", grade:"Sahih"},
+  "MashaAllah":{ar:"وَلَوْلَا إِذْ دَخَلْتَ جَنَّتَكَ قُلْتَ مَا شَاءَ اللَّهُ لَا قُوَّةَ إِلَّا بِاللَّهِ", text:"\"Why, when you entered your garden, did you not say: 'MashaAllah — there is no power except with Allah'?\"", ref:"Qur'an 18:39", grade:""},
   "Bismillah":{ar:"يَا غُلَامُ سَمِّ اللَّهَ وَكُلْ بِيَمِينِكَ", text:"\"O young man, mention Allah's name and eat with your right hand, and eat from what is nearest to you.\"", ref:"Sahih Muslim 2022", grade:"Sahih"},
   "Witr":{ar:"إِنَّ اللَّهَ زَادَكُمْ صَلَاةً هِيَ الْوِتْرُ فَأَوْتِرُوا", text:"\"Allah has added for you a prayer — Witr — so pray Witr between Isha and dawn.\"", ref:"Sunan Abu Dawud 1419 — graded sahih by al-Albani", grade:"Sahih"}
 };
@@ -5954,7 +6105,7 @@ document.addEventListener('click', e=>{
 });
 
 /* keyboard quick-jump: 1–9 and 0 map to the main sections (desktop QoL) */
-const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','dhikr','qada','companion','downloads','hijri','arabic','hifz','tawheed','fiqh','ramadan','hajj'];
+const VIEW_ORDER = ['welcome','today','roadmap','practice','essentials','duas','quran','quiz','prayertimes','qibla','wudhu','dhikr','qada','companion','downloads','hijri','arabic','hifz','tawheed','fiqh','ramadan','hajj','privacy'];
 document.addEventListener('keydown', e=>{
   if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
   if(e.key === '/') return; /* search shortcut handled below */
@@ -7081,6 +7232,7 @@ function speakText(text, lang){
    the Quran.com CDN. Anything unmapped falls back to the labelled device
    voice. Never guess a URL here — every entry below was HEAD-validated. */
 const HUMAN_AUDIO = {
+  /* === SALAH — real recordings === */
   takbir: 'https://salafiaudio.files.wordpress.com/2015/03/salah-step-by-step-audio-saleh-as-saleh-01.mp3',
   istiadha: 'https://salafiaudio.files.wordpress.com/2015/03/salah-step-by-step-audio-saleh-as-saleh-03.mp3',
   'wudhu-shahada': 'https://hisnmuslim.com/audio/ar/13.mp3',
@@ -7092,6 +7244,18 @@ const HUMAN_AUDIO = {
   salawat: 'https://hisnmuslim.com/audio/ar/53.mp3',
   'shahada': 'https://hisnmuslim.com/audio/ar/52.mp3',
   'adhan': 'https://hisnmuslim.com/audio/ar/25.mp3',
+  /* salawat / taslim variants that appear in companion & wudhu */
+  taslim: 'https://hisnmuslim.com/audio/ar/53.mp3',
+  /* === ADHKAR — short phrases used everywhere (dhikr counter, lessons, popovers) === */
+  'dhikr:SubhanAllah': 'https://hisnmuslim.com/audio/ar/87.mp3',
+  'dhikr:Alhamdulillah': 'https://hisnmuslim.com/audio/ar/88.mp3',
+  'dhikr:Allahu Akbar': 'https://hisnmuslim.com/audio/ar/89.mp3',
+  'dhikr:La ilaha illallah': 'https://hisnmuslim.com/audio/ar/90.mp3',
+  'dhikr:Astaghfirullah': 'https://hisnmuslim.com/audio/ar/92.mp3',
+  /* broad adhkar fallback — used when a specific key is missing but text is a known dhikr */
+  subhanallah: 'https://hisnmuslim.com/audio/ar/87.mp3',
+  alhamdulillah: 'https://hisnmuslim.com/audio/ar/88.mp3',
+  /* === DUA EXPLORER — every entry in DUA_LIST has a real recording === */
   'dua:Waking up': 'https://hisnmuslim.com/audio/ar/1.mp3',
   'dua:Going to sleep': 'https://hisnmuslim.com/audio/ar/105.mp3',
   'dua:Morning & evening remembrance': 'https://hisnmuslim.com/audio/ar/77.mp3',
@@ -7105,32 +7269,86 @@ const HUMAN_AUDIO = {
   'dua:Leaving the toilet': 'https://hisnmuslim.com/audio/ar/11.mp3',
   'dua:After the adhan': 'https://hisnmuslim.com/audio/ar/25.mp3',
   'dua:Stopping anywhere at night': 'https://hisnmuslim.com/audio/ar/216.mp3',
-  'dua:Wearing clothes': 'https://hisnmuslim.com/audio/ar/5.mp3'
+  'dua:Wearing clothes': 'https://hisnmuslim.com/audio/ar/5.mp3',
+  /* duas that are Qur'anic verses use the Quran recitation CDN instead (ayahs: field in DUA_LIST)
+     but we keep a human-audio mirror here so speakArabicLine also works for them */
+  'dua:Boarding a vehicle': 'https://hisnmuslim.com/audio/ar/114.mp3',
+  'dua:When overcome by distress': 'https://hisnmuslim.com/audio/ar/121.mp3',
+  /* extra duas that appear in lessons / practice */
+  'dua:Bismillah': 'https://hisnmuslim.com/audio/ar/178.mp3',
+  'dua:Gufranak': 'https://hisnmuslim.com/audio/ar/11.mp3'
 };
-function playHumanUrl(urlOrList, busyBtn){
+/* Keep original text for TTS fallback when human audio fails */
+let _humanFallbackText = '';
+let _humanFallbackLang = 'ar';
+function playHumanUrl(urlOrList, busyBtn, fallbackText, fallbackLang){
   if(window.__stopQuran) window.__stopQuran();
   stopRecitation();
   const list = Array.isArray(urlOrList) ? urlOrList.slice() : [urlOrList];
+  _humanFallbackText = fallbackText || '';
+  _humanFallbackLang = fallbackLang || 'ar';
   Recit.active = true;
   Recit.btn = busyBtn || null;
   if(busyBtn) busyBtn.classList.add('busy');
   showRecPlayer();
-  document.getElementById('rpReciter').textContent = 'Device voice · 1 of 1';
+  document.getElementById('rpReciter').textContent = list.length > 1 ? 'Human voice · 1 of ' + list.length : 'Human voice';
+  document.getElementById('rpTitle').textContent = 'Human recitation';
   let i = 0;
+  const tryTTS = () => {
+    Recit.active = false;
+    if(busyBtn) busyBtn.classList.remove('busy');
+    hideRecPlayer();
+    if(_humanFallbackText && speak(_humanFallbackText, _humanFallbackLang)){
+      showToast('Human recording unavailable — using device voice');
+    } else if(_humanFallbackText){
+      showToast('Audio unavailable and device voice not supported');
+    } else {
+      showToast('Recording unavailable');
+    }
+  };
   const playNext = () => {
     if(i >= list.length){ Recit.active = false; if(busyBtn) busyBtn.classList.remove('busy'); hideRecPlayer(); return; }
     if(!Recit.active) return;
-    const a = new Audio(list[i++]);
+    const url = list[i];
+    /* guard against empty/invalid URLs that would throw */
+    if(!url || typeof url !== 'string' || !url.trim()){
+      i++;
+      if(i >= list.length) tryTTS(); else playNext();
+      return;
+    }
+    const a = new Audio(url);
+    a.preload = 'auto';
+    a.playbackRate = Recit.rate;
     Recit._humanAudios.push(a);
-    a.onended = ()=>{ const idx = Recit._humanAudios.indexOf(a); if(idx>=0) Recit._humanAudios.splice(idx,1); playNext(); };
-    a.onerror = () => { const idx = Recit._humanAudios.indexOf(a); if(idx>=0) Recit._humanAudios.splice(idx,1); Recit.active = false; if(busyBtn) busyBtn.classList.remove('busy'); hideRecPlayer(); showToast('Recording unavailable'); };
-    a.play().catch(()=>{ if(busyBtn) busyBtn.classList.remove('busy'); Recit.active = false; hideRecPlayer(); showToast('Recording unavailable'); });
+    let errored = false;
+    const onFail = () => {
+      if(errored) return; errored = true;
+      const idx = Recit._humanAudios.indexOf(a);
+      if(idx>=0) Recit._humanAudios.splice(idx,1);
+      try{ a.pause(); a.removeAttribute('src'); }catch(e){}
+      /* try next URL in sequence, else fall back to TTS */
+      i++;
+      if(i < list.length) playNext();
+      else tryTTS();
+    };
+    a.onended = ()=>{
+      const idx = Recit._humanAudios.indexOf(a);
+      if(idx>=0) Recit._humanAudios.splice(idx,1);
+      i++;
+      if(i < list.length) playNext();
+      else { Recit.active = false; if(busyBtn) busyBtn.classList.remove('busy'); hideRecPlayer(); }
+    };
+    a.onerror = onFail;
+    /* also handle play() rejection (autoplay / CORS / network) */
+    a.play().catch(()=> onFail());
+    /* timeout: if neither play nor error fires within 8s, treat as failure and fallback */
+    setTimeout(()=>{ if(!errored && a.paused && !a.ended && a.readyState < 2) onFail(); }, 8000);
   };
   playNext();
 }
 function speakArabicLine(key, text, busyBtn){
   const entry = key && HUMAN_AUDIO[key];
-  if(entry){ playHumanUrl(entry, busyBtn); return; }
+  if(entry){ playHumanUrl(entry, busyBtn, text, 'ar'); return; }
   speakText(text, 'ar');
 }
 function makeSpk(fn, label){
@@ -7138,7 +7356,9 @@ function makeSpk(fn, label){
   b.className = 'spk-btn';
   b.title = label;
   b.setAttribute('aria-label', label);
-  b.innerHTML = SPK_ICON;
+  const isRecite = /recit|Qur.?an/i.test(label);
+  const short = isRecite ? 'Recite' : 'Listen';
+  b.innerHTML = SPK_ICON + '<span class="spk-label">'+ short +'</span>';
   b.addEventListener('click', e=>{ e.stopPropagation(); fn(b); });
   return b;
 }
@@ -7336,7 +7556,7 @@ const WUDHU_STEPS = [
   {t:'Wipe the head and ears — once', ar:'وَامْسَحُوا بِرُءُوسِكُمْ وَأَرْجُلَكُمْ', translit:'Wamsahu bi-ru\u2019usikum wa arjulakum — "\u2026and wipe your heads and your feet" (Qur\u2019an 5:6)', instr:'With wet hands, wipe from the front of the head to the back and back again — once. Then wipe inside and outside the ears with the same water.', mistake:'This step is wiped ONCE, not three times — and with the same water already on your hands, not fresh water.'},
   {t:'Wash the feet — three times', instr:'Right foot first, then left — up to and including the ankles, three times, cleaning between the toes.', mistake:'Feet and heels are the most commonly missed parts in wudhu — the Qur\u2019an itself warns of it (Qur\u2019an 5:6). Water must reach between the toes and over the ankles.'},
   {t:'Closing testimony', ar:'أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ', translit:'Ash-hadu an la ilaha illallahu wahdahu la sharika lah, wa ash-hadu anna Muhammadan \u2018abduhu wa rasuluh.', instr:'After completing the wudhu, say the testimony — the eight gates of Paradise are opened for the one who says it (Sahih Muslim 234).', say:'Say it now'},
-  {t:'Two rak\u2019ahs of wudhu (sunnah)', instr:'If the time allows, pray two light rak\u2019ahs with full presence of heart.', mistake:'None needed here — just know the reward: the Prophet \uFDFB\u2019s companion Uthman performed wudhu then prayed two rak\u2019ahs, saying he saw the Prophet ﷺ do exactly that, and: "whoever performs wudhu like this, then prays two rak\u2019ahs in which he does not let his mind wander, his past sins are forgiven" (Sahih al-Bukhari 159).'}
+  {t:'Two rak\u2019ahs of wudhu (sunnah)', instr:'If the time allows, pray two light rak\u2019ahs with full presence of heart.', mistake:'None needed here — just know the reward: the Prophet \uFDFB\u2019s companion Uthman performed wudhu then prayed two rak\u2019ahs, saying he saw the Prophet ﷺ do exactly that, and: "whoever performs wudhu like this, then prays two rak\u2019ahs in which he does not let his mind wander, his past sins are forgiven" (Sahih al-Bukhari 164).'} 
 ];
 
 const TAYAMMUM_STEPS = [
@@ -7400,7 +7620,7 @@ function renderPractice(){
       <div class="quiz-results">
         <div class="quiz-result-msg">Your ${DECK.label.toLowerCase()} practice is complete</div>
         <div class="quiz-result-sub">You walked through every step. Now do it for real, slowly, with this checklist in memory — and may Allah accept it from you.</div>
-        <div class="source-quote" style="text-align:left;"><p>"Whoever prays like us, faces our qibla, and eats our slaughtered animal — that one is a Muslim."</p><div class="ref">Sahih al-Bukhari 384 <span class="grade sahih">Sahih</span></div></div>
+        <div class="source-quote" style="text-align:left;"><p>"Whoever prays like us, faces our qibla, and eats our slaughtered animal — that one is a Muslim." — the outward practice is a sign of faith, not a definition of identity by itself.</p><div class="ref">Sahih al-Bukhari 384 <span class="grade sahih">Sahih</span></div></div>
         <button class="quiz-btn" onclick="practiceRestart()">↻ Practise again</button>
       </div>`;
     document.querySelectorAll('#practiceCheck .pc-item').forEach(el=>el.classList.add('done'));
@@ -7571,10 +7791,10 @@ const DUA_LIST = [
   {occ:'Bathroom', name:'Entering the toilet', ar:'اللَّهُمَّ إِنِّي أَعُوذُ بِكَ مِنَ الْخُبْثِ وَالْخَبَائِثِ', translit:'Allahumma inni a\u2019udhu bika minal-khubthi wal-khaba\u2019ith.', tr:'"O Allah, I seek refuge with You from all evil, male and female."', ref:'Sahih al-Bukhari 142 · Sahih Muslim 375', grade:'Sahih'},
   {occ:'Bathroom', name:'Leaving the toilet', ar:'غُفْرَانَكَ', translit:'Gufranak.', tr:'"I seek Your forgiveness."', ref:'Jami\u2019 at-Tirmidhi 7 — graded sahih by al-Albani', grade:'Sahih'},
   {occ:'Prayer', name:'After the adhan', ar:'اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ', translit:'Allahumma Rabba hadhihi\u2019d-da\u2019wati\u2019t-tammah wa\u2019s-salati\u2019l-qa\u2019imah, ati Muhammadan al-wasilata wa\u2019l-fadilah.', tr:'"O Allah, Lord of this perfect call and the prayer to be offered, grant Muhammad ﷺ the intercession and favor."', ref:'Sahih al-Bukhari 614', grade:'Sahih'},
-  {occ:'Travel', name:'Boarding a vehicle', ar:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَىٰ رَبِّنَا لَمُنقَلِبُونَ', translit:'Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun.', tr:'"Glory to Him who subjected this to us, and we could never have it by our own efforts. And truly, to our Lord we are returning."', ref:'Qur\u2019an 43:13–14 · also Sahih Muslim 1342', grade:'Sahih', ayahs:[[43,13],[43,14]]},
+  {occ:'Travel', name:'Boarding a vehicle', ar:'سُبْحَانَ الَّذِي سَخَّرَ لَنَا هَٰذَا وَمَا كُنَّا لَهُ مُقْرِنِينَ وَإِنَّا إِلَىٰ رَبِّنَا لَمُنقَلِبُونَ', translit:'Subhanal-ladhi sakhkhara lana hadha wa ma kunna lahu muqrinin, wa inna ila Rabbina lamunqalibun.', tr:'"Glory to Him who subjected this to us, and we could never have it by our own efforts. And truly, to our Lord we are returning."', ref:'Qur\u2019an 43:13–14 · also Sahih Muslim 1342', grade:'', ayahs:[[43,13],[43,14]]},
   {occ:'Travel', name:'Stopping anywhere at night', ar:'أَعُوذُ بِكَلِمَاتِ اللَّهِ التَّامَّاتِ مِنْ شَرِّ مَا خَلَقَ', translit:'A\u2019udhu bikalimatillahit-tammati min sharri ma khalaq.', tr:'"I seek refuge in the perfect words of Allah from the evil of what He created." — nothing will harm you until you move on.', ref:'Sahih Muslim 2708', grade:'Sahih'},
   {occ:'Clothing', name:'Wearing clothes', ar:'الْحَمْدُ لِلَّهِ الَّذِي كَسَانِي هَٰذَا الثَّوْبَ وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِّنِّي وَلَا قُوَّةٍ', translit:'Alhamdulillahil-ladhi kasani hadha\u2019th-thawba wa razaqanihi min ghayri hawlin minni wa la quwwah.', tr:'"All praise is for Allah who clothed me with this garment and provided it for me without any effort or power on my part."', ref:'Sunan Abu Dawud 4023 — graded sahih', grade:'Sahih'},
-  {occ:'Distress', name:'When overcome by distress', ar:'لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ', translit:'La ilaha illa anta, subhanaka, inni kuntu minaz-zalimin.', tr:'"There is no god but You, glory be to You — indeed, I was among the wrongdoers." The Prophet ﷺ said no Muslim ever calls on Allah with this except that He answers him.', ref:'Qur\u2019an 21:87 · Jami\u2019 at-Tirmidhi 3505 — graded sahih', grade:'Sahih', ayahs:[[21,87]]}
+  {occ:'Distress', name:'When overcome by distress', ar:'لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ', translit:'La ilaha illa anta, subhanaka, inni kuntu minaz-zalimin.', tr:'"There is no god but You, glory be to You — indeed, I was among the wrongdoers." The Prophet ﷺ said no Muslim ever calls on Allah with this except that He answers him.', ref:'Qur\u2019an 21:87 · Jami\u2019 at-Tirmidhi 3505 — graded sahih by al-Albani', grade:'', ayahs:[[21,87]]}
 ];
 let duaFilter = 'All';
 let duaQuery = '';
@@ -7588,7 +7808,14 @@ function renderDuas(){
     const okQ = !q || (d.name+' '+d.occ+' '+d.tr+' '+d.translit+' '+d.ar).toLowerCase().includes(q);
     return okOcc && okQ;
   });
-  document.getElementById('duaGrid').innerHTML = list.length ? list.map(({d,i})=>`
+  const esc = s=> s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,"&#39;");
+  document.getElementById('duaGrid').innerHTML = list.length ? list.map(({d,i})=>{
+    const isQuran = !!d.ayahs;
+    const hasHuman = !!HUMAN_AUDIO['dua:'+d.name];
+    const spkTitle = isQuran ? 'Play the Qur\u2019anic recitation — real reciter' : (hasHuman ? 'Play human recording — Hamad Ad-Daryhim' : 'Listen with device voice');
+    const spkLabel = isQuran ? 'Recite' : (hasHuman ? 'Listen' : 'Listen');
+    const copyText = d.ar + ' — ' + d.translit + ' — ' + d.tr;
+    return `
     <div class="dua-card">
       <span class="dua-occ">${d.occ}</span>
       <b class="dua-name">${d.name}</b>
@@ -7597,22 +7824,48 @@ function renderDuas(){
       <p class="dua-tr">${d.tr}</p>
       <div class="dua-foot">
         <span class="dua-ref">${d.ref} <span class="grade ${d.grade.toLowerCase()==='sahih'?'sahih':'hasan'}">${d.grade}</span></span>
-        <button class="spk-btn" onclick="playDua(${i}, this)" title="${d.ayahs?'Play the Qur\u2019anic recitation':(HUMAN_AUDIO['dua:'+d.name]?'Play human recording - Hamad Ad-Daryhim':'Play with device voice')}">${SPK_ICON}</button>
+        <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
+          <button class="spk-btn" onclick="playDua(${i}, this)" title="${esc(spkTitle)}" aria-label="${esc(spkTitle)}">${SPK_ICON}<span class="spk-label">${spkLabel}</span></button>
+          <button class="spk-btn" onclick="copyDua(${i})" title="Copy this duʿa (Arabic + translation)" aria-label="Copy duʿa" style="background:var(--bg-deep);color:var(--ink-soft);border-color:var(--line);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="spk-label">Copy</span></button>
+          ${isQuran ? `<button class="spk-btn" onclick="openDuaInQuran(${i})" title="Open this verse in the Qur\u2019an reader" aria-label="Open in Qur\u2019an" style="background:var(--bg-deep);color:var(--green-deep);border-color:var(--line);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><path d="M5 4h13a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5z"/><path d="M5 4v16"/><path d="M9 8h6M9 11h6"/></svg><span class="spk-label">Qur’an</span></button>` : ''}
+        </span>
       </div>
-    </div>`).join('') : `<div class="rq-card muted"><b>No duas match</b><p>Try another word — search covers the Arabic, the meaning and the occasion.</p></div>`;
+    </div>`;}).join('') : `<div class="rq-card muted"><b>No duas match</b><p>Try another word — search covers the Arabic, the meaning and the occasion.</p></div>`;
 }
 function setDuaFilter(c){ duaFilter = c; renderDuas(); }
+function copyDua(i){
+  const d = DUA_LIST[i];
+  const txt = d.ar + '\n' + d.translit + '\n' + d.tr + '\n— ' + d.ref;
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(txt).then(()=> showToast('Duʿa copied')).catch(()=> showToast('Copy not available here'));
+  } else { showToast('Copy not available in this browser'); }
+}
+function openDuaInQuran(i){
+  const d = DUA_LIST[i];
+  if(!d.ayahs) return;
+  const [s,a] = d.ayahs[0];
+  switchView('quran');
+  if(window.__initQuran) window.__initQuran();
+  setTimeout(()=>{ if(window.__quranGoTo) window.__quranGoTo(s,a); }, 900);
+}
 function playDua(i, btn){
   if(Recit.active && Recit._duaIdx === i){
     stopRecitation();
+    if(btn) btn.classList.remove('busy');
     return;
   }
   stopRecitation();
   const d = DUA_LIST[i];
   Recit._duaIdx = i;
   if(btn){ btn.classList.add('busy'); btn.title = 'Stop recitation'; }
-  if(d.ayahs){ playRecitation(d.ayahs, d.ar, btn, d.name); }
-  else { speakArabicLine('dua:' + d.name, d.ar, btn); }
+  if(d.ayahs){
+    playRecitation(d.ayahs, d.ar, btn, d.name);
+  } else {
+    speakText(d.ar, 'ar');
+    if(btn){
+      setTimeout(()=> btn.classList.remove('busy'), 2000);
+    }
+  }
 }
 document.getElementById('duaSearch').addEventListener('input', e=>{ duaQuery = e.target.value; renderDuas(); });
 
@@ -7630,6 +7883,55 @@ document.addEventListener('pointerdown', function(e){
   target.appendChild(rip);
   setTimeout(()=> rip.remove(), 700);
 });
+
+/* ================= CLEAR ALL DATA (Privacy) ================= */
+function confirmClearAllData(){
+  const status = document.getElementById('clearDataStatus');
+  if(status) status.textContent = '';
+  if(!confirm('This will permanently delete ALL data stored by Sabeel on this device:\n\n• Bookmarks, Qur\'an settings, reading position\n• Daily task checklists\n• Dhikr counter and history\n• Missed prayers/fasts tracker\n• Arabic course progress\n• Hifz memorization tracker\n• Downloaded Qur\'an audio (Cache API)\n• Offline content packs (IndexedDB)\n\nThis cannot be undone. Continue?')) return;
+  clearAllData();
+}
+async function clearAllData(){
+  const status = document.getElementById('clearDataStatus');
+  try{
+    /* 1. Clear all localStorage keys */
+    const keys = ['todayChecked','quranResume','dhikrState','qadaState','arabicCourse','hifzData','hifzLastTest','sabeelLang'];
+    /* also clear dynamic quran:* keys */
+    for(let i = localStorage.length - 1; i >= 0; i--){
+      const k = localStorage.key(i);
+      if(k) keys.push(k);
+    }
+    const unique = [...new Set(keys)];
+    unique.forEach(k=>{ try{ localStorage.removeItem(k); }catch(e){} });
+    /* 2. Clear Cache API (Quran audio) */
+    if('caches' in window){
+      try{ await caches.delete('sabeel-quran-audio-v1'); }catch(e){}
+      try{ await caches.delete('sabeel-v2'); }catch(e){}
+    }
+    /* 3. Clear IndexedDB (offline packs) */
+    if('indexedDB' in window){
+      try{ indexedDB.deleteDatabase('sabeel-offline-packs'); }catch(e){}
+    }
+    /* 4. Revoke any blob URLs in the runtime cache */
+    if(typeof blobUrlCache !== 'undefined' && blobUrlCache instanceof Map){
+      blobUrlCache.forEach(u=>{ try{ URL.revokeObjectURL(u); }catch(e){} });
+      blobUrlCache.clear();
+    }
+    /* 5. Cancel any ongoing speech */
+    if(window.speechSynthesis) try{ speechSynthesis.cancel(); }catch(e){}
+    /* 6. Unregister service worker cache entries */
+    if('serviceWorker' in navigator && navigator.serviceWorker.controller){
+      try{
+        const regs = await navigator.serviceWorker.getRegistrations();
+        regs.forEach(r=> r.unregister());
+      }catch(e){}
+    }
+    if(status) status.textContent = 'All data cleared. Reload the page for a fresh start.';
+    showToast('All data cleared');
+  }catch(e){
+    if(status) status.textContent = 'Error clearing data: ' + e.message;
+  }
+}
 
 /* ================= KEYBOARD SHORTCUTS ================= */
 document.addEventListener('keydown', e=>{
@@ -7667,6 +7969,7 @@ document.addEventListener('keydown', e=>{
     const blob = new Blob([JSON.stringify(manifest)], {type:"application/manifest+json"});
     const url = URL.createObjectURL(blob);
     document.querySelector('link[rel="manifest"]').setAttribute('href', url);
+    setTimeout(()=> URL.revokeObjectURL(url), 60000);
   }catch(e){ /* manifest not critical — app still works fully without it */ }
 })();
 
@@ -7808,7 +8111,20 @@ function renderDhikrMain(){
   const tapEl = document.getElementById('dhikrTap');
   const tgtEl = document.getElementById('dhikrTarget');
   if(nEl) nEl.textContent = p.name;
-  if(arEl) arEl.textContent = p.ar;
+  if(arEl){
+    /* clear old speaker btn so switching presets rebuilds with correct HUMAN_AUDIO key */
+    const oldBtn = arEl.querySelector('.spk-btn');
+    if(oldBtn) oldBtn.remove();
+    arEl.textContent = p.ar + ' ';
+    const humanKey = 'dhikr:' + p.name;
+    let key = null;
+    if(HUMAN_AUDIO[humanKey]) key = humanKey;
+    else if(HUMAN_AUDIO[p.ar]) key = p.ar;
+    const hasHuman = !!key;
+    const btn = makeSpk((b)=> speakArabicLine(key, p.ar, b),
+      hasHuman ? 'Play human recording — ' + p.name : 'Listen with device voice');
+    arEl.appendChild(btn);
+  }
   if(meEl) meEl.textContent = p.meaning;
   if(tapEl) tapEl.textContent = dhikrState.count;
   if(tgtEl) tgtEl.textContent = p.target ? `Target: ${p.target} · ${Math.min(dhikrState.count, p.target)} / ${p.target}` : '';
@@ -8027,6 +8343,7 @@ const COMPANION_STEPS = [
 let companionState = {
   running:false, paused:false, rakat:4,
   rak:1, stepIdx:0, timer:null, tickTimer:null, elapsed:0,
+  audioOn:true, completed:false
 };
 
 function companionStart(){
@@ -8035,12 +8352,9 @@ function companionStart(){
   const display = document.getElementById('companionDisplay');
   if(!rSel || !settings || !display) return;
   const r = parseInt(rSel.value,10);
-  companionState = {running:true,paused:false,rakat:r,rak:1,stepIdx:0,timer:null,tickTimer:null,elapsed:0};
+  companionState = {running:true,paused:false,rakat:r,rak:1,stepIdx:0,timer:null,tickTimer:null,elapsed:0,audioOn:companionState.audioOn,completed:false};
   settings.style.display='none';
   display.style.display='block';
-  display.onclick = function(){ companionAdvance(); };
-  const pauseBtn = document.getElementById('companionPauseBtn');
-  if(pauseBtn) pauseBtn.textContent='Pause';
   companionRender();
   companionStartAuto();
   companionStartTick();
@@ -8060,14 +8374,13 @@ function companionStartAuto(){
   if(!companionState.running) return;
   const s = COMPANION_STEPS[companionState.stepIdx];
   const dur = (s && s.duration) || 8;
-  companionState.timer = setTimeout(function(){ companionAdvance(); }, dur*1000);
+  companionState.timer = setTimeout(function(){ if(window.speechSynthesis) speechSynthesis.cancel(); companionAdvance(); }, dur*1000);
 }
 
 function companionAdvance(){
   if(!companionState.running || companionState.paused) return;
   clearTimeout(companionState.timer);
   const isFinalRak = companionState.rak === companionState.rakat;
-  const isFinalSteps = isFinalRak && companionState.stepIdx >= 7;
 
   if(!isFinalRak && companionState.stepIdx >= 6){
     companionState.rak++;
@@ -8080,6 +8393,37 @@ function companionAdvance(){
   }
   companionRender();
   companionStartAuto();
+  companionStartStepAudio();
+}
+function companionBack(){
+  if(!companionState.running || companionState.paused) return;
+  clearTimeout(companionState.timer);
+  if(companionState.stepIdx > 0){
+    companionState.stepIdx--;
+  } else if(companionState.rak > 1){
+    companionState.rak--;
+    companionState.stepIdx = 6;
+  } else { return; }
+  companionRender();
+  companionStartAuto();
+  companionStartStepAudio();
+}
+function companionStartStepAudio(){
+  if(!companionState.audioOn) return;
+  const s = COMPANION_STEPS[companionState.stepIdx];
+  if(s && s.key){
+    const entry = HUMAN_AUDIO[s.key];
+    if(entry && typeof entry === 'string' && entry.includes('hisnmuslim.com/audio/ar/')){
+      speakText(s.ar, 'ar');
+    } else {
+      speakText(s.ar, 'ar');
+    }
+  }
+}
+function companionToggleAudio(){
+  companionState.audioOn = !companionState.audioOn;
+  const btn = document.getElementById('companionAudioBtn');
+  if(btn) btn.textContent = companionState.audioOn ? '🔊 Audio On' : '🔇 Audio Off';
 }
 
 function companionRender(){
@@ -8103,10 +8447,9 @@ function companionRender(){
   if(translit) translit.textContent = s.translit || '';
   if(meaning) meaning.textContent = s.meaning || '';
   if(instruction) instruction.textContent = s.instr || '';
-  if(hint) hint.textContent = s.hint || 'Tap anywhere to advance';
+  if(hint) hint.textContent = s.hint || 'Tap Next when ready';
   if(progressBar) progressBar.style.setProperty('--cp', progress);
 
-  // Rak'ah dots
   if(rakDots){
     let dots = '';
     for(let i=1;i<=companionState.rakat;i++){
@@ -8119,8 +8462,8 @@ function companionRender(){
   const titleEl = document.querySelector('#view-companion .page-title');
   if(titleEl) titleEl.textContent = 'Rak\u2019ah '+companionState.rak+' of '+companionState.rakat;
 
-  // Play audio
-  if(s.key) speakArabicLine(s.key, s.ar, null);
+  const backBtn = document.getElementById('companionBackBtn');
+  if(backBtn) backBtn.disabled = (companionState.stepIdx === 0 && companionState.rak === 1);
 }
 
 function companionPause(){
@@ -8146,7 +8489,26 @@ function companionReset(){
   const settings = document.getElementById('companionSettings');
   const display = document.getElementById('companionDisplay');
   if(settings) settings.style.display='block';
-  if(display){ display.style.display='none'; display.onclick = null; }
+  if(display){
+    display.style.display='none';
+    display.innerHTML =
+      '<div class="companion-timer" id="companionTimer">00:00</div>'+
+      '<div class="companion-rak" id="companionRakDots"></div>'+
+      '<div class="companion-pos" id="companionPosLabel">Takbir al-Ihram</div>'+
+      '<div class="companion-ar" id="companionArabic" dir="rtl" lang="ar"></div>'+
+      '<div id="companionTranslit" style="font-size:16px;color:var(--ink-soft);line-height:1.5;margin:8px 0;min-height:24px;"></div>'+
+      '<div id="companionMeaning" style="font-size:14px;color:var(--text-muted);margin-bottom:8px;min-height:20px;"></div>'+
+      '<div class="companion-progress" id="companionProgressBar"></div>'+
+      '<div class="companion-hint" id="companionHint">Tap Next when ready</div>'+
+      '<div id="companionInstruction" style="font-size:14px;color:var(--ink-soft);margin:10px 0 16px;line-height:1.5;text-align:center;max-width:540px;margin-left:auto;margin-right:auto;"></div>'+
+      '<div style="display:flex;gap:10px;justify-content:center;margin-top:14px;flex-wrap:wrap;">'+
+        '<button onclick="companionBack()" id="companionBackBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">← Back</button>'+
+        '<button onclick="companionAdvance()" id="companionNextBtn" class="companion-ctrl-btn" style="border-color:var(--green);color:var(--green);background:var(--green-glow);">Next →</button>'+
+        '<button onclick="companionToggleAudio()" id="companionAudioBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">🔊 Audio On</button>'+
+        '<button onclick="companionPause()" id="companionPauseBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">Pause</button>'+
+        '<button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);color:var(--rose);">Reset</button>'+
+      '</div>';
+  }
   const titleEl = document.querySelector('#view-companion .page-title');
   if(titleEl) titleEl.textContent = 'Pray Along \u2014 Real-Time Salah Guide';
 }
@@ -8155,6 +8517,7 @@ function companionComplete(){
   clearTimeout(companionState.timer);
   clearInterval(companionState.tickTimer);
   companionState.running = false;
+  companionState.completed = true;
   const el = document.getElementById('companionDisplay');
   if(!el) return;
   el.innerHTML =
@@ -8345,6 +8708,9 @@ function companionComplete(){
         <div class="arabic-letter-ar" dir="rtl" lang="ar">${l.arabic}</div>
         <div class="arabic-letter-name">${l.name}</div>
         <div class="arabic-letter-phonetic">${l.phonetic} — ${l.soundsLike}</div>
+        <div style="display:flex;gap:6px;justify-content:center;margin-top:6px;">
+          <button class="tool-btn secondary" style="padding:4px 10px;font-size:12px;" onclick="event.stopPropagation();arabicCourse.speakLetter(${i})" aria-label="Hear letter ${l.name}" title="Hear ${l.arabic} with device voice">${SPK_ICON} Hear</button>
+        </div>
         <button class="arabic-mark-btn ${done?'done':''}" onclick="event.stopPropagation();arabicCourse.toggleLetter('${l.letter.replace(/'/g,"\\'")}')">${done?'Learned ✓':'Mark learned'}</button>
       </div>`;
     });
@@ -8406,7 +8772,8 @@ function companionComplete(){
         <div class="arabic-surah-meaning">${s.meaning}</div>
         <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;">
           <button class="arabic-mark-btn ${done?'done':''}" onclick="arabicCourse.toggleSurah('${s.name}')">${done?'Read ✓':'Mark as read'}</button>
-          <button class="arabic-mark-btn" onclick="arabicCourse.speakSurah(${i})">Hear Arabic ${SPK_ICON}</button>
+          <button class="arabic-mark-btn" onclick="arabicCourse.speakSurah(${i})" title="Play real Quran recitation — falls back to device voice if offline">▶ Recite — real reciter ${SPK_ICON}</button>
+          <button class="arabic-mark-btn" onclick="arabicCourse.openInQuran(${i})" title="Open this surah in the Qurʾan reader">Open in Qur’an →</button>
         </div>
       </div>`;
     });
@@ -8448,13 +8815,38 @@ function companionComplete(){
     toggleConnection(id){ toggleLearned('connections', id); render(); },
     toggleWord(word){ toggleLearned('words', word); render(); },
     toggleSurah(name){ toggleLearned('surahs', name); render(); },
+    speakLetter(i){
+      const l = LETTERS[i];
+      if(!l) return;
+      speakText(l.arabic, 'ar');
+    },
     speakWord(i){
       const w = WORDS[i];
-      if(w) speakText(w.ar, 'ar');
+      if(!w) return;
+      /* isolated pedagogical words have no standalone Quran recording — TTS is correct here,
+         but route through playHumanUrl's fallback chain where a dhikr match exists */
+      const humanKey = Object.keys(HUMAN_AUDIO).find(k => w.ar.includes(k.split(':').pop()) || k.endsWith(w.ar));
+      if(humanKey) speakArabicLine(humanKey, w.ar, null);
+      else speakText(w.ar, 'ar');
     },
     speakSurah(i){
       const s = SHORT_SURAHS[i];
-      if(s) speakText(s.ar, 'ar');
+      if(!s) return;
+      /* Real reciter for every short surah — same CDN as the Quran reader.
+         Build ayah list by counting ﴿ markers in the stored Arabic string. */
+      const count = (s.ar.match(/﴿/g) || []).length || 1;
+      const ayahs = [];
+      for(let a=1;a<=count;a++) ayahs.push([s.num, a]);
+      const title = s.name + ' — ' + (RECITERS[reciterIdx] ? RECITERS[reciterIdx].name : 'Qur\'an');
+      const fallback = s.ar.replace(/﴿[^﴾]*﴾/g,'').trim();
+      playRecitation(ayahs, fallback, null, title);
+    },
+    openInQuran(i){
+      const s = SHORT_SURAHS[i];
+      if(!s) return;
+      switchView('quran');
+      if(window.__initQuran) window.__initQuran();
+      setTimeout(()=>{ if(window.__quranGoTo) window.__quranGoTo(s.num, 1); }, 800);
     },
     setReadingMode(on){
       readingMode = on;
@@ -9087,7 +9479,7 @@ if('serviceWorker' in navigator){
       status_done_today: "All five done today",
       status_recite_paused: "Recitation paused",
       /* Footer */
-      footer_privacy: "Private & offline: nothing is saved or sent anywhere.",
+      footer_privacy: "No account, no analytics. Data stays on your device — but see the Privacy view for full details.",
       footer_tip: "Tip: press 1–9 to jump between sections, / to search"
     },
 
@@ -9152,7 +9544,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Buscar temas…",
       status_done_today: "Las cinco de hoy completadas",
       status_recite_paused: "Recitación pausada",
-      footer_privacy: "Privado y sin conexión: nada se guarda ni se envía.",
+      footer_privacy: "Sin cuenta, sin análisis. Los datos se quedan en tu dispositivo —consulta la vista Privacidad para detalles.",
       footer_tip: "Consejo: presiona 1–9 para saltar entre secciones, / para buscar"
     },
 
@@ -9217,7 +9609,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Rechercher des sujets…",
       status_done_today: "Les cinq prières du jour terminées",
       status_recite_paused: "Récitation en pause",
-      footer_privacy: "Privé et hors ligne : rien n'est enregistré ni envoyé.",
+      footer_privacy: "Pas de compte, pas d'analyse. Les données restent sur votre appareil — consultez la vue Confidentialité pour les détails.",
       footer_tip: "Astuce : appuyez sur 1–9 pour naviguer, / pour rechercher"
     },
 
@@ -9282,7 +9674,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Konu ara…",
       status_done_today: "Bugün beş vakit tamamlandı",
       status_recite_paused: "Okuma duraklatıldı",
-      footer_privacy: "Özel ve çevrimdışı: hiçbir şey kaydedilmez veya gönderilmez.",
+      footer_privacy: "Hesap yok, analiz yok. Veriler cihazınızda kalır — ayrıntılar için Görünüm menüsünden 'Gizlilik ve Veri'yi açın.",
       footer_tip: "İpucu: bölümler arası geçiş için 1–9, arama için / tuşuna basın"
     },
 
@@ -9347,7 +9739,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "موضوعات تلاش کریں…",
       status_done_today: "آج کی پانچ نمازیں مکمل",
       status_recite_paused: "تلاش رک گئی",
-      footer_privacy: "نجی اور آف لائن: کچھ بھی محفوظ یا نہیں بھیجا جاتا۔",
+      footer_privacy: "کوئی اکاؤنٹ نہیں، کوئی تجزیہ نہیں۔ ڈیٹا آپ کے ڈیوائس پر رہتا ہے — تفصیلات کے لیے پرائیویسی ویو دیکھیں۔",
       footer_tip: "ٹپ: سیکشنز کے درمیان جانے کے لیے 1–9 دبائیں، تلاش کے لیے /"
     },
 
@@ -9412,7 +9804,7 @@ if('serviceWorker' in navigator){
       btn_search_ph: "Cari topik…",
       status_done_today: "Lima waktu hari ini selesai",
       status_recite_paused: "Bacaan dijeda",
-      footer_privacy: "Peribadi dan offlin: tiada apa yang disimpan atau dihantar.",
+      footer_privacy: "Tiada akaun, tiada analitik. Data kekal pada peranti anda — lihat paparan Privasi untuk butiran.",
       footer_tip: "Petua: tekan 1–9 untuk melompat antara bahagian, / untuk mencari"
     }
   };
