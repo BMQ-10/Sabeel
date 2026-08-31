@@ -1,4 +1,4 @@
-[
+window.__SEG_MaherAlMuaiqly=[
   {
     "surah": 1,
     "ayah": 1,
@@ -528473,4 +528473,4 @@
       ]
     ]
   }
-]
+];
