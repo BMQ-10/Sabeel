@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
 <title>سبيل Sabeel — Your Path Into Islam</title>
 <meta name="description" content="A private, offline reference for new Muslims: essentials, prayer times, Qibla, wudhu & salah, fiqh, Ramadan, Hajj.">
 <link rel="icon" href="icon.svg" type="image/svg+xml">
@@ -777,6 +778,20 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
   transition:border-color var(--dur-fast),box-shadow var(--dur-fast);
 }
 .tool-input:focus{outline:none;border-color:var(--green-bright);box-shadow:0 0 0 3px var(--green-glow);}
+.city-results{
+  position:absolute;top:100%;left:0;right:0;z-index:20;
+  background:var(--card);border:1.5px solid var(--line);border-radius:9px;
+  box-shadow:var(--shadow);max-height:240px;overflow-y:auto;
+  margin-top:4px;
+}
+.city-results .city-item{
+  padding:10px 14px;cursor:pointer;font-size:13px;color:var(--ink);
+  border-bottom:1px solid var(--line);transition:background var(--dur-fast);
+}
+.city-results .city-item:last-child{border-bottom:none;}
+.city-results .city-item:hover,.city-results .city-item:focus{background:var(--green-glow);outline:none;}
+.city-results .city-item .city-country{font-size:11px;color:var(--ink-soft);margin-left:6px;}
+.city-results .city-hint{padding:10px 14px;font-size:12px;color:var(--ink-soft);}
 .tool-btn{
   background:var(--green);color:#fff;border:none;border-radius:9px;
   padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;
@@ -787,6 +802,8 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .tool-btn:active{transform:translateY(0);}
 .tool-btn.secondary{background:var(--ink);}
 .tool-btn.secondary:hover{background:#060d0b;}
+.tool-btn.danger{background:var(--rose);color:#fff;border:none;}
+.tool-btn.danger:hover{background:#a84a3e;transform:translateY(-1px);box-shadow:var(--shadow-sm);}
 .tool-btn.loading .btn-spinner{display:inline-block;}
 .btn-spinner{
   display:none;width:11px;height:11px;
@@ -911,8 +928,18 @@ p.page-lede em{font-style:normal;font-weight:600;color:var(--green-deep);}
 .step .step-body{
   flex:1;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:16px 19px;box-shadow:var(--shadow-sm);
-  transition:box-shadow var(--dur) var(--ease-soft),transform var(--dur) var(--ease-soft);
+  transition:border-color var(--dur) var(--ease),box-shadow var(--dur) var(--ease);
 }
+.step.done .step-num{background:var(--green-bright);color:#fff;box-shadow:0 0 0 4px var(--bg),0 0 0 7px var(--green-bright),var(--shadow-sm);}
+.step.done .step-body{border-color:var(--green-bright);opacity:0.7;}
+.step-done-btn{
+  display:inline-flex;align-items:center;gap:6px;margin-top:10px;
+  padding:6px 14px;border-radius:20px;border:1px solid var(--line);
+  background:var(--card);font-size:12px;font-weight:600;color:var(--ink-soft);
+  cursor:pointer;transition:all var(--dur) var(--ease);
+}
+.step-done-btn:hover{border-color:var(--green-bright);color:var(--green-deep);}
+.step.done .step-done-btn{background:var(--green-bright);color:#fff;border-color:var(--green-bright);}
 .step:hover .step-body{box-shadow:var(--shadow-md);transform:translateY(-2px);}
 .step .step-body h4{margin:0 0 6px 0;font-size:14.5px;color:var(--ink);display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
 .step .step-body h4 .link-tag{
@@ -1956,7 +1983,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <input type="text" id="railSearch" placeholder="Search topics…" autocomplete="off" spellcheck="false" aria-label="Search topics">
         <kbd>/</kbd>
       </div>
-      <div class="search-results" id="searchResults"></div>
+      <div class="search-results" id="searchResults" aria-live="polite" role="listbox"></div>
     </div>
 
     <div class="rail-scroll" id="railScroll">
@@ -2096,8 +2123,9 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 
   <!-- ===== MAIN ===== -->
   <main class="main" id="main">
-    <div class="pribbon" id="pribbon" title="Tap to open Prayer Times">
-      <span class="pr-set">Live prayer ribbon: set your location in Prayer Times to see prayer windows here →</span>
+    <div class="pribbon" id="pribbon" title="Tap to set your location">
+      <span class="pr-set">Set your location to see live prayer windows &rarr;</span>
+      <button class="pr-dismiss" onclick="dismissRibbon()" aria-label="Dismiss" style="background:none;border:none;color:var(--ink-soft);cursor:pointer;font-size:16px;padding:2px 6px;">✕</button>
     </div>
 
 
@@ -2216,62 +2244,78 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         its capacity" (Qur'an 2:286). Each step below cites its source.
       </p>
 
-      <div class="steps">
-        <div class="step" style="animation-delay:0.05s">
+      <div class="steps" id="roadmapSteps">
+        <div class="step" data-step="1" style="animation-delay:0.05s">
           <div class="step-num">1</div>
           <div class="step-body">
             <h4>Understand your Shahada</h4>
-            <p>The declaration — <em>"Ash-hadu an la ilaha illa Allah, wa ash-hadu anna Muhammadan rasulullah"</em> — means: I bear witness that there is no god but Allah, and I bear witness that Muhammad is the Messenger of Allah. Saying it sincerely is how a person enters Islam; no ceremony or witness is required.</p>
+            <p>The declaration of faith — saying it sincerely, with understanding, is how a person enters Islam. No ceremony or witness is required.</p>
+            <div class="source-quote">
+              <div class="arabic" lang="ar" dir="rtl">أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ</div>
+              <p><em>Ash-hadu an lā ilāha illā Allāhu, wa ash-hadu anna Muḥammadan rasūlullāh</em></p>
+              <p>"I bear witness that there is no god but Allah, and I bear witness that Muhammad is the Messenger of Allah."</p>
+              <button class="spk-btn" onclick="playRecitation([[1,1]],'أَشْهَدُ أَنْ لَا إِلَٰهَ إِلَّا اللَّهُ وَأَشْهَدُ أَنَّ مُحَمَّدًا رَسُولُ اللَّهِ', this, 'Shahada')" aria-label="Hear the Shahada recited" title="Listen to the Shahada">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6.5 9H3v6h3.5L11 19V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 6a9 9 0 0 1 0 12"/></svg>
+                <span>Listen</span>
+              </button>
+              <div class="ref">The Shahada — the testimony of faith</div>
+            </div>
             <div class="source-quote"><div class="arabic">أَنَّ اللَّهَ حَرَّمَ النَّارَ عَلَىٰ مَنْ قَالَ لَا إِلَٰهَ إِلَّا اللَّهُ يَبْتَغِي بِذَلِكَ وَجْهَ اللَّهِ</div><p>"Allah has forbidden the Fire for the one who says 'There is no god but Allah' — <em>yabtaghī bidhālika wajhallāh</em> (يَبْتَغِي بِذَلِكَ وَجْهَ اللَّهِ, seeking by it the Face of Allah, i.e. sincerely for Him alone, not for show or people's praise)."</p><div class="ref">Sahih al-Bukhari 425 <span class="grade sahih">Sahih</span></div></div>
             <p>The first half <strong>negates</strong> all worship for anything besides Allah; the second half <strong>affirms</strong> Prophet Muhammad ﷺ as His final messenger (Qur'an 33:40). Read the full breakdown under <strong>Core Topics → The Shahada</strong>.</p>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(1)" aria-label="Mark step 1 as done">✓ Mark as done</button>
           </div>
         </div>
 
-        <div class="step" style="animation-delay:0.12s">
+        <div class="step" data-step="2" style="animation-delay:0.12s">
           <div class="step-num">2</div>
           <div class="step-body">
             <h4>Learn wudhu and salah — and guard them <button class="link-tag" onclick="switchView('wudhu')">Open guide →</button></h4>
             <p>Prayer is the most repeated obligation in a Muslim's day, so it comes first in practice. Learn it slowly and correctly rather than quickly and roughly.</p>
             <div class="source-quote"><div class="arabic">أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ</div><p>"The deeds most beloved to Allah are those done consistently — <em>adwamuha</em> (أَدْوَمُهَا, the most continuous/persistent) — even if they are small."</p><div class="ref">Sahih al-Bukhari 6464, Sahih Muslim 783 <span class="grade sahih">Sahih</span></div></div>
             <p>Use the <strong>Prayer Times</strong> and <strong>Qibla Finder</strong> tools on this site to know <em>when</em> and <em>which direction</em> to pray.</p>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(2)" aria-label="Mark step 2 as done">✓ Mark as done</button>
           </div>
         </div>
 
-        <div class="step" style="animation-delay:0.19s">
+        <div class="step" data-step="3" style="animation-delay:0.19s">
           <div class="step-num">3</div>
           <div class="step-body">
             <h4>Learn what you believe</h4>
             <p>The six articles of Iman (faith), taught by the angel Gabriel himself in the Hadith of Jibril: belief in <strong>Allah, His angels, His books, His messengers, the Last Day, and divine decree</strong> (Sahih Muslim 8). Each has a card under <strong>Core Topics</strong>.</p>
             <div class="source-quote"><p>"…and He is with you wherever you are."</p><div class="ref">Qur'an 57:4</div></div>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(3)" aria-label="Mark step 3 as done">✓ Mark as done</button>
           </div>
         </div>
 
-        <div class="step" style="animation-delay:0.26s">
+        <div class="step" data-step="4" style="animation-delay:0.26s">
           <div class="step-num">4</div>
           <div class="step-body">
             <h4>Connect every Friday (for men) and with your community</h4>
             <p>The Friday congregational prayer (Jumu'ah) replaces the Dhuhr prayer on Friday for men who attend; women may pray at home or attend, and it is not obligatory on them. It is the weekly anchor of the Muslim community.</p>
             <div class="source-quote"><p>"O you who believe! When the call is proclaimed for prayer on the day of Friday, hasten to the remembrance of Allah and leave trade."</p><div class="ref">Qur'an 62:9</div></div>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(4)" aria-label="Mark step 4 as done">✓ Mark as done</button>
           </div>
         </div>
 
-        <div class="step" style="animation-delay:0.33s">
+        <div class="step" data-step="5" style="animation-delay:0.33s">
           <div class="step-num">5</div>
           <div class="step-body">
             <h4>Keep learning, a little every day</h4>
             <p>A daily habit of reading Qur'an — even a few verses with translation — and learning one new thing at a time will do more than bursts of enthusiasm.</p>
             <div class="source-quote"><p>"Whoever treads a path in search of knowledge, Allah will make easy for him a path to Paradise."</p><div class="ref">Sahih Muslim 2699 <span class="grade sahih">Sahih</span></div></div>
             <div class="source-quote"><p>"The best among you are those who learn the Qur'an and teach it."</p><div class="ref">Sahih al-Bukhari 5027 <span class="grade sahih">Sahih</span></div></div>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(5)" aria-label="Mark step 5 as done">✓ Mark as done</button>
           </div>
         </div>
 
-        <div class="step" style="animation-delay:0.40s">
+        <div class="step" data-step="6" style="animation-delay:0.40s">
           <div class="step-num">6</div>
           <div class="step-body">
             <h4>Keep a few simple daily duas</h4>
             <div class="source-quote"><div class="arabic">اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ وَالصَّلَاةِ الْقَائِمَةِ</div><p>After the call to prayer: "O Allah, Lord of this perfect call and the prayer to be offered, grant Muhammad ﷺ the intercession and favor."</p><div class="ref">Sahih al-Bukhari 614 <span class="grade sahih">Sahih</span></div></div>
             <div class="source-quote"><p>Before eating: the Prophet ﷺ said to the young companion Umar ibn Abi Salamah: <em>"Sammillāh, wa kul bi-yamīnik"</em> — "Mention Allah's name (<span lang="ar" dir="rtl">سَمِّ اللَّهَ</span>) and eat with your right hand (<span lang="ar" dir="rtl">وَكُلْ بِيَمِينِكَ</span>)..."</p><div class="ref">Sahih Muslim 2022 <span class="grade sahih">Sahih</span></div></div>
             <div class="source-quote"><div class="arabic" data-quran="2:201">رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ</div><p>"Our Lord, give us good in this world and good in the Hereafter, and protect us from the punishment of the Fire."</p><div class="ref">Qur'an 2:201</div></div>
+            <button class="step-done-btn" onclick="toggleRoadmapStep(6)" aria-label="Mark step 6 as done">✓ Mark as done</button>
           </div>
         </div>
       </div>
@@ -2760,7 +2804,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <button onclick="companionAdvance()" id="companionNextBtn" class="companion-ctrl-btn" style="border-color:var(--green);color:var(--green);background:var(--green-glow);">Next →</button>
           <button onclick="companionToggleAudio()" id="companionAudioBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">🔊 Audio On</button>
           <button onclick="companionPause()" id="companionPauseBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">Pause</button>
-          <button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);color:var(--rose);">Reset</button>
+          <button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);background:var(--rose);color:#fff;">Reset</button>
         </div>
       </div>
 
@@ -3303,7 +3347,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <p style="font-size:13px;line-height:1.65;color:var(--ink-soft);margin:8px 0 12px 0;">
           This will permanently delete all locally stored data: bookmarks, settings, daily checklists, dhikr counts, qada tracker, Arabic course progress, Hifz tracker, downloaded Qur'an audio, and offline content packs. This action cannot be undone.
         </p>
-        <button class="tool-btn" onclick="confirmClearAllData()" style="border-color:var(--rose);color:var(--rose);">Delete all my data</button>
+        <button class="tool-btn danger" onclick="confirmClearAllData()">Delete all my data</button>
         <span id="clearDataStatus" style="font-size:12px;color:var(--text-muted);margin-left:10px;"></span>
       </div>
     </section>
@@ -3380,11 +3424,18 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           <span class="dot"></span>
           <span id="ptNextText"></span>
         </div>
-        <div class="tool-row">
+        <div class="tool-row" style="flex-wrap:wrap;gap:8px;">
           <button class="tool-btn" id="ptLocBtn" onclick="getLocationForPrayer()"><span class="btn-spinner"></span>📍 Use my location</button>
-          <span style="font-size:12px;color:var(--text-muted);">or enter manually:</span>
-          <input class="tool-input" id="ptLat" type="number" step="0.0001" min="-90" max="90" inputmode="decimal" aria-label="Latitude, from -90 to 90" placeholder="Latitude" style="width:112px;">
-          <input class="tool-input" id="ptLng" type="number" step="0.0001" min="-180" max="180" inputmode="decimal" aria-label="Longitude, from -180 to 180" placeholder="Longitude" style="width:112px;">
+        </div>
+        <div class="tool-row" style="position:relative;">
+          <label style="font-size:12.5px;color:var(--ink-soft);">Or search your city:</label>
+          <input class="tool-input" id="ptCitySearch" type="text" autocomplete="off" placeholder="e.g. Mecca, Istanbul, London" aria-label="Search city for prayer times" style="width:100%;max-width:340px;">
+          <div id="ptCityResults" class="city-results" style="display:none;"></div>
+        </div>
+        <div class="tool-row" style="align-items:center;">
+          <span style="font-size:12px;color:var(--text-muted);">Or enter coordinates:</span>
+          <input class="tool-input" id="ptLat" type="number" step="0.0001" min="-90" max="90" inputmode="decimal" aria-label="Latitude, from -90 to 90" placeholder="Lat" style="width:90px;">
+          <input class="tool-input" id="ptLng" type="number" step="0.0001" min="-180" max="180" inputmode="decimal" aria-label="Longitude, from -180 to 180" placeholder="Lng" style="width:90px;">
           <button class="tool-btn secondary" onclick="calcPrayerTimesManual()">Calculate</button>
         </div>
         <div class="tool-row">
@@ -3408,7 +3459,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
           </span>
         </div>
         <div id="ptLocLabel" class="pt-loc-label"><span class="spin-inline"></span><span id="ptLocLabelText"></span></div>
-        <div class="pt-grid" id="ptGrid">
+        <div class="pt-grid" id="ptGrid" aria-live="polite">
           <div class="skeleton" style="grid-column:1/-1;padding:20px;display:grid;gap:10px;">
             <div class="skeleton-line w80"></div>
             <div class="skeleton-line w60"></div>
@@ -3432,11 +3483,18 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         path across the globe, not a straight line on a flat map.
       </p>
       <div class="tool-card">
-        <div class="tool-row">
+        <div class="tool-row" style="flex-wrap:wrap;gap:8px;">
           <button class="tool-btn" id="qLocBtn" onclick="getLocationForQibla()"><span class="btn-spinner"></span>📍 Use my location</button>
-          <span style="font-size:12px;color:var(--text-muted);">or enter manually:</span>
-          <input class="tool-input" id="qLat" type="number" step="0.0001" min="-90" max="90" inputmode="decimal" aria-label="Latitude, from -90 to 90" placeholder="Latitude" style="width:112px;">
-          <input class="tool-input" id="qLng" type="number" step="0.0001" min="-180" max="180" inputmode="decimal" aria-label="Longitude, from -180 to 180" placeholder="Longitude" style="width:112px;">
+        </div>
+        <div class="tool-row" style="position:relative;">
+          <label style="font-size:12.5px;color:var(--ink-soft);">Or search your city:</label>
+          <input class="tool-input" id="qCitySearch" type="text" autocomplete="off" placeholder="e.g. Mecca, Istanbul, London" aria-label="Search city for Qibla direction" style="width:100%;max-width:340px;">
+          <div id="qCityResults" class="city-results" style="display:none;"></div>
+        </div>
+        <div class="tool-row" style="align-items:center;">
+          <span style="font-size:12px;color:var(--text-muted);">Or enter coordinates:</span>
+          <input class="tool-input" id="qLat" type="number" step="0.0001" min="-90" max="90" inputmode="decimal" aria-label="Latitude, from -90 to 90" placeholder="Lat" style="width:90px;">
+          <input class="tool-input" id="qLng" type="number" step="0.0001" min="-180" max="180" inputmode="decimal" aria-label="Longitude, from -180 to 180" placeholder="Lng" style="width:90px;">
           <button class="tool-btn secondary" onclick="calcQiblaManual()">Calculate</button>
         </div>
         <div class="qibla-compass-wrap"><div class="qibla-compass" id="qiblaCompass">
@@ -3500,7 +3558,7 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
   </button>
 </div>
-<div class="toast" id="toast"><span class="t-dot"></span><span id="toastText"></span></div>
+<div class="toast" id="toast" aria-live="assertive" role="alert"><span class="t-dot"></span><span id="toastText"></span></div>
 
 <script>
 /* ================= GLOBAL ERROR BOUNDARY ================= */
@@ -3550,13 +3608,29 @@ function setDrawer(open, instant){
   railEl.classList.toggle('open', open);
   railScrim.classList.toggle('show', open);
   document.body.classList.toggle('drawer-open', open);
-  if(open) hideTermPop();
+  if(open){
+    hideTermPop();
+    _drawerTrigger = document.activeElement;
+    /* Move focus into the drawer */
+    const firstBtn = railEl.querySelector('.rail-btn');
+    if(firstBtn) firstBtn.focus();
+  } else {
+    if(_drawerTrigger){ _drawerTrigger.focus(); _drawerTrigger = null; }
+  }
   if(!instant && railEl && railScrim){ railEl.style.transform = ''; railScrim.style.opacity = ''; }
   const m = document.getElementById('main');
   if(m) m.style.overflow = open ? 'hidden' : '';
 }
 const railToggle = document.getElementById('railToggle');
 if(railToggle) railToggle.addEventListener('click', ()=> setDrawer(true));
+/* Escape closes the drawer */
+document.addEventListener('keydown', function(e){
+  if(e.key === 'Escape' && drawerOpen){ e.preventDefault(); setDrawer(false); }
+});
+/* Focus trap inside the drawer */
+railEl.addEventListener('keydown', function(e){
+  if(e.key === 'Tab' && drawerOpen) trapFocus(e, this);
+});
 
 /* --- drag-follow: the drawer tracks the finger, then snaps open/closed --- */
 let drag = null; // {mode:'open'|'close', x0, y0, w, decided, dx}
@@ -3621,6 +3695,12 @@ document.getElementById('main').addEventListener('touchstart', e=>{
 }, {passive:true});
 document.getElementById('main').addEventListener('touchmove', e=>{ if(drag && drag.mode==='open') dragMove(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
 document.getElementById('main').addEventListener('touchend', dragEnd, {passive:true});
+
+/* ================= HTML ESCAPE (XSS prevention) ================= */
+function escapeHtml(s){
+  if(s == null) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
 
 /* ================= VIEW DATA ================= */
 const VIEW_TITLES = {
@@ -4964,35 +5044,158 @@ function clearReviewFlags(){
       }
       reciterSelect.disabled = false;
     } catch (err){
-      reciterSelect.innerHTML = '<option value="7">Reciter (unverified fallback)</option>';
+      /* API unreachable (file:// or offline) — provide hardcoded reciter list
+         so playback still works via the public CDN endpoints. */
+      const hardCoded = [
+        {id:1, label:'Maher Al-Muaiqly'},
+        {id:2, label:'Mishary Alafasy'},
+        {id:3, label:'Abdul Basit (Murattal)'},
+        {id:4, label:'Abdur-Rahman As-Sudais'},
+        {id:5, label:'Hudhaify'},
+        {id:7, label:'Muhammad Siddiq Al-Minshawi'},
+        {id:9, label:'Mahmoud Khalil Al-Husary'},
+        {id:11, label:'Ahmed Al Ajmi'},
+        {id:12, label:'Yasser Ad-Dussary'},
+        {id:13, label:'Abu Bakr Al-Shatri'},
+        {id:51, label:'Hani Ar-Rifai'},
+        {id:101, label:'Muhammad Ayyub'},
+      ];
+      reciterSelect.innerHTML = '';
+      hardCoded.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.id;
+        opt.textContent = r.label;
+        reciterSelect.appendChild(opt);
+      });
+      /* Default to Maher Al-Muaiqly */
+      reciterSelect.selectedIndex = 0;
       reciterSelect.disabled = false;
-      setStatus('Could not reach the reciter registry to verify IDs. Using a last-known fallback.', true);
+      setStatus('Offline — showing built-in reciter list. Audio loads from the public CDN when available.', true);
     }
+  }
+
+  // ---------- Local audio + segment data ----------
+  // When audio files exist under ./audio/{reciterDir}/ they are used instead of
+  // fetching from the CDN. Segment JSONs under ./segments/ provide word-level
+  // timing without any API call. If local files are missing the app falls back
+  // to the existing CDN/API paths seamlessly.
+  const LOCAL_RECITERS = {
+    muaiqly:  { dir: 'ar.mahermuaiqly',   segmentFile: 'MaherAlMuaiqly.json' },
+    afasy:    { dir: 'ar.alafasy',         segmentFile: 'Alafasy.json' },
+    shuraim:  { dir: 'ar.shuraim',         segmentFile: 'Shuraim.json' },
+    basit:    { dir: 'ar.abdulbasit',      segmentFile: 'AbdulBasit.json' }
+  };
+  // In-memory cache: reciterKey → Map<"surah:ayah", entry>
+  const segmentCache = new Map();
+  const segmentLoading = new Map();
+  async function loadSegmentData(key){
+    if (segmentCache.has(key)) return segmentCache.get(key);
+    if (segmentLoading.has(key)) return segmentLoading.get(key);
+    const info = LOCAL_RECITERS[key];
+    if (!info){ segmentCache.set(key, null); return null; }
+    const p = (async () => {
+      try {
+        const resp = await fetch(`./segments/${info.segmentFile}`);
+        if (!resp.ok) throw new Error(resp.status);
+        const data = await resp.json();
+        const idx = new Map();
+        for (const entry of data){
+          idx.set(`${entry.surah}:${entry.ayah}`, entry.segments || []);
+        }
+        segmentCache.set(key, idx);
+        return idx;
+      } catch (e){
+        segmentCache.set(key, null);
+        return null;
+      }
+    })();
+    segmentLoading.set(key, p);
+    return p;
+  }
+  async function getLocalSegments(reciterKey, surah, ayah){
+    const idx = await loadSegmentData(reciterKey);
+    if (!idx) return null;
+    const segs = idx.get(`${surah}:${ayah}`);
+    if (!segs || !segs.length) return null;
+    return segs.map(r => [Number(r[0]), Number(r[1]), Number(r[2]), Number(r[3])]);
+  }
+  function localAudioUrl(reciterKey, surah, ayah){
+    const info = LOCAL_RECITERS[reciterKey];
+    if (!info) return null;
+    const pad = (n, w) => String(n).padStart(w, '0');
+    return `./audio/${info.dir}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
+  }
+  async function checkLocalAudio(url){
+    try {
+      const resp = await fetch(url, { method: 'HEAD' });
+      return resp.ok;
+    } catch (e){ return false; }
   }
 
   // Real per-word timing + audio from the Quran.com public content API (api.quran.com/api/v4).
   // Segment rows are [startWordIndex0based, endWordIndex1based, startMs, endMs] and a single
   // row may span several grouped words. Values may arrive as strings — normalise to numbers.
+  // On file:// or offline, the API is unreachable — fall back to direct CDN URLs (no segments).
+  const CDN_RECITER_MAP = {
+    1:'ar.mahermuaiqly', 2:'ar.alafasy', 3:'ar.abdulbasitmurattal',
+    4:'ar.husary', 5:'ar.husary', 7:'ar.minshawi', 9:'ar.husary',
+    11:'ar.alafasy', 12:'ar.yasseraldossari', 13:'ar.alafasy',
+    51:'ar.alafasy', 101:'ar.alafasy'
+  };
   async function fetchVerseAudioWithSegments(reciterId, surahNum, ayahNum){
     const verseKey = `${surahNum}:${ayahNum}`;
-    const url = `https://api.quran.com/api/v4/recitations/${reciterId}/by_ayah/${verseKey}?fields=segments`;
-    const data = await fetchJSON(url);
-    const file = data.audio_files && data.audio_files[0];
-    if (!file) throw new Error('No audio file returned for this verse/reciter.');
-    let audioUrl = file.url;
-    if (audioUrl && audioUrl.startsWith('//')){
-      // Protocol-relative URL (mirrors.quranicaudio.com serves reciters 6/11/12
-      // this way) — force https. Prefixing it like a relative path would build
-      // "https://verses.quran.com///mirrors..." which 404s.
-      audioUrl = 'https:' + audioUrl;
-    } else if (audioUrl && !/^https?:\/\//i.test(audioUrl)){
-      audioUrl = `https://verses.quran.com/${audioUrl}`;
+
+    // --- Local path: check audio file + bundled segments first ---
+    // Map numeric Quran.com reciter ID → local reciter key via confirmedReciters.
+    const chosenOpt = reciterSelect.options[reciterSelect.selectedIndex];
+    const localKey = chosenOpt && chosenOpt.dataset.key;
+    if (localKey && LOCAL_RECITERS[localKey]){
+      const localUrl = localAudioUrl(localKey, surahNum, ayahNum);
+      const localSegs = await getLocalSegments(localKey, surahNum, ayahNum);
+      if (localUrl){
+        // HEAD-check is fast for local/same-origin files. If the file exists,
+        // return it immediately — no API call needed.
+        const exists = await checkLocalAudio(localUrl);
+        if (exists){
+          return { audioUrl: localUrl, segments: localSegs };
+        }
+      }
+      // If local file missing but we have segments, still worth using the
+      // segments with a CDN audio URL (best-effort hybrid).
+      if (localSegs){
+        const cdnId = CDN_RECITER_MAP[Number(reciterId)] || 'ar.mahermuaiqly';
+        const gNum = globalAyah(surahNum, ayahNum);
+        const audioUrl = `https://cdn.islamic.network/quran/audio/128/${cdnId}/${gNum}.mp3`;
+        return { audioUrl, segments: localSegs };
+      }
     }
-    let segments = null;
-    if (Array.isArray(file.segments) && file.segments.length){
-      segments = file.segments.map(r => [Number(r[0]), Number(r[1]), Number(r[2]), Number(r[3])]);
+
+    // --- Online path: fetch from Quran.com API ---
+    try {
+      const url = `https://api.quran.com/api/v4/recitations/${reciterId}/by_ayah/${verseKey}?fields=segments`;
+      const data = await fetchJSON(url);
+      const file = data.audio_files && data.audio_files[0];
+      if (!file) throw new Error('No audio file returned for this verse/reciter.');
+      let audioUrl = file.url;
+      if (audioUrl && audioUrl.startsWith('//')){
+        audioUrl = 'https:' + audioUrl;
+      } else if (audioUrl && !/^https?:\/\//i.test(audioUrl)){
+        audioUrl = `https://verses.quran.com/${audioUrl}`;
+      }
+      let segments = null;
+      if (Array.isArray(file.segments) && file.segments.length){
+        segments = file.segments.map(r => [Number(r[0]), Number(r[1]), Number(r[2]), Number(r[3])]);
+      }
+      return { audioUrl, segments };
+    } catch (apiErr){
+      /* API unreachable (file://, offline, CORS) — build a direct CDN URL.
+         No segment timing is available, so word highlighting won't work,
+         but the audio will still play. */
+      const cdnId = CDN_RECITER_MAP[Number(reciterId)] || 'ar.mahermuaiqly';
+      const gNum = globalAyah(surahNum, ayahNum);
+      const audioUrl = `https://cdn.islamic.network/quran/audio/128/${cdnId}/${gNum}.mp3`;
+      return { audioUrl, segments: null };
     }
-    return { audioUrl, segments };
   }
 
   // Official Quran.com word list: one entry per recited word (plus "end" markers),
@@ -5161,7 +5364,11 @@ function clearReviewFlags(){
 
         const num = document.createElement('div');
         num.className = 'ayah-number';
-        num.innerHTML = `<span class="badge">${ar.numberInSurah}</span> Verse ${ar.numberInSurah}`;
+        const numBadge = document.createElement('span');
+        numBadge.className = 'badge';
+        numBadge.textContent = ar.numberInSurah;
+        num.appendChild(numBadge);
+        num.appendChild(document.createTextNode(' Verse ' + ar.numberInSurah));
         topline.appendChild(num);
 
         const quickActions = document.createElement('div');
@@ -5303,18 +5510,59 @@ function clearReviewFlags(){
         .catch(() => {});
     } catch (err) {
       if (seq !== loadSeq) return;
-      ayahList.innerHTML = '';
-      const box = document.createElement('div');
-      box.className = 'empty-state';
-      box.appendChild(document.createTextNode('Could not load this surah — check your connection. '));
-      const retry = document.createElement('button');
-      retry.type = 'button';
-      retry.className = 'primary';
-      retry.textContent = '↻ Retry';
-      retry.addEventListener('click', loadSurah);
-      box.appendChild(retry);
-      ayahList.appendChild(box);
-      setStatus('Could not load this surah. Check your connection and try again.', true);
+      /* On file:// or offline, the API calls fail. Create minimal verse cards
+         with just verse numbers and play buttons — audio still works via the
+         CDN fallback in fetchVerseAudioWithSegments. */
+      const numVerses = AYAH_COUNTS[surahNum - 1] || 0;
+      if (numVerses > 0){
+        ayahList.innerHTML = '';
+        const offlineNote = document.createElement('div');
+        offlineNote.className = 'empty-state';
+        offlineNote.textContent = 'Offline mode — Arabic text and translations require an internet connection. Audio playback still works.';
+        offlineNote.style.cssText = 'font-size:13px;color:var(--ink-soft);padding:12px 16px;margin-bottom:12px;';
+        ayahList.appendChild(offlineNote);
+        for (let v = 1; v <= numVerses; v++){
+          const card = document.createElement('div');
+          card.className = 'ayah';
+          card.dataset.ayahNumber = v;
+          const entry = { card, numberInSurah: v, arLine: null, playBtn: null };
+          const topline = document.createElement('div');
+          topline.className = 'ayah-topline';
+          const num = document.createElement('div');
+          num.className = 'ayah-number';
+          const numBadge = document.createElement('span');
+          numBadge.className = 'badge';
+          numBadge.textContent = v;
+          num.appendChild(numBadge);
+          num.appendChild(document.createTextNode(' Verse ' + v));
+          topline.appendChild(num);
+          const playBtn = document.createElement('button');
+          playBtn.type = 'button';
+          playBtn.className = 'play-btn';
+          playBtn.textContent = '▶ Recite';
+          playBtn.setAttribute('aria-label', 'Play verse ' + v);
+          playBtn.addEventListener('click', () => playAyahEntry(entry, {}));
+          entry.playBtn = playBtn;
+          topline.appendChild(playBtn);
+          card.appendChild(topline);
+          ayahList.appendChild(card);
+          currentAyahCards.push(entry);
+        }
+        setStatus(`Offline — ${numVerses} verse cards loaded. Audio plays from CDN.`, true);
+      } else {
+        ayahList.innerHTML = '';
+        const box = document.createElement('div');
+        box.className = 'empty-state';
+        box.appendChild(document.createTextNode('Could not load this surah. '));
+        const retry = document.createElement('button');
+        retry.type = 'button';
+        retry.className = 'primary';
+        retry.textContent = '↻ Retry';
+        retry.addEventListener('click', loadSurah);
+        box.appendChild(retry);
+        ayahList.appendChild(box);
+        setStatus('Could not load this surah. Check your connection and try again.', true);
+      }
     } finally {
       if (seq === loadSeq) loadBtn.disabled = false;
     }
@@ -6054,6 +6302,7 @@ function switchView(id){
 
   /* re-render views that need fresh data each time — every dynamic view */
   try{
+    if(id === 'roadmap') _applyRoadmapDone();
     if(id === 'hijri') renderHijriCalendar();
     if(id === 'downloads' && window.OfflinePacks) window.OfflinePacks.renderPacks();
     if(id === 'dhikr'){ renderDhikrPresets(); renderDhikrMain(); renderDhikrHistory(); }
@@ -6115,8 +6364,8 @@ function renderSearch(){
     it.title.toLowerCase().includes(q) || (it.hint||'').toLowerCase().includes(q)
   ).slice(0,8);
   searchResults.innerHTML = matches.length
-    ? matches.map(m=>`<button class="search-res-item" data-kind="${m.type}" data-id="${m.id}"><span class="kind ${m.type}">${m.type==='view'?'Go':'Topic'}</span>${m.title}</button>`).join('')
-    : `<div class="search-empty">No matches for "${q}"</div>`;
+    ? matches.map(m=>`<button class="search-res-item" data-kind="${escapeHtml(m.type)}" data-id="${escapeHtml(m.id)}"><span class="kind ${escapeHtml(m.type)}">${m.type==='view'?'Go':'Topic'}</span>${escapeHtml(m.title)}</button>`).join('')
+    : `<div class="search-empty">No matches for "${escapeHtml(q)}"</div>`;
   searchResults.classList.add('show');
 }
 if(searchInput) searchInput.addEventListener('input', renderSearch);
@@ -6169,9 +6418,12 @@ function renderEssentials(){
     </button>
   `).join('');
 }
+let _detailTrigger = null;
+let _drawerTrigger = null;
 function openDetail(id){
   const item = ESSENTIALS.find(e=>e.id===id);
   if(!item) return;
+  _detailTrigger = document.activeElement;
   document.getElementById('detailPanel').innerHTML = `
     <button class="detail-close" onclick="closeDetail()" aria-label="Close">✕</button>
     <h2>${item.title}</h2>
@@ -6183,12 +6435,28 @@ function openDetail(id){
   stopRecitation();
   decorateSpeakers(document.getElementById('detailPanel'));
   linkTerms(document.getElementById('detailPanel'));
+  /* Focus trap: move focus into the panel */
+  const closeBtn = document.querySelector('#detailPanel .detail-close');
+  if(closeBtn) closeBtn.focus();
 }
 function closeDetail(){
   document.getElementById('detailOverlay').classList.remove('open');
+  if(_detailTrigger){ _detailTrigger.focus(); _detailTrigger = null; }
+}
+function trapFocus(e, container){
+  const focusable = container.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+  if(!focusable.length) return;
+  const first = focusable[0], last = focusable[focusable.length - 1];
+  if(e.key === 'Tab'){
+    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+  }
 }
 document.getElementById('detailOverlay').addEventListener('click', function(e){
   if(e.target === this) closeDetail();
+});
+document.getElementById('detailPanel').addEventListener('keydown', function(e){
+  if(e.key === 'Tab') trapFocus(e, this);
 });
 document.addEventListener('keydown', function(e){
   if(e.key === 'Escape'){ closeDetail(); hideTermPop(); }
@@ -6345,6 +6613,25 @@ function toggleAllAcc(btn){
   });
   btn.textContent = anyClosed ? 'Close all' : 'Open all';
 }
+/* --- Roadmap step persistence --- */
+function toggleRoadmapStep(n){
+  const key = 'sabeelRoadmapDone';
+  const done = JSON.parse(localStorage.getItem(key) || '{}');
+  done[n] = !done[n];
+  localStorage.setItem(key, JSON.stringify(done));
+  _applyRoadmapDone();
+}
+function _applyRoadmapDone(){
+  try{
+    const done = JSON.parse(localStorage.getItem('sabeelRoadmapDone') || '{}');
+    document.querySelectorAll('#roadmapSteps .step').forEach(el=>{
+      const n = parseInt(el.getAttribute('data-step'));
+      el.classList.toggle('done', !!done[n]);
+      const btn = el.querySelector('.step-done-btn');
+      if(btn) btn.textContent = done[n] ? '✓ Done' : '✓ Mark as done';
+    });
+  }catch(e){}
+}
 function toggleAcc(headerEl){
   const item = headerEl.parentElement;
   const body = headerEl.nextElementSibling;
@@ -6465,14 +6752,14 @@ function computePrayerTimes(lat, lng, date, methodKey, asrKey, utcOffsetHours){
   const maghribHA = hourAngle(lat, decl, 0.833);
   const ishaHA = method.ishaIsMinutes ? null : hourAngle(lat, decl, method.isha);
 
-  const fajr = fajrHA!==null ? noon - fajrHA/15 : null;
+  const fajr = fajrHA!==null ? noon - fajrHA/15 : (sunriseHA!==null ? noon - sunriseHA/15 - 1.5 : null);
   const sunrise = sunriseHA!==null ? noon - sunriseHA/15 : null;
   const dhuhr = noon + 1/60; // +1 min safety margin past exact solar zenith
   const asr = asrHA!==null ? noon + asrHA/15 : null;
   const maghrib = maghribHA!==null ? noon + maghribHA/15 : null;
   const isha = method.ishaIsMinutes
     ? (maghrib!==null ? maghrib + method.isha/60 : null)
-    : (ishaHA!==null ? noon + ishaHA/15 : null);
+    : (ishaHA!==null ? noon + ishaHA/15 : (maghrib!==null ? maghrib + 1.5 : null));
 
   return {fajr, sunrise, dhuhr, asr, maghrib, isha};
 }
@@ -6532,7 +6819,7 @@ function renderPrayerTimes(lat, lng){
         ${key===active?'<div class="pt-badge">Now</div>':''}
       </div>
     `).join('');
-    const tzLabel = ptUseDeviceTz ? 'your device timezone' : `estimated UTC${utcOffsetHours>=0?'+':''}${utcOffsetHours} from longitude`;
+    const tzLabel = ptUseDeviceTz ? 'your device timezone' : `estimated UTC${utcOffsetHours>=0?'+':''}${utcOffsetHours} from longitude ⚠ may be inaccurate for half-hour offset regions (India, Iran, etc.)`;
     let hijriLabel = '';
     try{
       hijriLabel = ' · ' + new Intl.DateTimeFormat('en-u-ca-islamic-umalqura',{day:'numeric',month:'short',year:'numeric'}).format(now);
@@ -6578,13 +6865,22 @@ function updatePtNext(){
   updateRibbon();
 }
 /* live ribbon — same data, visible on every view */
+function dismissRibbon(){
+  localStorage.setItem('sabeelRibbonDismissed','1');
+  const el = document.getElementById('pribbon');
+  if(el) el.style.display = 'none';
+}
 function updateRibbon(){
   const el = document.getElementById('pribbon');
   if(!el) return;
+  /* Hide ribbon once location is set (shows live data instead) or if dismissed */
   if(!ptLastTimes){
-    el.innerHTML = '<span class="pr-set">Live prayer ribbon: set your location in Prayer Times to see prayer windows here →</span>';
+    if(localStorage.getItem('sabeelRibbonDismissed')==='1'){ el.style.display='none'; return; }
+    el.style.display = '';
     return;
   }
+  /* Location is set — replace prompt with live prayer data */
+  el.style.display = '';
   const now = new Date();
   const nowDec = ptUseDeviceTz
     ? (now.getHours() + now.getMinutes()/60)
@@ -6655,6 +6951,85 @@ function getLocationForPrayer(){
     {enableHighAccuracy:true, timeout:10000, maximumAge:60000}
   );
 }
+/* --- City search using Open-Meteo geocoding (free, no API key) --- */
+let _citySearchTimer = null;
+(function initCitySearch(){
+  const pairs = [
+    {input:'ptCitySearch', results:'ptCityResults'},
+    {input:'qCitySearch', results:'qCityResults'}
+  ];
+  pairs.forEach(({input:inputId, results:resultsId})=>{
+    const input = document.getElementById(inputId);
+    const results = document.getElementById(resultsId);
+    if(!input || !results) return;
+    input.addEventListener('input', function(){
+      clearTimeout(_citySearchTimer);
+      const q = this.value.trim();
+      if(q.length < 2){ results.style.display='none'; return; }
+      _citySearchTimer = setTimeout(()=> searchCity(q, resultsId), 300);
+    });
+    input.addEventListener('keydown', function(e){
+      if(e.key === 'Escape'){ results.style.display='none'; this.blur(); }
+      if(e.key === 'ArrowDown'){
+        const first = results.querySelector('.city-item');
+        if(first) first.focus();
+        e.preventDefault();
+      }
+    });
+    document.addEventListener('click', function(e){
+      if(!input.contains(e.target) && !results.contains(e.target)) results.style.display='none';
+    });
+  });
+})();
+async function searchCity(q, resultsId){
+  const results = document.getElementById(resultsId || 'ptCityResults');
+  if(!results) return;
+  results.innerHTML = '<div class="city-hint">Searching…</div>';
+  results.style.display = '';
+  try{
+    const resp = await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(q) + '&count=6&language=en&format=json');
+    const data = await resp.json();
+    const list = data.results || [];
+    if(!list.length){
+      results.innerHTML = '<div class="city-hint">No cities found — try a different name.</div>';
+      return;
+    }
+    results.innerHTML = '';
+    list.forEach(city => {
+      const div = document.createElement('div');
+      div.className = 'city-item';
+      div.tabIndex = 0;
+      div.setAttribute('role','option');
+      const parts = [city.name];
+      if(city.admin1) parts.push(city.admin1);
+      if(city.country) parts.push(city.country);
+      div.innerHTML = escapeHtml(parts[0]) + (parts.length > 1 ? '<span class="city-country">' + escapeHtml(parts.slice(1).join(', ')) + '</span>' : '');
+      div.addEventListener('click', ()=> selectCity(city));
+      div.addEventListener('keydown', e=>{ if(e.key==='Enter') selectCity(city); });
+      results.appendChild(div);
+    });
+  } catch(e){
+    results.innerHTML = '<div class="city-hint">Search unavailable — enter coordinates manually.</div>';
+  }
+}
+function selectCity(city){
+  /* Update whichever city search is visible */
+  ['ptCitySearch','qCitySearch'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el && el.value !== undefined) el.value = city.name + (city.country ? ', ' + city.country : '');
+  });
+  ['ptCityResults','qCityResults'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.display = 'none';
+  });
+  document.getElementById('ptLat').value = city.latitude.toFixed(4);
+  document.getElementById('ptLng').value = city.longitude.toFixed(4);
+  document.getElementById('qLat').value = city.latitude.toFixed(4);
+  document.getElementById('qLng').value = city.longitude.toFixed(4);
+  ptUseDeviceTz = true;
+  renderPrayerTimes(city.latitude, city.longitude);
+  showToast('Prayer times for ' + city.name);
+}
 function calcPrayerTimesManual(){
   const lat = parseFloat(document.getElementById('ptLat').value);
   const lng = parseFloat(document.getElementById('ptLng').value);
@@ -6669,8 +7044,8 @@ function recalcIfReady(){
 
 /* ================= QIBLA CALCULATION =================
    Great-circle initial bearing + haversine distance. */
-const KAABA_LAT = 21.4225;
-const KAABA_LNG = 39.8262;
+const KAABA_LAT = 21.422487;
+const KAABA_LNG = 39.826206;
 
 function calcQiblaBearing(lat, lng){
   const φ1 = lat*Math.PI/180, φ2 = KAABA_LAT*Math.PI/180;
@@ -6920,18 +7295,24 @@ for(let i=0;i<AYAH_COUNTS.length;i++) CUM_AYAHS.push(CUM_AYAHS[i] + AYAH_COUNTS[
 const globalAyah = (surah, ayah) => CUM_AYAHS[surah-1] + ayah;
 
 const RECITERS = [
-  {id:'ar.mahermuaiqly',       name:'Maher Al-Muaiqly'},
-  {id:'ar.alafasy',            name:'Mishary Alafasy'},
-  {id:'ar.saoodshuraym',       name:'Saud Al-Shuraim'},
+  {id:'ar.mahermuaiqly',       name:'Maher Al-Muaiqly',   localKey:'muaiqly'},
+  {id:'ar.alafasy',            name:'Mishary Alafasy',     localKey:'afasy'},
+  {id:'ar.saoodshuraym',       name:'Saud Al-Shuraim',     localKey:'shuraim'},
   {id:'ar.yasseraldossari',    name:'Yasser Al-Dossari', everyayah:'Yasser_Ad-Dussary_128kbps'},
   {id:'ar.husary',             name:'Al-Husary'},
-  {id:'ar.abdulbasitmurattal', name:'Abdul Basit'},
+  {id:'ar.abdulbasitmurattal', name:'Abdul Basit',         localKey:'basit'},
   {id:'ar.minshawi',           name:'Al-Minshawi'}
 ];
 /* Most reciters come from the Islamic Network CDN, addressed by GLOBAL ayah number.
    Yasser Al-Dossari is served by EveryAyah, which uses surah+ayah padded numbers
    (e.g. 001001) — hence the dual URL builder. Both are HTTPS public services. */
 function reciterUrl(rec, surah, ayah){
+  /* Local audio: if the reciter has a localKey and the file exists locally, use it.
+     The URL is relative (./audio/...) so it works with same-origin serving. */
+  if(rec.localKey && LOCAL_RECITERS && LOCAL_RECITERS[rec.localKey]){
+    const pad = (n,w)=> String(n).padStart(w,'0');
+    return `./audio/${LOCAL_RECITERS[rec.localKey].dir}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
+  }
   if(rec.everyayah){
     const pad = (n,w)=> String(n).padStart(w,'0');
     return `https://everyayah.com/data/${rec.everyayah}/${pad(surah,3)}${pad(ayah,3)}.mp3`;
@@ -6952,6 +7333,7 @@ function stopRecitation(){
   Recit.active = false;
   Recit.paused = false;
   Recit._duaIdx = -1;
+  clearTimeout(Recit._timeout);
   recSession++;
   if(Recit.audio){
     Recit.audio.pause();
@@ -6984,6 +7366,8 @@ async function playRecitation(ayahList, fallbackText, btn, title){
   Recit.idx = 0;
   if(Recit.btn) Recit.btn.classList.add('busy');
   showRecPlayer();
+  document.getElementById('rpTitle').textContent = title || 'Loading recitation…';
+  document.getElementById('rpReciter').textContent = RECITERS[reciterIdx].name;
   let queue;
   try {
     const raw = ayahList.map(([s,a]) => reciterUrl(RECITERS[reciterIdx], s, a));
@@ -6993,27 +7377,53 @@ async function playRecitation(ayahList, fallbackText, btn, title){
   }
   if(!Recit.active) return;
   Recit.queue = queue;
+  /* Store surah/ayah alongside URLs so playNextAyah can build CDN fallback URLs
+     when a local ./audio/... path fails to load. */
+  Recit.queue._surahs = ayahList.map(([s]) => s);
+  Recit.queue._ayahs  = ayahList.map(([,a]) => a);
   playNextAyah();
 }
 
 function playNextAyah(){
   if(!Recit.active || Recit.idx >= Recit.queue.length){ finishRecitation(); return; }
   const url = Recit.queue[Recit.idx];
-  document.getElementById('rpReciter').textContent = RECITERS[reciterIdx].name + ' · ayah ' + (Recit.idx+1) + ' of ' + Recit.queue.length;
+  const rec = RECITERS[reciterIdx];
+  document.getElementById('rpReciter').textContent = rec.name + ' · ayah ' + (Recit.idx+1) + ' of ' + Recit.queue.length;
   document.getElementById('rpFill').style.width = '0%';
   if(!Recit.audio){ Recit.audio = new Audio(); }
   const a = Recit.audio;
   a.onended = ()=>{ if(!Recit.active) return; Recit.idx++; playNextAyah(); };
-  a.onerror = ()=>{ failToTTS(); };
+  a.onerror = ()=>{
+    /* If the failed URL was local, retry with the CDN URL before giving up. */
+    if(url.startsWith('./audio/') && !Recit._retriedCdn){
+      Recit._retriedCdn = true;
+      const pad = (n,w)=> String(n).padStart(w,'0');
+      let cdnUrl;
+      if(rec.everyayah){
+        cdnUrl = `https://everyayah.com/data/${rec.everyayah}/${pad(Recit.queue._surahs[Recit.idx],3)}${pad(Recit.queue._ayahs[Recit.idx],3)}.mp3`;
+      } else {
+        cdnUrl = `https://cdn.islamic.network/quran/audio/128/${rec.id}/${globalAyah(Recit.queue._surahs[Recit.idx], Recit.queue._ayahs[Recit.idx])}.mp3`;
+      }
+      a.src = cdnUrl;
+      a.play().catch(()=> failToTTS());
+      return;
+    }
+    Recit._retriedCdn = false;
+    failToTTS();
+  };
   a.ontimeupdate = ()=>{
     if(!Recit.active) return;
     const d = a.duration;
     document.getElementById('rpFill').style.width = (d && isFinite(d)) ? ((a.currentTime/d)*100).toFixed(1) + '%' : '0%';
     document.getElementById('rpTime').textContent = fmtTime(a.currentTime) + ' / ' + (d && isFinite(d) ? fmtTime(d) : '…');
   };
+  Recit._retriedCdn = false;
   a.src = url;
   a.playbackRate = Recit.rate;
   a.play().catch(()=> failToTTS());
+  /* Timeout: if audio doesn't start playing within 5s, fall back to TTS */
+  clearTimeout(Recit._timeout);
+  Recit._timeout = setTimeout(()=>{ if(Recit.active && a.paused && !a.ended && a.readyState < 2) failToTTS(); }, 5000);
 }
 
 function finishRecitation(){
@@ -7046,8 +7456,15 @@ function failToTTS(){
   Recit.active = false;
   if(wasBtn) wasBtn.classList.remove('busy');
   hideRecPlayer();
-  if(speak(fb, 'ar')) showToast('Recording unavailable — using device voice');
-  else showToast('Audio needs a connection — no voice available');
+  /* Try browser TTS as fallback — always works offline */
+  if(window.speechSynthesis && fb){
+    speak(fb, 'ar');
+    showToast('Using device voice for this text');
+  } else if(fb){
+    showToast('Audio unavailable — try a different reciter or check your connection');
+  } else {
+    showToast('Audio unavailable');
+  }
   const cb = Recit.onComplete; Recit.onComplete = null;
   if(cb) cb();
 }
@@ -7590,10 +8007,10 @@ const PRACTICE_STEPS = [
 /* Two guided decks share the same engine */
 const WUDHU_STEPS = [
   {t:'Intention (Niyyah)', instr:'In your heart alone: intend to remove impurity and prepare for prayer. It is never spoken aloud — verbalizing it is an innovation with no basis in the Sunnah (ruling of Shaykh Ibn Baz, may Allah have mercy on him).'},
-  {t:'Say Bismillah', ar:'بِسْمِ اللَّهِ', translit:'Bismillah — "In the name of Allah"', instr:'Begin with the name of Allah, before the water touches you.', say:'Say it now', mistake:'Saying Bismillah is what makes the wudhu complete (Sunan Abu Dawud 101) — skipping it is one of the most common oversights.'},
+  {t:'Say Bismillah', ar:'بِسْمِ اللَّهِ', translit:'Bismillah — "In the name of Allah"', instr:'Begin with the name of Allah, before the water touches you.', say:'Say it now', mistake:'The majority of scholars (Shafi\'i, Maliki, Hanafi) consider saying Bismillah a sunnah (recommended) for wudhu, based on the hadith in Sunan Abu Dawud 101. A minority position (held by some Hanbalis and Zahiris) considers it obligatory. Either way, it is strongly encouraged and should not be skipped.'},
   {t:'Wash the hands — three times', instr:'Right hand first, then left, up to and including the wrists, three times, working the water between the fingers.', mistake:'Water must reach between the fingers and under rings — dry patches invalidate that limb\u2019s washing.'},
-  {t:'Rinse the mouth — three times', instr:'Take water into the mouth, swirl it thoroughly, then expel it — three times.', mistake:'Do it properly even while fasting — but without swallowing and without exaggerating. The Sunnah is to be moderate except when alone: "sniff water freely unless you are fasting" (Sahih al-Bukhari 162).'},
-  {t:'Sniff the nose — three times', instr:'Sniff water gently into the nostrils, then blow it out using the left hand — three times.', mistake:'Overdoing it sends water into the throat and can break a fast — be moderate, especially while fasting (Sahih al-Bukhari 162).'},
+  {t:'Rinse the mouth — three times', instr:'Take water into the mouth, swirl it thoroughly, then expel it — three times.', mistake:'Do it properly even while fasting — but without swallowing and without exaggerating. The Sunnah is to be moderate except when alone: "sniff water freely unless you are fasting" (Sahih al-Bukhari 161).'},
+  {t:'Sniff the nose — three times', instr:'Sniff water gently into the nostrils, then blow it out using the left hand — three times.', mistake:'Overdoing it sends water into the throat and can break a fast — be moderate, especially while fasting (Sahih al-Bukhari 161).'},
   {t:'Wash the face — three times', instr:'From the hairline to the chin, and from ear to ear — three times.', mistake:'The whole face counts: the skin beneath a light beard and the sides near the ears. Dry hairline patches are a classic miss.'},
   {t:'Wash the arms to the elbows — three times', instr:'Right arm first, then left — from fingertips up to and including the elbows.', mistake:'The elbow itself must be washed. Push sleeves up fully and watch for a dry ring around the elbow.'},
   {t:'Wipe the head and ears — once', ar:'وَامْسَحُوا بِرُءُوسِكُمْ وَأَرْجُلَكُمْ', translit:'Wamsahu bi-ru\u2019usikum wa arjulakum — "\u2026and wipe your heads and your feet" (Qur\u2019an 5:6)', instr:'With wet hands, wipe from the front of the head to the back and back again — once. Then wipe inside and outside the ears with the same water.', mistake:'This step is wiped ONCE, not three times — and with the same water already on your hands, not fresh water.'},
@@ -7745,7 +8162,7 @@ function renderToday(){
       <div class="rq-card">
         <b>Review queue · ${reviewFlags.size}</b>
         <p>Terms you flagged in the Knowledge Check — they wait here until you clear them.</p>
-        <div class="rq-items">${[...reviewFlags].map(w=>`<button class="rq-item" data-word="${w.replace(/"/g,'&quot;')}">${w} →</button>`).join('')}</div>
+        <div class="rq-items">${[...reviewFlags].map(w=>`<button class="rq-item" data-word="${escapeHtml(w)}">${escapeHtml(w)} →</button>`).join('')}</div>
         <button class="rq-clear" onclick="clearReviewFlags()">Clear all</button>
       </div>`;
     rq.querySelectorAll('.rq-item').forEach(b=> b.addEventListener('click', ()=> reviewQuiz(b.dataset.word)));
@@ -7851,7 +8268,6 @@ function renderDuas(){
     const okQ = !q || (d.name+' '+d.occ+' '+d.tr+' '+d.translit+' '+d.ar).toLowerCase().includes(q);
     return okOcc && okQ;
   });
-  const esc = s=> s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,"&#39;");
   document.getElementById('duaGrid').innerHTML = list.length ? list.map(({d,i})=>{
     const isQuran = !!d.ayahs;
     const hasHuman = !!HUMAN_AUDIO['dua:'+d.name];
@@ -7868,7 +8284,7 @@ function renderDuas(){
       <div class="dua-foot">
         <span class="dua-ref">${d.ref} <span class="grade ${d.grade.toLowerCase()==='sahih'?'sahih':'hasan'}">${d.grade}</span></span>
         <span style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;">
-          <button class="spk-btn" onclick="playDua(${i}, this)" title="${esc(spkTitle)}" aria-label="${esc(spkTitle)}">${SPK_ICON}<span class="spk-label">${spkLabel}</span></button>
+          <button class="spk-btn" onclick="playDua(${i}, this)" title="${escapeHtml(spkTitle)}" aria-label="${escapeHtml(spkTitle)}">${SPK_ICON}<span class="spk-label">${spkLabel}</span></button>
           <button class="spk-btn" onclick="copyDua(${i})" title="Copy this duʿa (Arabic + translation)" aria-label="Copy duʿa" style="background:var(--bg-deep);color:var(--ink-soft);border-color:var(--line);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg><span class="spk-label">Copy</span></button>
           ${isQuran ? `<button class="spk-btn" onclick="openDuaInQuran(${i})" title="Open this verse in the Qur\u2019an reader" aria-label="Open in Qur\u2019an" style="background:var(--bg-deep);color:var(--green-deep);border-color:var(--line);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:13px;height:13px;"><path d="M5 4h13a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5z"/><path d="M5 4v16"/><path d="M9 8h6M9 11h6"/></svg><span class="spk-label">Qur’an</span></button>` : ''}
         </span>
@@ -7941,12 +8357,20 @@ function togglePrivateMode(on){
 function toggleAutoClear(on){
   setSetting('sabeelAutoClear', on);
   if(on){
-    window.addEventListener('beforeunload', _autoClearHandler);
+    window.addEventListener('pagehide', _autoClearHandler);
+    document.addEventListener('visibilitychange', _onVisibilityClear);
   } else {
-    window.removeEventListener('beforeunload', _autoClearHandler);
+    window.removeEventListener('pagehide', _autoClearHandler);
+    document.removeEventListener('visibilitychange', _onVisibilityClear);
   }
 }
+let _autoClearFired = false;
+function _onVisibilityClear(){
+  if(document.visibilityState === 'hidden') _autoClearHandler();
+}
 function _autoClearHandler(){
+  if(_autoClearFired) return;
+  _autoClearFired = true;
   try{
     /* Clear all localStorage */
     localStorage.clear();
@@ -7963,8 +8387,6 @@ function _autoClearHandler(){
     if('serviceWorker' in navigator && navigator.serviceWorker.controller){
       navigator.serviceWorker.getRegistrations().then(regs=> regs.forEach(r=> r.unregister())).catch(()=>{});
     }
-    /* Send a synchronous beacon to confirm clearing (best-effort) */
-    if(navigator.sendBeacon) navigator.sendBeacon('/clear', 'done');
   }catch(e){}
 }
 /* Restore privacy settings on load */
@@ -7975,10 +8397,15 @@ function _autoClearHandler(){
   if(toggle) toggle.checked = pm;
 
   const ac = getSetting('sabeelAutoClear', false);
-  if(ac) window.addEventListener('beforeunload', _autoClearHandler);
+  if(ac){
+    window.addEventListener('pagehide', _autoClearHandler);
+    document.addEventListener('visibilitychange', _onVisibilityClear);
+  }
   const acToggle = document.getElementById('autoClearToggle');
   if(acToggle) acToggle.checked = ac;
 })();
+/* Restore roadmap progress */
+try{ _applyRoadmapDone(); }catch(e){}
 
 /* ================= CLEAR ALL DATA (Privacy) ================= */
 function confirmClearAllData(){
@@ -8602,7 +9029,7 @@ function companionReset(){
         '<button onclick="companionAdvance()" id="companionNextBtn" class="companion-ctrl-btn" style="border-color:var(--green);color:var(--green);background:var(--green-glow);">Next →</button>'+
         '<button onclick="companionToggleAudio()" id="companionAudioBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">🔊 Audio On</button>'+
         '<button onclick="companionPause()" id="companionPauseBtn" class="companion-ctrl-btn" style="border-color:var(--line);color:var(--ink);">Pause</button>'+
-        '<button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);color:var(--rose);">Reset</button>'+
+        '<button onclick="companionReset()" class="companion-ctrl-btn" style="border-color:var(--rose);background:var(--rose);color:#fff;">Reset</button>'+
       '</div>';
   }
   const titleEl = document.querySelector('#view-companion .page-title');

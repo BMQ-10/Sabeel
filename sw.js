@@ -1,8 +1,12 @@
-const CACHE_NAME = 'sabeel-v2';
+const CACHE_NAME = 'sabeel-v3';
 const SHELL = [
   './',
   './Sabeel.html',
-  './icon.svg'
+  './icon.svg',
+  './segments/AbdulBasit.json',
+  './segments/Alafasy.json',
+  './segments/MaherAlMuaiqly.json',
+  './segments/Shuraim.json'
 ];
 
 self.addEventListener('install', e=>{
