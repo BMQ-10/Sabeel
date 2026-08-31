@@ -3299,6 +3299,18 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
 <div class="toast" id="toast"><span class="t-dot"></span><span id="toastText"></span></div>
 
 <script>
+/* ================= GLOBAL ERROR BOUNDARY ================= */
+window.onerror = function(msg, src, line, col, err){
+  console.error('[Sabeel]', msg, 'at', src, 'line', line);
+  return false;
+};
+window.addEventListener('unhandledrejection', function(e){
+  console.error('[Sabeel] Unhandled promise rejection:', e.reason);
+});
+
+/* safety: hide splash even if load event stalls */
+setTimeout(()=>{ const s = document.getElementById('splash'); if(s && !s.classList.contains('hide')) s.classList.add('hide'); }, 3000);
+
 /* splash lifts after load */
 window.addEventListener('load', ()=>{
   setTimeout(()=>{ const s = document.getElementById('splash'); if(s) s.classList.add('hide'); }, 850);
@@ -3307,6 +3319,7 @@ window.addEventListener('load', ()=>{
 /* ================= TOP LOADER ================= */
 (function(){
   const loader = document.getElementById('topLoader');
+  if(!loader) return;
   requestAnimationFrame(()=>{ loader.style.width = '70%'; });
   window.addEventListener('load', ()=>{
     loader.style.width = '100%';
@@ -3319,7 +3332,9 @@ window.addEventListener('load', ()=>{
 let toastTimer = null;
 function showToast(msg){
   const t = document.getElementById('toast');
-  document.getElementById('toastText').textContent = msg;
+  const tx = document.getElementById('toastText');
+  if(!t || !tx) return;
+  tx.textContent = msg;
   t.classList.add('show');
   clearTimeout(toastTimer);
   toastTimer = setTimeout(()=> t.classList.remove('show'), 3200);
@@ -3333,26 +3348,29 @@ let suppressNextClick = false;
 
 /* open/close with body scroll lock so the page behind the drawer never scrolls */
 function setDrawer(open, instant){
+  if(!railEl || !railScrim) return;
   drawerOpen = open;
   railEl.classList.toggle('dragging', !!instant);
   railEl.classList.toggle('open', open);
   railScrim.classList.toggle('show', open);
   document.body.classList.toggle('drawer-open', open);
   if(open) hideTermPop();
-  if(!instant){ railEl.style.transform = ''; railScrim.style.opacity = ''; }
+  if(!instant && railEl && railScrim){ railEl.style.transform = ''; railScrim.style.opacity = ''; }
   const m = document.getElementById('main');
   if(m) m.style.overflow = open ? 'hidden' : '';
 }
-document.getElementById('railToggle').addEventListener('click', ()=> setDrawer(true));
+const railToggle = document.getElementById('railToggle');
+if(railToggle) railToggle.addEventListener('click', ()=> setDrawer(true));
 
 /* --- drag-follow: the drawer tracks the finger, then snaps open/closed --- */
 let drag = null; // {mode:'open'|'close', x0, y0, w, decided, dx}
 function dragStart(x, y, mode){
+  if(!railEl) return;
   drag = {mode, x0:x, y0:y, w:(railEl.getBoundingClientRect().width || 300), decided:false, dx:0};
   railEl.classList.add('dragging');
 }
 function dragMove(x, y){
-  if(!drag) return;
+  if(!drag || !railEl || !railScrim) return;
   const dx = x - drag.x0, dy = y - drag.y0;
   if(!drag.decided){
     if(Math.abs(dx) < 8 && Math.abs(dy) < 8) return;
@@ -3374,9 +3392,8 @@ function dragEnd(){
   if(!drag) return;
   const d = drag;
   drag = null;
-  railEl.classList.remove('dragging');
-  railEl.style.transform = '';
-  railScrim.style.opacity = '';
+  if(railEl){ railEl.classList.remove('dragging'); railEl.style.transform = ''; }
+  if(railScrim) railScrim.style.opacity = '';
   if(!d.decided) return;
   suppressNextClick = true; // a swipe must never trigger the tap underneath
   const open = d.mode === 'close' ? (d.dx > -d.w/2) : (d.dx > d.w/3);
@@ -5831,12 +5848,15 @@ if(document.fonts && document.fonts.ready) document.fonts.ready.then(()=> setTim
 
 /* ================= SEARCH ================= */
 const searchIndex = [];
-Object.keys(VIEW_TITLES).forEach(id=>searchIndex.push({type:'view', id, title:VIEW_TITLES[id], hint:'section guide tool'}));
-ESSENTIALS.forEach(e=>searchIndex.push({type:'topic', id:e.id, title:e.title, hint:e.brief}));
+try{
+  Object.keys(VIEW_TITLES).forEach(id=>searchIndex.push({type:'view', id, title:VIEW_TITLES[id], hint:'section guide tool'}));
+  ESSENTIALS.forEach(e=>searchIndex.push({type:'topic', id:e.id, title:e.title, hint:e.brief}));
+}catch(e){ console.warn('Search index build failed:', e); }
 
 const searchInput = document.getElementById('railSearch');
 const searchResults = document.getElementById('searchResults');
 function renderSearch(){
+  if(!searchInput || !searchResults) return;
   const q = searchInput.value.trim().toLowerCase();
   if(!q){ searchResults.classList.remove('show'); searchResults.innerHTML=''; return; }
   const matches = searchIndex.filter(it =>
@@ -5847,31 +5867,32 @@ function renderSearch(){
     : `<div class="search-empty">No matches for "${q}"</div>`;
   searchResults.classList.add('show');
 }
-searchInput.addEventListener('input', renderSearch);
-searchInput.addEventListener('keydown', e=>{
+if(searchInput) searchInput.addEventListener('input', renderSearch);
+if(searchInput) searchInput.addEventListener('keydown', e=>{
   if(e.key==='Enter'){
-    const first = searchResults.querySelector('.search-res-item');
+    const first = searchResults && searchResults.querySelector('.search-res-item');
     if(first) first.click();
   }
   if(e.key==='Escape'){ searchInput.value=''; renderSearch(); searchInput.blur(); }
 });
 document.addEventListener('keydown', e=>{
   if(document.activeElement && /INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return;
-  if(document.getElementById('view-quran').classList.contains('active')) return; /* the reader owns its own shortcuts */
+  const qv = document.getElementById('view-quran');
+  if(qv && qv.classList.contains('active')) return;
   if(e.key === '/' && document.activeElement !== searchInput && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)){
     e.preventDefault();
-    searchInput.focus();
+    if(searchInput) searchInput.focus();
   }
 });
-searchResults.addEventListener('click', e=>{
+if(searchResults) searchResults.addEventListener('click', e=>{
   const item = e.target.closest('.search-res-item');
   if(!item) return;
   if(item.dataset.kind==='view') switchView(item.dataset.id);
   else { switchView('essentials'); openDetail(item.dataset.id); }
-  searchInput.value=''; renderSearch();
+  if(searchInput){ searchInput.value=''; renderSearch(); }
 });
 document.addEventListener('click', e=>{
-  if(!e.target.closest('.search-wrap')) searchResults.classList.remove('show');
+  if(!e.target.closest('.search-wrap') && searchResults) searchResults.classList.remove('show');
 });
 
 /* keyboard quick-jump: 1–9 and 0 map to the main sections (desktop QoL) */
@@ -7603,19 +7624,61 @@ document.addEventListener('keydown', e=>{
   }catch(e){}
 })();
 /* ================= INIT ================= */
-renderEssentials();
-initQuiz();
-renderVerse(false);
-initPractice();
-renderToday();
-renderDuas();
-updateRibbon();
-decorateSpeakers(document.getElementById('main'));
-linkTerms(document.getElementById('main'));
-document.getElementById('tpSayAr').innerHTML = SPK_ICON;
-document.getElementById('pribbon').addEventListener('click', ()=> switchView('prayertimes'));
-document.getElementById('qiblaCompass').innerHTML = drawCompassFace();
+try{
+  renderEssentials();
+}catch(e){ console.warn('Essentials init failed:', e); }
+
+try{
+  initQuiz();
+}catch(e){ console.warn('Quiz init failed:', e); }
+
+try{
+  renderVerse(false);
+}catch(e){ console.warn('Quran reader init failed:', e); }
+
+try{
+  initPractice();
+}catch(e){ console.warn('Practice init failed:', e); }
+
+try{
+  renderToday();
+}catch(e){ console.warn('Today init failed:', e); }
+
+try{
+  renderDuas();
+}catch(e){ console.warn('Duas init failed:', e); }
+
+try{
+  updateRibbon();
+}catch(e){ console.warn('Ribbon init failed:', e); }
+
+try{
+  decorateSpeakers(document.getElementById('main'));
+  linkTerms(document.getElementById('main'));
+}catch(e){ console.warn('Speaker/decorate init failed:', e); }
+
+try{
+  const tpIcon = document.getElementById('tpSayAr');
+  if(tpIcon) tpIcon.innerHTML = SPK_ICON;
+}catch(e){}
+
+try{
+  const pribbon = document.getElementById('pribbon');
+  if(pribbon) pribbon.addEventListener('click', ()=> switchView('prayertimes'));
+}catch(e){}
+
+try{
+  const compass = document.getElementById('qiblaCompass');
+  if(compass) compass.innerHTML = drawCompassFace();
+}catch(e){}
+
+/* --- activate welcome view + sidebar highlight on first load --- */
+try{
+  switchView('welcome');
+}catch(e){ console.warn('Welcome switchView failed:', e); }
+
 setTimeout(moveRailInd, 100);
+setTimeout(moveRailInd, 400);
 
 /* ================= DHIKR COUNTER ================= */
 const DHIKR_PRESETS = [
@@ -7635,7 +7698,9 @@ let dhikrState = (function(){
 })();
 function saveDhikr(){ try{ localStorage.setItem('dhikrState', JSON.stringify(dhikrState)); }catch(e){} }
 function renderDhikrPresets(){
-  document.getElementById('dhikrPresets').innerHTML = DHIKR_PRESETS.map((p,i)=>
+  const el = document.getElementById('dhikrPresets');
+  if(!el) return;
+  el.innerHTML = DHIKR_PRESETS.map((p,i)=>
     `<button class="dhikr-preset ${i===dhikrState.presetIdx?'active':''}" onclick="selectDhikr(${i})">${p.name}</button>`
   ).join('');
 }
@@ -7688,14 +7753,16 @@ function dhikrLogSession(){
   saveDhikr();
 }
 function renderDhikrHistory(){
-  if(!dhikrState.history.length){ document.getElementById('dhikrHistory').innerHTML=''; return; }
+  const el = document.getElementById('dhikrHistory');
+  if(!el) return;
+  if(!dhikrState.history.length){ el.innerHTML=''; return; }
   const groups = {};
   dhikrState.history.forEach(h=>{
     const key = h.date;
     if(!groups[key]) groups[key] = [];
     groups[key].push(h);
   });
-  document.getElementById('dhikrHistory').innerHTML =
+  el.innerHTML =
     '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Recent Sessions</div>' +
     Object.entries(groups).slice(0,7).map(([date,items])=>
       `<div class="rq-card" style="padding:10px 14px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">${date}</div>` +
@@ -7848,13 +7915,17 @@ let companionState = {
 function companionStart(){
   const rSel = document.getElementById('companionRakat');
   const mSel = document.getElementById('companionMadhab');
+  const settings = document.getElementById('companionSettings');
+  const display = document.getElementById('companionDisplay');
+  if(!rSel || !mSel || !settings || !display) return;
   const r = parseInt(rSel.value,10);
   const m = mSel.value;
   companionState = {running:true,paused:false,rakat:r,madhab:m,rak:1,stepIdx:0,timer:null,tickTimer:null,elapsed:0};
-  document.getElementById('companionSettings').style.display='none';
-  document.getElementById('companionDisplay').style.display='block';
-  document.getElementById('companionDisplay').onclick = function(){ companionAdvance(); };
-  document.getElementById('companionPauseBtn').textContent='Pause';
+  settings.style.display='none';
+  display.style.display='block';
+  display.onclick = function(){ companionAdvance(); };
+  const pauseBtn = document.getElementById('companionPauseBtn');
+  if(pauseBtn) pauseBtn.textContent='Pause';
   companionRender();
   companionStartAuto();
   companionStartTick();
@@ -7898,28 +7969,40 @@ function companionAdvance(){
 
 function companionRender(){
   const s = COMPANION_STEPS[companionState.stepIdx];
+  if(!s) return;
   const isFinalRak = companionState.rak === companionState.rakat;
   const totalSteps = isFinalRak ? COMPANION_STEPS.length : 7;
   const progress = ((companionState.stepIdx + 1) / totalSteps * 100) + '%';
 
-  document.getElementById('companionPosLabel').textContent = s.pos;
-  document.getElementById('companionArabic').textContent = s.ar || '';
-  document.getElementById('companionTranslit').textContent = s.translit || '';
-  document.getElementById('companionMeaning').textContent = s.meaning || '';
-  document.getElementById('companionInstruction').textContent = s.instr || '';
-  document.getElementById('companionHint').textContent = s.hint || 'Tap anywhere to advance';
-  document.getElementById('companionProgressBar').style.setProperty('--cp', progress);
+  const posLabel = document.getElementById('companionPosLabel');
+  const arabic = document.getElementById('companionArabic');
+  const translit = document.getElementById('companionTranslit');
+  const meaning = document.getElementById('companionMeaning');
+  const instruction = document.getElementById('companionInstruction');
+  const hint = document.getElementById('companionHint');
+  const progressBar = document.getElementById('companionProgressBar');
+  const rakDots = document.getElementById('companionRakDots');
+
+  if(posLabel) posLabel.textContent = s.pos;
+  if(arabic) arabic.textContent = s.ar || '';
+  if(translit) translit.textContent = s.translit || '';
+  if(meaning) meaning.textContent = s.meaning || '';
+  if(instruction) instruction.textContent = s.instr || '';
+  if(hint) hint.textContent = s.hint || 'Tap anywhere to advance';
+  if(progressBar) progressBar.style.setProperty('--cp', progress);
 
   // Rak'ah dots
-  let dots = '';
-  for(let i=1;i<=companionState.rakat;i++){
-    const cls = i < companionState.rak ? 'dot done' : i === companionState.rak ? 'dot active' : 'dot';
-    dots += '<div class="'+cls+'"></div>';
+  if(rakDots){
+    let dots = '';
+    for(let i=1;i<=companionState.rakat;i++){
+      const cls = i < companionState.rak ? 'dot done' : i === companionState.rak ? 'dot active' : 'dot';
+      dots += '<div class="'+cls+'"></div>';
+    }
+    rakDots.innerHTML = dots;
   }
-  document.getElementById('companionRakDots').innerHTML = dots;
 
-  document.querySelector('#view-companion .page-title').textContent =
-    'Rak\u2019ah '+companionState.rak+' of '+companionState.rakat;
+  const titleEl = document.querySelector('#view-companion .page-title');
+  if(titleEl) titleEl.textContent = 'Rak\u2019ah '+companionState.rak+' of '+companionState.rakat;
 
   // Play audio
   if(s.key) speakArabicLine(s.key, s.ar, null);
@@ -7927,6 +8010,7 @@ function companionRender(){
 
 function companionPause(){
   const btn = document.getElementById('companionPauseBtn');
+  if(!btn) return;
   if(companionState.paused){
     companionState.paused = false;
     btn.textContent = 'Pause';
@@ -7944,10 +8028,12 @@ function companionReset(){
   clearTimeout(companionState.timer);
   clearInterval(companionState.tickTimer);
   companionState.running = false;
-  document.getElementById('companionSettings').style.display='block';
-  document.getElementById('companionDisplay').style.display='none';
-  document.getElementById('companionDisplay').onclick = null;
-  document.querySelector('#view-companion .page-title').textContent = 'Pray Along \u2014 Real-Time Salah Guide';
+  const settings = document.getElementById('companionSettings');
+  const display = document.getElementById('companionDisplay');
+  if(settings) settings.style.display='block';
+  if(display){ display.style.display='none'; display.onclick = null; }
+  const titleEl = document.querySelector('#view-companion .page-title');
+  if(titleEl) titleEl.textContent = 'Pray Along \u2014 Real-Time Salah Guide';
 }
 
 function companionComplete(){
@@ -7955,6 +8041,7 @@ function companionComplete(){
   clearInterval(companionState.tickTimer);
   companionState.running = false;
   const el = document.getElementById('companionDisplay');
+  if(!el) return;
   el.innerHTML =
     '<div style="text-align:center;padding:30px 0;">'+
       '<div style="font-size:42px;margin-bottom:12px;">\u2728</div>'+
@@ -8309,13 +8396,15 @@ function companionComplete(){
     110:["إِذَا جَآءَ نَصْرُ ٱللَّهِ وَٱلْفَتْحُ","وَرَأَيْتَ ٱلنَّاسَ يَدْخُلُونَ فِى دِينِ ٱللَّهِ أَفْوَاجًۭا","فَسَبِّحْ بِحَمْدِ رَبِّكَ وَٱسْتَغْفِرْهُ ۚ إِنَّهُۥ كَانَ تَوَّابًۭا"]
   };
 
-  let hifzData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(hifzData)); }
+  let hifzData = {};
+  try{ hifzData = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }catch(e){}
+  function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(hifzData)); }catch(e){} }
 
   const grid = document.getElementById('hifzGrid');
   const summary = document.getElementById('hifzSummary');
   const testArea = document.getElementById('hifzTest');
   const statsDiv = document.getElementById('hifzStats');
+  if(!grid) return;
 
   function renderGrid(){
     grid.innerHTML = '';
@@ -8362,7 +8451,8 @@ function companionComplete(){
       if(hifzData[i] === 'memorized' || hifzData[i] === 'tested'){ memCount++; totalWords += s.ayahs; }
       else if(hifzData[i] === 'partial'){ partCount++; totalWords += Math.round(s.ayahs * 0.5); }
     }
-    const lastTest = localStorage.getItem('hifzLastTest') || 'Never';
+    let lastTest = 'Never';
+    try{ lastTest = localStorage.getItem('hifzLastTest') || 'Never'; }catch(e){}
     statsDiv.innerHTML =
       '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:14px 0;">' +
         '<div class="rq-card" style="padding:14px;text-align:center;"><b style="font-size:22px;color:var(--green);">' + memCount + '</b><p style="margin:4px 0 0;font-size:12px;color:var(--text-muted);">Fully Memorized</p></div>' +
@@ -8474,7 +8564,7 @@ function companionComplete(){
   window.hifzConfirmed = function(){
     hifzData[testSurah] = 'tested';
     save();
-    localStorage.setItem('hifzLastTest', new Date().toLocaleDateString());
+    try{ localStorage.setItem('hifzLastTest', new Date().toLocaleDateString()); }catch(e){}
     testArea.innerHTML = '<h3>Mashallah!</h3><p>You\'ve confirmed memorization of <b>' + SURAHS[testSurah-1].en + '</b> (Surah ' + testSurah + ').</p>' +
       '<div class="hifz-quote" style="border-color:var(--green);background:rgba(46,125,91,0.06);">' +
       '<b>Encouragement:</b> "Whoever recites a letter from the Book of Allah will have a reward, and each reward is multiplied by ten. I do not say Alif-Lam-Mim is one letter, but Alif is a letter, Lam is a letter, and Mim is a letter."<br>— Jami at-Tirmidhi 2910</div>' +
@@ -8663,10 +8753,7 @@ function companionComplete(){
               ? '<button class="pack-btn danger" onclick="OfflinePacks.deletePack(\''+p.id+'\')">Delete</button>'
               : isDownloading
                 ? '<button class="pack-btn" disabled>Downloading…</button>'
-                : '<button class="pack-btn primary" onclick="OfflinePacks.downloadPack(\''+p.id+'\')">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Download
-                  </button>'
+                : '<button class="pack-btn primary" onclick="OfflinePacks.downloadPack(\''+p.id+'\')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:14px;height:14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> Download</button>'
             }
           </div>
         </div>`;
@@ -9189,7 +9276,7 @@ if('serviceWorker' in navigator){
   window.switchLanguage = function(lang){
     if(!TRANSLATIONS[lang]) return;
     currentLang = lang;
-    localStorage.setItem(LANG_KEY, lang);
+    try{ localStorage.setItem(LANG_KEY, lang); }catch(e){}
     const sel = document.getElementById('langSelect');
     if(sel) sel.value = lang;
     updateDataI18nElements();

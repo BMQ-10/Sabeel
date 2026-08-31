@@ -1,9 +1,8 @@
-const CACHE_NAME = 'sabeel-v1';
+const CACHE_NAME = 'sabeel-v2';
 const SHELL = [
   './',
   './Sabeel.html',
-  './icon.svg',
-  './README.md'
+  './icon.svg'
 ];
 
 self.addEventListener('install', e=>{
@@ -11,6 +10,7 @@ self.addEventListener('install', e=>{
     caches.open(CACHE_NAME)
       .then(c=> c.addAll(SHELL))
       .then(()=> self.skipWaiting())
+      .catch(()=> self.skipWaiting())
   );
 });
 
@@ -25,25 +25,26 @@ self.addEventListener('activate', e=>{
 self.addEventListener('fetch', e=>{
   const url = new URL(e.request.url);
 
-  /* App shell: cache-first */
   if(e.request.method !== 'GET') return;
+
+  /* App shell: cache-first, fallback to network */
   if(url.origin === self.location.origin){
     e.respondWith(
       caches.match(e.request).then(cached=>{
-        const fetched = fetch(e.request).then(resp=>{
+        if(cached) return cached;
+        return fetch(e.request).then(resp=>{
           if(resp && resp.status === 200){
             const clone = resp.clone();
             caches.open(CACHE_NAME).then(c=> c.put(e.request, clone));
           }
           return resp;
-        }).catch(()=> cached);
-        return cached || fetched;
+        }).catch(()=> new Response('Offline', {status: 503, statusText: 'Offline'}));
       })
     );
     return;
   }
 
-  /* CDN audio + API: stale-while-revalidate for speed, cache for offline */
+  /* CDN audio + API: stale-while-revalidate for speed */
   if(url.hostname.includes('cdn.islamic.network') || url.hostname.includes('everyayah.com') || url.hostname.includes('api.quran.com')){
     e.respondWith(
       caches.match(e.request).then(cached=>{
