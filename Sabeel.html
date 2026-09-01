@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; media-src 'self' blob: https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com; manifest-src 'self' blob:; font-src 'self' data:; connect-src 'self' https://api.quran.com https://api.alquran.cloud https://cdn.islamic.network https://verses.quran.com https://everyayah.com https://hisnmuslim.com https://salafiaudio.files.wordpress.com https://geocoding-api.open-meteo.com;">
 <meta name="theme-color" content="#1F4B3F">
 <link rel="preconnect" href="https://api.quran.com" crossorigin>
 <link rel="preconnect" href="https://api.alquran.cloud" crossorigin>
@@ -2982,17 +2982,21 @@ a:hover{text-decoration:underline;color:var(--gold-deep);}
         <div class="rq-card" style="text-align:center;">
           <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Missed Prayers (Qada)</div>
           <div id="qadaPrayerCount" style="font-size:36px;font-family:var(--serif);color:var(--gold-deep);font-weight:700;">0</div>
-          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;">
-            <button class="tool-btn secondary" onclick="qadaAdj('prayer',-1)" aria-label="Remove one missed prayer">−1</button>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
+            <button class="tool-btn secondary" onclick="qadaAdj('prayer',-1)" aria-label="Remove one missed prayer">-1</button>
             <button class="tool-btn" onclick="qadaAdj('prayer',1)" aria-label="Add one missed prayer">+1</button>
+            <button class="tool-btn" onclick="qadaAdj('prayer',5)" aria-label="Add five missed prayers">+5</button>
+            <button class="tool-btn secondary" onclick="qadaResetAllPrayers()" title="Mark all missed prayers as made up (counters to 0)">&#8634; Mark paid</button>
           </div>
         </div>
         <div class="rq-card" style="text-align:center;">
           <div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:6px;">Missed Fasts (Qada)</div>
           <div id="qadaFastCount" style="font-size:36px;font-family:var(--serif);color:var(--gold-deep);font-weight:700;">0</div>
-          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;">
-            <button class="tool-btn secondary" onclick="qadaAdj('fast',-1)" aria-label="Remove one missed fast">−1</button>
+          <div style="display:flex;gap:6px;justify-content:center;margin-top:10px;flex-wrap:wrap;">
+            <button class="tool-btn secondary" onclick="qadaAdj('fast',-1)" aria-label="Remove one missed fast">-1</button>
             <button class="tool-btn" onclick="qadaAdj('fast',1)" aria-label="Add one missed fast">+1</button>
+            <button class="tool-btn" onclick="qadaAdj('fast',5)" aria-label="Add five missed fasts">+5</button>
+            <button class="tool-btn secondary" onclick="qadaResetFasts()" title="Mark all missed fasts as made up (counter to 0)">&#8634; Mark paid</button>
           </div>
         </div>
       </div>
@@ -6745,6 +6749,9 @@ function clearReviewFlags(){
     return m ? m.id : null;
   };
 
+  // Exposed for the Hifz tracker and other views outside this IIFE — the hifz
+  // grid previously crashed with "SURAHS is not defined" and rendered blank.
+  window.SURAHS = SURAHS;
   window.__initQuran = () => { if (!window.__quranBooted){ window.__quranBooted = true; init(); } };
 })();
 
@@ -6993,9 +7000,26 @@ function renderQuizQuestion(){
   `).join('');
 
   const src = QUIZ_SOURCES[q.word];
+  /* Quran citations get REAL reciter audio: parse the reference and pass it as
+     data-quran so decorateSpeakers builds a reciter button. Handles "Qur'an 2:144",
+     ranges like "Qur'an 18:23–24", and refs with trailing context ("Qur'an 59:7 — ...").
+     Hadith citations keep the TTS/human-recording fallback — no reciter exists for them. */
+  let srcDQ = '';
+  if (src && src.ref){
+    const qm = src.ref.match(/Qur'?an\s+(\d+):(\d+)(?:\s*[\u2013\u2014-]\s*(\d+))?/i);
+    if (qm){
+      const sN = parseInt(qm[1], 10), a1 = parseInt(qm[2], 10);
+      const a2 = qm[3] ? parseInt(qm[3], 10) : a1;
+      if (a2 >= a1 && (a2 - a1) <= 10){
+        const parts = [];
+        for (let a = a1; a <= a2; a++) parts.push(sN + ':' + a);
+        srcDQ = parts.join(',');
+      }
+    }
+  }
   const srcHTML = src ? `
     <div class="source-quote" style="margin:0;">
-      ${src.ar ? `<div class="arabic" dir="rtl" lang="ar">${src.ar}</div>` : ''}
+      ${src.ar ? `<div class="arabic" dir="rtl" lang="ar"${srcDQ ? ` data-quran="${srcDQ}"` : ''}>${src.ar}</div>` : ''}
       <p>${src.text}</p>
       <div class="ref">${src.ref} <span class="grade ${src.grade.toLowerCase()==='sahih'?'sahih':'hasan'}">${src.grade}</span></div>
     </div>` : '';
@@ -9143,11 +9167,25 @@ const DHIKR_PRESETS = [
 let dhikrState = (function(){
   try{
     const raw = localStorage.getItem('dhikrState');
-    if(raw) return JSON.parse(raw);
+    if(raw){
+      const st = JSON.parse(raw);
+      /* migrate older saved states so new fields always exist */
+      if(!st.targets) st.targets = {};
+      if(!st.totals) st.totals = {};
+      if(!Array.isArray(st.history)) st.history = [];
+      return st;
+    }
   }catch(e){}
-  return {presetIdx:0, count:0, history:[]};
+  return {presetIdx:0, count:0, history:[], targets:{}, totals:{}};
 })();
 function saveDhikr(){ try{ localStorage.setItem('dhikrState', JSON.stringify(dhikrState)); }catch(e){} }
+/* Effective target = user-customized value when set, otherwise the preset default.
+   Custom targets are PART of dhikrState, so they survive reloads. */
+function dhikrTarget(){
+  const custom = dhikrState.targets[dhikrState.presetIdx];
+  const p = DHIKR_PRESETS[dhikrState.presetIdx];
+  return custom || (p && p.target) || 0;
+}
 function renderDhikrPresets(){
   const el = document.getElementById('dhikrPresets');
   if(!el) return;
@@ -9166,6 +9204,7 @@ function selectDhikr(i){
 function renderDhikrMain(){
   const p = DHIKR_PRESETS[dhikrState.presetIdx];
   if(!p) return;
+  const t = dhikrTarget();
   const nEl = document.getElementById('dhikrName');
   const arEl = document.getElementById('dhikrArabic');
   const meEl = document.getElementById('dhikrMeaning');
@@ -9183,15 +9222,15 @@ function renderDhikrMain(){
     else if(HUMAN_AUDIO[p.ar]) key = p.ar;
     const hasHuman = !!key;
     const btn = makeSpk((b)=> speakArabicLine(key, p.ar, b),
-      hasHuman ? 'Play human recording — ' + p.name : 'Listen with device voice');
+      hasHuman ? 'Play human recording - ' + p.name : 'Listen with device voice');
     arEl.appendChild(btn);
   }
   if(meEl) meEl.textContent = p.meaning;
   if(tapEl) tapEl.textContent = dhikrState.count;
-  if(tgtEl) tgtEl.textContent = p.target ? `Target: ${p.target} · ${Math.min(dhikrState.count, p.target)} / ${p.target}` : '';
+  if(tgtEl) tgtEl.textContent = t ? `Target: ${t} \u00b7 ${Math.min(dhikrState.count, t)} / ${t}` : '';
   const ring = document.getElementById('dhikrTap');
   if(ring){
-    if(p.target && dhikrState.count >= p.target){ ring.style.borderColor='var(--green)'; ring.style.color='var(--green-deep)'; }
+    if(t && dhikrState.count >= t){ ring.style.borderColor='var(--green)'; ring.style.color='var(--green-deep)'; }
     else { ring.style.borderColor='var(--gold)'; ring.style.color='var(--gold-deep)'; }
   }
 }
@@ -9199,10 +9238,12 @@ function renderDhikrMain(){
   const tapEl = document.getElementById('dhikrTap');
   if(tapEl) tapEl.addEventListener('click', ()=>{
     dhikrState.count++;
+    const p = DHIKR_PRESETS[dhikrState.presetIdx];
+    if(p) dhikrState.totals[p.name] = (dhikrState.totals[p.name]||0) + 1;   /* lifetime tally */
     saveDhikr();
     renderDhikrMain();
-    const p = DHIKR_PRESETS[dhikrState.presetIdx];
-    if(p && p.target && dhikrState.count === p.target) showToast(`${p.name} target reached — ${p.target} mashaAllah`);
+    const t = dhikrTarget();
+    if(p && t && dhikrState.count === t) showToast(`${p.name} target reached - ${t} mashaAllah`);
   });
 })();
 function dhikrReset(){
@@ -9213,12 +9254,15 @@ function dhikrReset(){
 }
 function dhikrSetTarget(){
   const p = DHIKR_PRESETS[dhikrState.presetIdx];
-  const val = prompt('Set target count for ' + p.name, p.target || 33);
-  if(val !== null && !isNaN(parseInt(val)) && parseInt(val) > 0){
-    DHIKR_PRESETS[dhikrState.presetIdx].target = parseInt(val);
-    saveDhikr();
-    renderDhikrMain();
-  }
+  if(!p) return;
+  const cur = dhikrTarget();
+  const val = prompt('Set target count for ' + p.name + ' (empty or 0 restores the default)', cur || '');
+  if(val === null) return;
+  const n = parseInt(val, 10);
+  if(!isNaN(n) && n > 0){ dhikrState.targets[dhikrState.presetIdx] = n; }
+  else { delete dhikrState.targets[dhikrState.presetIdx]; }
+  saveDhikr();
+  renderDhikrMain();
 }
 function dhikrLogSession(){
   if(dhikrState.count === 0) return;
@@ -9226,6 +9270,14 @@ function dhikrLogSession(){
   dhikrState.history.unshift({name:p.name, count:dhikrState.count, date:new Date().toISOString().slice(0,10)});
   if(dhikrState.history.length > 50) dhikrState.history.length = 50;
   saveDhikr();
+}
+function dhikrClearHistory(){
+  if(!dhikrState.history.length) return;
+  if(!confirm('Clear the dhikr session history? (Lifetime totals are kept.)')) return;
+  dhikrState.history = [];
+  saveDhikr();
+  renderDhikrHistory();
+  showToast('Dhikr history cleared');
 }
 function renderDhikrHistory(){
   const el = document.getElementById('dhikrHistory');
@@ -9237,15 +9289,19 @@ function renderDhikrHistory(){
     if(!groups[key]) groups[key] = [];
     groups[key].push(h);
   });
+  const allTime = Object.values(dhikrState.totals).reduce((a,b)=>a+b, 0);
   el.innerHTML =
-    '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Recent Sessions</div>' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">' +
+    '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Recent Sessions' +
+    (allTime ? ' \u00b7 All-time: <b style="color:var(--green-deep);">' + allTime + '</b>' : '') + '</div>' +
+    '<button class="tool-btn secondary" style="padding:3px 10px;font-size:11px;flex-shrink:0;" onclick="dhikrClearHistory()">Clear</button>' +
+    '</div>' +
     Object.entries(groups).slice(0,7).map(([date,items])=>
       `<div class="rq-card" style="padding:10px 14px;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">${date}</div>` +
       items.map(h=>`<span style="font-size:12px;margin-right:12px;"><b>${h.count}</b> ${h.name}</span>`).join('') +
       '</div>'
     ).join('');
 }
-
 /* ================= QADA (MISSED PRAYER/FASTING) TRACKER ================= */
 let qadaState = (function(){
   try{
@@ -9258,7 +9314,7 @@ function saveQada(){ try{ localStorage.setItem('qadaState', JSON.stringify(qadaS
 function qadaAdj(type, delta){
   qadaState[type] = Math.max(0, qadaState[type] + delta);
   if(delta > 0){
-    qadaState.log.unshift({type, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    qadaState.log.unshift({type, n:delta, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
     if(qadaState.log.length > 100) qadaState.log.length = 100;
   }
   saveQada();
@@ -9268,9 +9324,43 @@ function qadaAdjPrayer(name, delta){
   qadaState.perPrayer[name] = Math.max(0, qadaState.perPrayer[name] + delta);
   qadaState.prayer = Object.values(qadaState.perPrayer).reduce((a,b)=>a+b, 0);
   if(delta > 0){
-    qadaState.log.unshift({type:'prayer', name, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
+    qadaState.log.unshift({type:'prayer', name, n:delta, date:new Date().toISOString().slice(0,10), time:new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})});
     if(qadaState.log.length > 100) qadaState.log.length = 100;
   }
+  saveQada();
+  renderQada();
+}
+/* Bulk helpers - logging 2 years of missed prayers one tap at a time was misery */
+function qadaResetAllPrayers(){
+  const total = qadaState.prayer;
+  if(!total) return;
+  if(!confirm('Mark all ' + total + ' missed prayers as made up? Every counter goes to 0.')) return;
+  ['fajr','dhuhr','asr','maghrib','isha'].forEach(k=>{ qadaState.perPrayer[k] = 0; });
+  qadaState.prayer = 0;
+  saveQada();
+  renderQada();
+  showToast('All missed prayers marked as made up');
+}
+function qadaResetFasts(){
+  if(!qadaState.fast) return;
+  if(!confirm('Mark all ' + qadaState.fast + ' missed fasts as made up? The counter goes to 0.')) return;
+  qadaState.fast = 0;
+  saveQada();
+  renderQada();
+  showToast('All missed fasts marked as made up');
+}
+function qadaResetPrayer(name){
+  if(!qadaState.perPrayer[name]) return;
+  if(!confirm('Mark all missed ' + name + ' prayers as made up? This counter goes to 0.')) return;
+  qadaState.perPrayer[name] = 0;
+  qadaState.prayer = Object.values(qadaState.perPrayer).reduce((a,b)=>a+b, 0);
+  saveQada();
+  renderQada();
+}
+function qadaClearLog(){
+  if(!qadaState.log.length) return;
+  if(!confirm('Clear the recent activity log? (The counters above are not changed.)')) return;
+  qadaState.log = [];
   saveQada();
   renderQada();
 }
@@ -9286,23 +9376,27 @@ function renderQada(){
     if(bd) bd.innerHTML = prayers.map(p=>
       `<div style="display:flex;align-items:center;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--line-soft);">
         <span style="font-size:13px;color:var(--ink);text-transform:capitalize;">${p}</span>
-        <div style="display:flex;align-items:center;gap:6px;">
-          <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',-1)" aria-label="Remove one ${p}">−</button>
+        <div style="display:flex;align-items:center;gap:5px;">
+          <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',-1)" aria-label="Remove one ${p}">-</button>
           <span style="font-size:16px;font-weight:700;color:var(--gold-deep);min-width:20px;text-align:center;">${qadaState.perPrayer[p]}</span>
           <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',1)" aria-label="Add one ${p}">+</button>
+          <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaAdjPrayer('${p}',5)" aria-label="Add five ${p}">+5</button>
+          <button class="tool-btn secondary" style="padding:2px 8px;font-size:11px;" onclick="qadaResetPrayer('${p}')" aria-label="Mark all ${p} as made up" title="Mark all as made up">\u21ba</button>
         </div>
       </div>`
     ).join('');
     if(!lg) return;
     if(!qadaState.log.length){ lg.innerHTML=''; return; }
     lg.innerHTML =
-      '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);margin-bottom:8px;">Recent Activity</div>' +
+      '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">' +
+      '<div style="font-size:12px;text-transform:uppercase;letter-spacing:1px;color:var(--text-muted);">Recent Activity</div>' +
+      '<button class="tool-btn secondary" style="padding:3px 10px;font-size:11px;" onclick="qadaClearLog()">Clear</button>' +
+      '</div>' +
       qadaState.log.slice(0,10).map(h=>
-        `<div style="font-size:12px;color:var(--ink-soft);padding:4px 0;border-bottom:1px solid var(--line-soft);">+1 ${h.type === 'fast' ? 'missed fast' : ('missed ' + (h.name||'prayer'))} · ${h.date} ${h.time}</div>`
+        `<div style="font-size:12px;color:var(--ink-soft);padding:4px 0;border-bottom:1px solid var(--line-soft);">+${h.n||1} ${h.type === 'fast' ? (h.n>1?'missed fasts':'missed fast') : ('missed ' + (h.name||'prayer') + (h.n>1?'s':''))} \u00b7 ${h.date} ${h.time}</div>`
       ).join('');
   }catch(e){ console.warn('renderQada failed:', e); }
 }
-
 /* init dhikr + qada — wrapped so one failure never kills the rest */
 try{ renderDhikrPresets(); }catch(e){ console.warn('Dhikr presets init failed:', e); }
 try{ renderDhikrMain(); }catch(e){ console.warn('Dhikr main init failed:', e); }
@@ -10082,7 +10176,8 @@ function companionComplete(){
       '<span class="stat-pill"><span class="dot-g"></span>' + mem + ' memorized</span>' +
       '<span class="stat-pill"><span class="dot-y"></span>' + part + ' partial</span>' +
       (tested ? '<span class="stat-pill" style="background:#d1e7dd;border-color:#6db89a;color:#0f5132;">' + tested + ' tested</span>' : '') +
-      '<button class="hifz-btn" onclick="hifzOpenTest()" style="margin-left:auto;">Start Test</button>';
+      '<button class="hifz-btn" onclick="hifzOpenTest()" style="margin-left:auto;">Start Test</button>' +
+      ((mem || part || tested) ? '<button class="hifz-btn" onclick="hifzResetAll()" title="Clear all memorization data — cannot be undone" style="border-color:var(--rose);color:var(--rose);background:transparent;">Reset all</button>' : '');
   }
 
   function renderStats(){
@@ -10104,6 +10199,15 @@ function companionComplete(){
   }
 
   /* ========== TEST MODE ========== */
+  window.hifzResetAll = function(){
+    const any = Object.keys(hifzData).length > 0;
+    if(!any){ showToast('Nothing to reset — no surahs marked yet.'); return; }
+    if(!confirm('Clear ALL memorization data? This cannot be undone.')) return;
+    hifzData = {};
+    save();
+    renderGrid();
+    showToast('Hifz tracker reset');
+  };
   window.hifzOpenTest = function(){
     const memorized = [];
     for(let i = 1; i <= 114; i++){
